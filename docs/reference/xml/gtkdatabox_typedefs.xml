@@ -172,7 +172,9 @@ Defines whether the user can use the mouse to zoom in or out (<link linkend="TRU
 <para>
 This signal is emitted after a right click outside
 a selection rectangle.
-</para><variablelist role="params">
+</para><para>
+</para>
+@:<variablelist role="params">
 <varlistentry><term><parameter>box</parameter>&#160;:</term>
 <listitem><simpara>The <link linkend="GtkDatabox"><type>GtkDatabox</type></link> widget which zoomed in or out.
 </simpara></listitem></varlistentry>
@@ -187,7 +189,10 @@ a selection rectangle.
 This signal is emitted when the mouse is moved 
 with the left button pressed (and the <link linkend="GtkDatabox--enable-selection"><type>"enable-selection"</type></link> property 
 is set). The corners of the selection rectangle are stored in <parameter>selection_values</parameter>.
-</para><variablelist role="params">
+</para><para>
+</para>
+@:
+@:<variablelist role="params">
 <varlistentry><term><parameter>box</parameter>&#160;:</term>
 <listitem><simpara>The <link linkend="GtkDatabox"><type>GtkDatabox</type></link> widget in which the selection was changed.
 </simpara></listitem></varlistentry>
@@ -207,7 +212,10 @@ is released after a selection was started before.
 </para>
 <para>
 <parameter>see_also</parameter>: <link linkend="GtkDatabox-selection-changed"><type>"selection-changed"</type></link>
-</para><variablelist role="params">
+</para><para>
+</para>
+@:
+@:<variablelist role="params">
 <varlistentry><term><parameter>box</parameter>&#160;:</term>
 <listitem><simpara>The <link linkend="GtkDatabox"><type>GtkDatabox</type></link> widget in which the selection has been stopped.
 </simpara></listitem></varlistentry>
@@ -228,7 +236,10 @@ is set). The corners of the selection rectangle are stored in <parameter>selecti
 </para>
 <para>
 <parameter>see_also</parameter>: <link linkend="GtkDatabox-selection-changed"><type>"selection-changed"</type></link>
-</para><variablelist role="params">
+</para><para>
+</para>
+@:
+@:<variablelist role="params">
 <varlistentry><term><parameter>box</parameter>&#160;:</term>
 <listitem><simpara>The <link linkend="GtkDatabox"><type>GtkDatabox</type></link> widget in which the selection has been started.
 </simpara></listitem></varlistentry>
@@ -244,7 +255,9 @@ is set). The corners of the selection rectangle are stored in <parameter>selecti
 <para>
 This signal is emitted each time the zoom of the widget is changed, see for example 
 <link linkend="gtk-databox-zoom-to-selection"><function>gtk_databox_zoom_to_selection()</function></link>, <link linkend="gtk-databox-set-visible-limits"><function>gtk_databox_set_visible_limits()</function></link>.
-</para><variablelist role="params">
+</para><para>
+</para>
+@:<variablelist role="params">
 <varlistentry><term><parameter>box</parameter>&#160;:</term>
 <listitem><simpara>The <link linkend="GtkDatabox"><type>GtkDatabox</type></link> widget which zoomed in or out.
 </simpara></listitem></varlistentry>

@@ -1,6 +1,6 @@
 Summary:    GTK+ widget for fast data display
 Name:       gtkdatabox
-Version:    0.9.1.2
+Version:    0.9.1.3
 Release:    1
 License:    LGPL
 Group:      System Environment/Libraries

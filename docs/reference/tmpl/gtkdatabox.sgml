@@ -37,17 +37,12 @@ GtkDatabox
 
 </para>
 
-@:
-
 @databox: the object which received the signal.
 
 <!-- ##### SIGNAL GtkDatabox::selection-changed ##### -->
 <para>
 
 </para>
-
-@: 
-@:
 
 @databox: the object which received the signal.
 @arg1: 
@@ -57,9 +52,6 @@ GtkDatabox
 
 </para>
 
-@: 
-@:
-
 @databox: the object which received the signal.
 @arg1: 
 
@@ -68,9 +60,6 @@ GtkDatabox
 
 </para>
 
-@: 
-@:
-
 @databox: the object which received the signal.
 @arg1: 
 
@@ -78,8 +67,6 @@ GtkDatabox
 <para>
 
 </para>
-
-@:
 
 @databox: the object which received the signal.
 
