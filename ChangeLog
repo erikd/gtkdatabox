@@ -3,6 +3,7 @@
    Stover.  GTK_WIDGET_STATE, GTK_WIDGET_DRAWABLE, GTK_WIDGET_STATE,
    GTK_WIDGET_VISIBLE are deprecated and need replacing with
    gtk_widget_get_<function>
+   -Updated basics example to demonstrate scroll-wheel functions
 2011-07-15 (0.9.1.2)
    scrollwheel zooms
 2009-05-10 (0.9.1.1)

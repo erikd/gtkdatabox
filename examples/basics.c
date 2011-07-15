@@ -73,7 +73,7 @@ create_basics (void)
 
    label =
       gtk_label_new
-      ("\nThe code for this example demonstrates\n the simplest way to use a GtkDatabox widget.\n\nUsage:\nDraw a selection with the left button pressed,\nThan click into the selection.\nUse the right mouse button to zoom out.\nShift+ right mouse button zooms to default.");
+      ("\nThe code for this example demonstrates\n the simplet way to use a GtkDatabox widget.\n\nUsage:\nDraw a selection with the left button pressed,\nThan click into the selection.\nUse the right mouse button to zoom out.\nShift+ right mouse button zooms to default.\n\nMouse scroll-wheel: \n*Holding Ctrl+ scrollwheel zooms in/out. \n*Holding Shift+ scroll-wheel moves up/down. \n*Holding Alt+ scroll-wheel moves left/right in the plot.");
    gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 0);
    separator = gtk_hseparator_new ();
    gtk_box_pack_start (GTK_BOX (vbox), separator, FALSE, FALSE, 0);
