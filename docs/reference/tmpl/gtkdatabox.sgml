@@ -17,6 +17,9 @@ GtkDatabox
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT GtkDataboxPrivate ##### -->
 <para>
 
@@ -125,6 +128,7 @@ GtkDatabox
 
 </para>
 
+@void: 
 @Returns: 
 
 

@@ -1,0 +1,1529 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>GtkDatabox</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="GtkDatabox Reference Manual">
+<link rel="up" href="ch01.html" title="GtkDatabox">
+<link rel="prev" href="ch01.html" title="GtkDatabox">
+<link rel="next" href="gtkdatabox-gtkdatabox-graph.html" title="GtkDataboxGraph">
+<meta name="generator" content="GTK-Doc V1.14 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="ch01.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GtkDatabox Reference Manual</th>
+<td><a accesskey="n" href="gtkdatabox-gtkdatabox-graph.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gtkdatabox-gtkdatabox.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gtkdatabox-gtkdatabox.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gtkdatabox-gtkdatabox.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gtkdatabox-gtkdatabox.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                   | 
+                  <a href="#gtkdatabox-gtkdatabox.properties" class="shortcut">Properties</a>
+                   | 
+                  <a href="#gtkdatabox-gtkdatabox.signals" class="shortcut">Signals</a>
+</td></tr>
+</table>
+<div class="refentry" title="GtkDatabox">
+<a name="gtkdatabox-gtkdatabox"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gtkdatabox-gtkdatabox.top_of_page"></a>GtkDatabox</span></h2>
+<p>GtkDatabox — A GTK+ widget to display large amounts of numerical data quickly and easily.</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv" title="Synopsis">
+<a name="gtkdatabox-gtkdatabox.synopsis"></a><h2>Synopsis</h2>
+<a name="GtkDatabox"></a><pre class="synopsis">
+#include &lt;gtkdatabox.h&gt;
+
+                    <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDataboxPrivate" title="GtkDataboxPrivate">GtkDataboxPrivate</a>;
+                    <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox-struct" title="GtkDatabox">GtkDatabox</a>;
+<a href="/usr/share/gtk-doc/html/gtk/GtkWidget.html"><span class="returnvalue">GtkWidget</span></a> *         <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-new" title="gtk_databox_new ()">gtk_databox_new</a>                     (<em class="parameter"><code><span class="type">void</span></code></em>);
+<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-graph-add" title="gtk_databox_graph_add ()">gtk_databox_graph_add</a>               (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> *graph</code></em>);
+<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-graph-remove" title="gtk_databox_graph_remove ()">gtk_databox_graph_remove</a>            (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> *graph</code></em>);
+<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-graph-remove-all" title="gtk_databox_graph_remove_all ()">gtk_databox_graph_remove_all</a>        (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>);
+<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-auto-rescale" title="gtk_databox_auto_rescale ()">gtk_databox_auto_rescale</a>            (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> border</code></em>);
+<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-calculate-extrema" title="gtk_databox_calculate_extrema ()">gtk_databox_calculate_extrema</a>       (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *min_x</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *max_x</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *min_y</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *max_y</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-set-total-limits" title="gtk_databox_set_total_limits ()">gtk_databox_set_total_limits</a>        (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> left</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> right</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> top</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> bottom</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-set-visible-limits" title="gtk_databox_set_visible_limits ()">gtk_databox_set_visible_limits</a>      (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> left</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> right</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> top</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> bottom</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-get-total-limits" title="gtk_databox_get_total_limits ()">gtk_databox_get_total_limits</a>        (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *left</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *right</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *top</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *bottom</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-get-visible-limits" title="gtk_databox_get_visible_limits ()">gtk_databox_get_visible_limits</a>      (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *left</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *right</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *top</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *bottom</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-set-adjustment-x" title="gtk_databox_set_adjustment_x ()">gtk_databox_set_adjustment_x</a>        (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gtk/GtkAdjustment.html"><span class="type">GtkAdjustment</span></a> *adj</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-set-adjustment-y" title="gtk_databox_set_adjustment_y ()">gtk_databox_set_adjustment_y</a>        (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gtk/GtkAdjustment.html"><span class="type">GtkAdjustment</span></a> *adj</code></em>);
+<a href="/usr/share/gtk-doc/html/gtk/GtkAdjustment.html"><span class="returnvalue">GtkAdjustment</span></a> *     <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-get-adjustment-x" title="gtk_databox_get_adjustment_x ()">gtk_databox_get_adjustment_x</a>        (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>);
+<a href="/usr/share/gtk-doc/html/gtk/GtkAdjustment.html"><span class="returnvalue">GtkAdjustment</span></a> *     <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-get-adjustment-y" title="gtk_databox_get_adjustment_y ()">gtk_databox_get_adjustment_y</a>        (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-set-ruler-x" title="gtk_databox_set_ruler_x ()">gtk_databox_set_ruler_x</a>             (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-ruler.html#GtkDataboxRuler"><span class="type">GtkDataboxRuler</span></a> *ruler</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-set-ruler-y" title="gtk_databox_set_ruler_y ()">gtk_databox_set_ruler_y</a>             (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-ruler.html#GtkDataboxRuler"><span class="type">GtkDataboxRuler</span></a> *ruler</code></em>);
+<a class="link" href="gtkdatabox-gtkdatabox-ruler.html#GtkDataboxRuler"><span class="returnvalue">GtkDataboxRuler</span></a> *   <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-get-ruler-x" title="gtk_databox_get_ruler_x ()">gtk_databox_get_ruler_x</a>             (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>);
+<a class="link" href="gtkdatabox-gtkdatabox-ruler.html#GtkDataboxRuler"><span class="returnvalue">GtkDataboxRuler</span></a> *   <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-get-ruler-y" title="gtk_databox_get_ruler_y ()">gtk_databox_get_ruler_y</a>             (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-set-scale-type-x" title="gtk_databox_set_scale_type_x ()">gtk_databox_set_scale_type_x</a>        (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-scale.html#GtkDataboxScaleType" title="enum GtkDataboxScaleType"><span class="type">GtkDataboxScaleType</span></a> scale_type</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-set-scale-type-y" title="gtk_databox_set_scale_type_y ()">gtk_databox_set_scale_type_y</a>        (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-scale.html#GtkDataboxScaleType" title="enum GtkDataboxScaleType"><span class="type">GtkDataboxScaleType</span></a> scale_type</code></em>);
+<a class="link" href="gtkdatabox-gtkdatabox-scale.html#GtkDataboxScaleType" title="enum GtkDataboxScaleType"><span class="returnvalue">GtkDataboxScaleType</span></a>  <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-get-scale-type-x" title="gtk_databox_get_scale_type_x ()">gtk_databox_get_scale_type_x</a>       (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>);
+<a class="link" href="gtkdatabox-gtkdatabox-scale.html#GtkDataboxScaleType" title="enum GtkDataboxScaleType"><span class="returnvalue">GtkDataboxScaleType</span></a>  <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-get-scale-type-y" title="gtk_databox_get_scale_type_y ()">gtk_databox_get_scale_type_y</a>       (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-set-enable-selection" title="gtk_databox_set_enable_selection ()">gtk_databox_set_enable_selection</a>    (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> enable</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-set-enable-zoom" title="gtk_databox_set_enable_zoom ()">gtk_databox_set_enable_zoom</a>         (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> enable</code></em>);
+<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-get-enable-selection" title="gtk_databox_get_enable_selection ()">gtk_databox_get_enable_selection</a>    (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>);
+<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-get-enable-zoom" title="gtk_databox_get_enable_zoom ()">gtk_databox_get_enable_zoom</a>         (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-zoom-to-selection" title="gtk_databox_zoom_to_selection ()">gtk_databox_zoom_to_selection</a>       (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-zoom-out" title="gtk_databox_zoom_out ()">gtk_databox_zoom_out</a>                (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-zoom-home" title="gtk_databox_zoom_home ()">gtk_databox_zoom_home</a>               (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>);
+<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint16"><span class="returnvalue">gint16</span></a>              <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-value-to-pixel-x" title="gtk_databox_value_to_pixel_x ()">gtk_databox_value_to_pixel_x</a>        (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> value</code></em>);
+<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint16"><span class="returnvalue">gint16</span></a>              <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-value-to-pixel-y" title="gtk_databox_value_to_pixel_y ()">gtk_databox_value_to_pixel_y</a>        (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> value</code></em>);
+<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="returnvalue">gfloat</span></a>              <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-pixel-to-value-x" title="gtk_databox_pixel_to_value_x ()">gtk_databox_pixel_to_value_x</a>        (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint16"><span class="type">gint16</span></a> pixel</code></em>);
+<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="returnvalue">gfloat</span></a>              <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-pixel-to-value-y" title="gtk_databox_pixel_to_value_y ()">gtk_databox_pixel_to_value_y</a>        (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint16"><span class="type">gint16</span></a> pixel</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-values-to-pixels" title="gtk_databox_values_to_pixels ()">gtk_databox_values_to_pixels</a>        (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"><span class="type">guint</span></a> len</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *values_x</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *values_y</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gdk/gdk-Points-Rectangles-and-Regions.html#GdkPoint"><span class="type">GdkPoint</span></a> *pixels</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-create-box-with-scrollbars-and-rulers" title="gtk_databox_create_box_with_scrollbars_and_rulers ()">gtk_databox_create_box_with_scrollbars_and_rulers</a>
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/gtk/GtkWidget.html"><span class="type">GtkWidget</span></a> **p_box</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gtk/GtkWidget.html"><span class="type">GtkWidget</span></a> **p_table</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> scrollbar_x</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> scrollbar_y</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> ruler_x</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> ruler_y</code></em>);
+<a href="/usr/share/gtk-doc/html/gdk/gdk-Bitmaps-and-Pixmaps.html#GdkPixmap"><span class="returnvalue">GdkPixmap</span></a>*          <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-get-backing-pixmap" title="gtk_databox_get_backing_pixmap ()">gtk_databox_get_backing_pixmap</a>      (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>);
+</pre>
+</div>
+<div class="refsect1" title="Object Hierarchy">
+<a name="gtkdatabox-gtkdatabox.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  <a href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+   +----<a href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+         +----<a href="/usr/share/gtk-doc/html/gtk/GtkObject.html">GtkObject</a>
+               +----<a href="/usr/share/gtk-doc/html/gtk/GtkWidget.html">GtkWidget</a>
+                     +----GtkDatabox
+</pre>
+</div>
+<div class="refsect1" title="Implemented Interfaces">
+<a name="gtkdatabox-gtkdatabox.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
+<p>
+GtkDatabox implements
+ AtkImplementorIface and  <a href="/usr/share/gtk-doc/html/gtk/gtk-gtkbuildable.html#GtkBuildable">GtkBuildable</a>.</p>
+</div>
+<div class="refsect1" title="Properties">
+<a name="gtkdatabox-gtkdatabox.properties"></a><h2>Properties</h2>
+<pre class="synopsis">
+  "<a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox--adjustment-x" title='The "adjustment-x" property'>adjustment-x</a>"             <a href="/usr/share/gtk-doc/html/gtk/GtkAdjustment.html"><span class="type">GtkAdjustment</span></a>*        : Read / Write / Construct
+  "<a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox--adjustment-y" title='The "adjustment-y" property'>adjustment-y</a>"             <a href="/usr/share/gtk-doc/html/gtk/GtkAdjustment.html"><span class="type">GtkAdjustment</span></a>*        : Read / Write / Construct
+  "<a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox--enable-selection" title='The "enable-selection" property'>enable-selection</a>"         <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write / Construct
+  "<a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox--enable-zoom" title='The "enable-zoom" property'>enable-zoom</a>"              <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write / Construct
+  "<a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox--ruler-x" title='The "ruler-x" property'>ruler-x</a>"                  <a class="link" href="gtkdatabox-gtkdatabox-ruler.html#GtkDataboxRuler"><span class="type">GtkDataboxRuler</span></a>*      : Read / Write / Construct
+  "<a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox--ruler-y" title='The "ruler-y" property'>ruler-y</a>"                  <a class="link" href="gtkdatabox-gtkdatabox-ruler.html#GtkDataboxRuler"><span class="type">GtkDataboxRuler</span></a>*      : Read / Write / Construct
+  "<a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox--scale-type-x" title='The "scale-type-x" property'>scale-type-x</a>"             <a class="link" href="gtkdatabox-gtkdatabox-scale.html#GtkDataboxScaleType" title="enum GtkDataboxScaleType"><span class="type">GtkDataboxScaleType</span></a>   : Read / Write / Construct
+  "<a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox--scale-type-y" title='The "scale-type-y" property'>scale-type-y</a>"             <a class="link" href="gtkdatabox-gtkdatabox-scale.html#GtkDataboxScaleType" title="enum GtkDataboxScaleType"><span class="type">GtkDataboxScaleType</span></a>   : Read / Write / Construct
+</pre>
+</div>
+<div class="refsect1" title="Signals">
+<a name="gtkdatabox-gtkdatabox.signals"></a><h2>Signals</h2>
+<pre class="synopsis">
+  "<a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox-selection-canceled" title='The "selection-canceled" signal'>selection-canceled</a>"                             : Run First
+  "<a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox-selection-changed" title='The "selection-changed" signal'>selection-changed</a>"                              : Run First
+  "<a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox-selection-finalized" title='The "selection-finalized" signal'>selection-finalized</a>"                            : Run First
+  "<a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox-selection-started" title='The "selection-started" signal'>selection-started</a>"                              : Run First
+  "<a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox-zoomed" title='The "zoomed" signal'>zoomed</a>"                                         : Run First
+</pre>
+</div>
+<div class="refsect1" title="Description">
+<a name="gtkdatabox-gtkdatabox.description"></a><h2>Description</h2>
+<p>
+<a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> is a widget for the GTK+ library designed to display 
+large amounts of numerical data quickly and easily. It allows 
+for one or more data sets of thousands of data points (X and Y coordinates) 
+to be displayed and updated in split seconds. 
+</p>
+<p>
+It offers the ability to zoom into and out of the data, and to navigate 
+through your data by scrolling. 
+</p>
+<p>
+In addition to rulers and a simple 
+coordinate cross, it allows you to add one (or even more) configurable grids 
+like on an oscilloscope. 
+</p>
+<p>
+Data may be presented as dots, lines connecting the data, 
+or vertical bars. The widget allows you to easily transform pixel 
+coordinates into data coordinates, thus allowing you to easily create 
+powerful applications for data analysis.
+</p>
+</div>
+<div class="refsect1" title="Details">
+<a name="gtkdatabox-gtkdatabox.details"></a><h2>Details</h2>
+<div class="refsect2" title="GtkDataboxPrivate">
+<a name="GtkDataboxPrivate"></a><h3>GtkDataboxPrivate</h3>
+<pre class="programlisting">typedef struct _GtkDataboxPrivate GtkDataboxPrivate;</pre>
+<p>
+A private data structure used by the <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a>. It shields all internal things
+from developers who are just using the widget.
+</p>
+</div>
+<hr>
+<div class="refsect2" title="GtkDatabox">
+<a name="GtkDatabox-struct"></a><h3>GtkDatabox</h3>
+<pre class="programlisting">typedef struct _GtkDatabox GtkDatabox;</pre>
+<p>
+A GTK+ widget to display large amounts of numerical data quickly and easily. 
+The numerical data is represented/displayed by <a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> objects, e.g.
+<a class="link" href="gtkdatabox-gtkdatabox-points.html#GtkDataboxPoints"><span class="type">GtkDataboxPoints</span></a>.
+</p>
+<p>
+Implemented by <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">_GtkDatabox</span></a>;
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_new ()">
+<a name="gtk-databox-new"></a><h3>gtk_databox_new ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/gtk/GtkWidget.html"><span class="returnvalue">GtkWidget</span></a> *         gtk_databox_new                     (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>
+Creates a new <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> The new <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget.
+
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_graph_add ()">
+<a name="gtk-databox-graph-add"></a><h3>gtk_databox_graph_add ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                gtk_databox_graph_add               (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> *graph</code></em>);</pre>
+<p>
+Adds the <em class="parameter"><code>graph</code></em> to the <em class="parameter"><code>box</code></em>. The next time the <em class="parameter"><code>box</code></em> is re-drawn, the graph will be shown.
+</p>
+<p>
+It might be becessary to modify the total_limits in order for the graph to be displayed properly (see <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-set-total-limits" title="gtk_databox_set_total_limits ()"><code class="function">gtk_databox_set_total_limits()</code></a>).
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em> :</span></p></td>
+<td>A graph, e.g. a <a class="link" href="gtkdatabox-gtkdatabox-points.html#GtkDataboxPoints"><span class="type">GtkDataboxPoints</span></a> or a <a class="link" href="gtkdatabox-gtkdatabox-grid.html#GtkDataboxGrid"><span class="type">GtkDataboxGrid</span></a> object
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> 0 on success, -1 otherwise
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_graph_remove ()">
+<a name="gtk-databox-graph-remove"></a><h3>gtk_databox_graph_remove ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                gtk_databox_graph_remove            (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> *graph</code></em>);</pre>
+<p>
+Removes the <em class="parameter"><code>graph</code></em> from the <em class="parameter"><code>box</code></em> once. The next time the <em class="parameter"><code>box</code></em> is re-drawn, the graph will not be shown (unless it was added more 
+than once).
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em> :</span></p></td>
+<td>A graph, e.g. a <a class="link" href="gtkdatabox-gtkdatabox-points.html#GtkDataboxPoints"><span class="type">GtkDataboxPoints</span></a> or a <a class="link" href="gtkdatabox-gtkdatabox-grid.html#GtkDataboxGrid"><span class="type">GtkDataboxGrid</span></a> object
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> 0 on success, -1 otherwise
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_graph_remove_all ()">
+<a name="gtk-databox-graph-remove-all"></a><h3>gtk_databox_graph_remove_all ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                gtk_databox_graph_remove_all        (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>);</pre>
+<p>
+Removes all graphs from the <em class="parameter"><code>box</code></em>. The next time the <em class="parameter"><code>box</code></em> is re-drawn, no graphs will be shown.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> 0 on success, -1 otherwise
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_auto_rescale ()">
+<a name="gtk-databox-auto-rescale"></a><h3>gtk_databox_auto_rescale ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                gtk_databox_auto_rescale            (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> border</code></em>);</pre>
+<p>
+This function is similar to <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-set-total-limits" title="gtk_databox_set_total_limits ()"><code class="function">gtk_databox_set_total_limits()</code></a>. It sets the total limits 
+to match the data extrema (see <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-calculate-extrema" title="gtk_databox_calculate_extrema ()"><code class="function">gtk_databox_calculate_extrema()</code></a>). If you do not like data pixels exactly at the 
+widget's border, you can add modify the limits using the border parameter: The limits are extended by  
+<em class="parameter"><code>border</code></em>*(max-min) if max!=min. If max==min, they are extended by <em class="parameter"><code>border</code></em>*max (otherwise the data could not be 
+scaled to the pixel realm).
+</p>
+<p>
+After calling this function, x values grow from left to right, y values grow from bottom to top.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>border</code></em> :</span></p></td>
+<td>Relative border width (e.g. 0.1 means that the border on each side is 10% of the data area).
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> 0 on success,
+         -1 if <em class="parameter"><code>box</code></em> is no GtkDatabox widget,
+         -2 if no datasets are available
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_calculate_extrema ()">
+<a name="gtk-databox-calculate-extrema"></a><h3>gtk_databox_calculate_extrema ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                gtk_databox_calculate_extrema       (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *min_x</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *max_x</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *min_y</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *max_y</code></em>);</pre>
+<p>
+Determines the minimum and maximum x and y values of all 
+<a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> objects which have been added to the <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget via <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-graph-add" title="gtk_databox_graph_add ()"><code class="function">gtk_databox_graph_add()</code></a>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>min_x</code></em> :</span></p></td>
+<td>Will be filled with the lowest x value of all datasets
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>max_x</code></em> :</span></p></td>
+<td>Will be filled with the highest x value of all datasets
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>min_y</code></em> :</span></p></td>
+<td>Will be filled with the lowest y value of all datasets
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>max_y</code></em> :</span></p></td>
+<td>Will be filled with the highest y value of all datasets
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> 0 on success,
+         -1 if <em class="parameter"><code>box</code></em> is no GtkDatabox widget,
+         -2 if no datasets are available
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_set_total_limits ()">
+<a name="gtk-databox-set-total-limits"></a><h3>gtk_databox_set_total_limits ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                gtk_databox_set_total_limits        (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> left</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> right</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> top</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> bottom</code></em>);</pre>
+<p>
+This function is used to set the limits of the total 
+display area of <em class="parameter"><code>box</code></em>.
+This function can be used to invert the orientation of the displayed graphs, 
+e.g. <em class="parameter"><code>top</code></em>=-1000 and  <em class="parameter"><code>bottom</code></em>=0.
+</p>
+<p>
+Side effect: The <em class="parameter"><code>box</code></em> also internally calls <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-set-visible-limits" title="gtk_databox_set_visible_limits ()"><code class="function">gtk_databox_set_visible_limits()</code></a> with the same values.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>left</code></em> :</span></p></td>
+<td>Left total limit
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>right</code></em> :</span></p></td>
+<td>Right total limit
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>top</code></em> :</span></p></td>
+<td>Top total limit
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>bottom</code></em> :</span></p></td>
+<td>Bottom total limit
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_set_visible_limits ()">
+<a name="gtk-databox-set-visible-limits"></a><h3>gtk_databox_set_visible_limits ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                gtk_databox_set_visible_limits      (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> left</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> right</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> top</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> bottom</code></em>);</pre>
+<p>
+This function is used to set the limits of the visible 
+display area of <em class="parameter"><code>box</code></em>. The visible display area can be section of the total 
+area, i.e. the <em class="parameter"><code>box</code></em> zooms in, showing only a part of the complete picture.
+</p>
+<p>
+The orientation of the values have to be the same as in <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-set-total-limits" title="gtk_databox_set_total_limits ()"><code class="function">gtk_databox_set_total_limits()</code></a> and 
+the visible limits have to be within the total limits. The 
+values will not be used otherwise.
+</p>
+<p>
+Side effect: The <em class="parameter"><code>box</code></em> emits <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox-zoomed" title='The "zoomed" signal'><span class="type">"zoomed"</span></a>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>left</code></em> :</span></p></td>
+<td>Left visible limit
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>right</code></em> :</span></p></td>
+<td>Right visible limit
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>top</code></em> :</span></p></td>
+<td>Top visible limit
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>bottom</code></em> :</span></p></td>
+<td>Bottom visible limit
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_get_total_limits ()">
+<a name="gtk-databox-get-total-limits"></a><h3>gtk_databox_get_total_limits ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                gtk_databox_get_total_limits        (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *left</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *right</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *top</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *bottom</code></em>);</pre>
+<p>
+Gives the total limits (as set by <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-auto-rescale" title="gtk_databox_auto_rescale ()"><code class="function">gtk_databox_auto_rescale()</code></a> or <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-set-total-limits" title="gtk_databox_set_total_limits ()"><code class="function">gtk_databox_set_total_limits()</code></a>).
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>left</code></em> :</span></p></td>
+<td>Space for total left value or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><span class="type">NULL</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>right</code></em> :</span></p></td>
+<td>Space for total right value or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><span class="type">NULL</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>top</code></em> :</span></p></td>
+<td>Space for total top value or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><span class="type">NULL</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>bottom</code></em> :</span></p></td>
+<td>Space for total bottom value or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><span class="type">NULL</span></a>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_get_visible_limits ()">
+<a name="gtk-databox-get-visible-limits"></a><h3>gtk_databox_get_visible_limits ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                gtk_databox_get_visible_limits      (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *left</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *right</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *top</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *bottom</code></em>);</pre>
+<p>
+Gives the current visible limits. These differ from those given by <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-get-total-limits" title="gtk_databox_get_total_limits ()"><code class="function">gtk_databox_get_total_limits()</code></a> if 
+you zoomed into the data for instance by <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-zoom-to-selection" title="gtk_databox_zoom_to_selection ()"><code class="function">gtk_databox_zoom_to_selection()</code></a> or <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-set-visible-limits" title="gtk_databox_set_visible_limits ()"><code class="function">gtk_databox_set_visible_limits()</code></a> (these values
+can be changed by scrolling, of course).
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>left</code></em> :</span></p></td>
+<td>Space for visible left value or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><span class="type">NULL</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>right</code></em> :</span></p></td>
+<td>Space for visible right value or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><span class="type">NULL</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>top</code></em> :</span></p></td>
+<td>Space for visible top value or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><span class="type">NULL</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>bottom</code></em> :</span></p></td>
+<td>Space for visible bottom value or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><span class="type">NULL</span></a>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_set_adjustment_x ()">
+<a name="gtk-databox-set-adjustment-x"></a><h3>gtk_databox_set_adjustment_x ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                gtk_databox_set_adjustment_x        (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gtk/GtkAdjustment.html"><span class="type">GtkAdjustment</span></a> *adj</code></em>);</pre>
+<p>
+Setter function for the <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox--adjustment-x" title='The "adjustment-x" property'><span class="type">"adjustment-x"</span></a> property. Normally, it should not be 
+required to use this function, see property documentation.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>adj</code></em> :</span></p></td>
+<td>A <a href="/usr/share/gtk-doc/html/gtk/GtkAdjustment.html"><span class="type">GtkAdjustment</span></a> object
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_set_adjustment_y ()">
+<a name="gtk-databox-set-adjustment-y"></a><h3>gtk_databox_set_adjustment_y ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                gtk_databox_set_adjustment_y        (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gtk/GtkAdjustment.html"><span class="type">GtkAdjustment</span></a> *adj</code></em>);</pre>
+<p>
+Setter function for the <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox--adjustment-y" title='The "adjustment-y" property'><span class="type">"adjustment-y"</span></a> property. Normally, it should not be 
+required to use this function, see property documentation.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>adj</code></em> :</span></p></td>
+<td>A <a href="/usr/share/gtk-doc/html/gtk/GtkAdjustment.html"><span class="type">GtkAdjustment</span></a> object
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_get_adjustment_x ()">
+<a name="gtk-databox-get-adjustment-x"></a><h3>gtk_databox_get_adjustment_x ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/gtk/GtkAdjustment.html"><span class="returnvalue">GtkAdjustment</span></a> *     gtk_databox_get_adjustment_x        (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>);</pre>
+<p>
+Getter function for the <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox--adjustment-x" title='The "adjustment-x" property'><span class="type">"adjustment-x"</span></a> property.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> The <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox--adjustment-x" title='The "adjustment-x" property'><span class="type">"adjustment-x"</span></a> property value.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_get_adjustment_y ()">
+<a name="gtk-databox-get-adjustment-y"></a><h3>gtk_databox_get_adjustment_y ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/gtk/GtkAdjustment.html"><span class="returnvalue">GtkAdjustment</span></a> *     gtk_databox_get_adjustment_y        (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>);</pre>
+<p>
+Getter function for the <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox--adjustment-y" title='The "adjustment-y" property'><span class="type">"adjustment-y"</span></a> property.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> The <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox--adjustment-y" title='The "adjustment-y" property'><span class="type">"adjustment-y"</span></a> property value.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_set_ruler_x ()">
+<a name="gtk-databox-set-ruler-x"></a><h3>gtk_databox_set_ruler_x ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                gtk_databox_set_ruler_x             (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-ruler.html#GtkDataboxRuler"><span class="type">GtkDataboxRuler</span></a> *ruler</code></em>);</pre>
+<p>
+Setter function for the <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox--ruler-x" title='The "ruler-x" property'><span class="type">"ruler-x"</span></a> property.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>ruler</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox-ruler.html#GtkDataboxRuler"><span class="type">GtkDataboxRuler</span></a> object
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_set_ruler_y ()">
+<a name="gtk-databox-set-ruler-y"></a><h3>gtk_databox_set_ruler_y ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                gtk_databox_set_ruler_y             (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-ruler.html#GtkDataboxRuler"><span class="type">GtkDataboxRuler</span></a> *ruler</code></em>);</pre>
+<p>
+Setter function for the <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox--ruler-y" title='The "ruler-y" property'><span class="type">"ruler-y"</span></a> property.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>ruler</code></em> :</span></p></td>
+<td>An <a class="link" href="gtkdatabox-gtkdatabox-ruler.html#GtkDataboxRuler"><span class="type">GtkDataboxRuler</span></a> object
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_get_ruler_x ()">
+<a name="gtk-databox-get-ruler-x"></a><h3>gtk_databox_get_ruler_x ()</h3>
+<pre class="programlisting"><a class="link" href="gtkdatabox-gtkdatabox-ruler.html#GtkDataboxRuler"><span class="returnvalue">GtkDataboxRuler</span></a> *   gtk_databox_get_ruler_x             (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>);</pre>
+<p>
+Getter function for the <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox--ruler-x" title='The "ruler-x" property'><span class="type">"ruler-x"</span></a> property.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> The <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox--ruler-x" title='The "ruler-x" property'><span class="type">"ruler-x"</span></a> property value.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_get_ruler_y ()">
+<a name="gtk-databox-get-ruler-y"></a><h3>gtk_databox_get_ruler_y ()</h3>
+<pre class="programlisting"><a class="link" href="gtkdatabox-gtkdatabox-ruler.html#GtkDataboxRuler"><span class="returnvalue">GtkDataboxRuler</span></a> *   gtk_databox_get_ruler_y             (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>);</pre>
+<p>
+Getter function for the <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox--ruler-y" title='The "ruler-y" property'><span class="type">"ruler-y"</span></a> property.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> The <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox--ruler-y" title='The "ruler-y" property'><span class="type">"ruler-y"</span></a> property value.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_set_scale_type_x ()">
+<a name="gtk-databox-set-scale-type-x"></a><h3>gtk_databox_set_scale_type_x ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                gtk_databox_set_scale_type_x        (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-scale.html#GtkDataboxScaleType" title="enum GtkDataboxScaleType"><span class="type">GtkDataboxScaleType</span></a> scale_type</code></em>);</pre>
+<p>
+Setter function for the <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox--scale-type-x" title='The "scale-type-x" property'><span class="type">"scale-type-x"</span></a> property.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>scale_type</code></em> :</span></p></td>
+<td>An <a class="link" href="gtkdatabox-gtkdatabox-scale.html#GtkDataboxScaleType" title="enum GtkDataboxScaleType"><span class="type">GtkDataboxScaleType</span></a> (linear or logarithmic)
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_set_scale_type_y ()">
+<a name="gtk-databox-set-scale-type-y"></a><h3>gtk_databox_set_scale_type_y ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                gtk_databox_set_scale_type_y        (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-scale.html#GtkDataboxScaleType" title="enum GtkDataboxScaleType"><span class="type">GtkDataboxScaleType</span></a> scale_type</code></em>);</pre>
+<p>
+Setter function for the <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox--scale-type-y" title='The "scale-type-y" property'><span class="type">"scale-type-y"</span></a> property.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>scale_type</code></em> :</span></p></td>
+<td>An <a class="link" href="gtkdatabox-gtkdatabox-scale.html#GtkDataboxScaleType" title="enum GtkDataboxScaleType"><span class="type">GtkDataboxScaleType</span></a> (linear or logarithmic)
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_get_scale_type_x ()">
+<a name="gtk-databox-get-scale-type-x"></a><h3>gtk_databox_get_scale_type_x ()</h3>
+<pre class="programlisting"><a class="link" href="gtkdatabox-gtkdatabox-scale.html#GtkDataboxScaleType" title="enum GtkDataboxScaleType"><span class="returnvalue">GtkDataboxScaleType</span></a>  gtk_databox_get_scale_type_x       (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>);</pre>
+<p>
+Getter function for the <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox--scale-type-x" title='The "scale-type-x" property'><span class="type">"scale-type-x"</span></a> property.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> The <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox--scale-type-x" title='The "scale-type-x" property'><span class="type">"scale-type-x"</span></a> property value.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_get_scale_type_y ()">
+<a name="gtk-databox-get-scale-type-y"></a><h3>gtk_databox_get_scale_type_y ()</h3>
+<pre class="programlisting"><a class="link" href="gtkdatabox-gtkdatabox-scale.html#GtkDataboxScaleType" title="enum GtkDataboxScaleType"><span class="returnvalue">GtkDataboxScaleType</span></a>  gtk_databox_get_scale_type_y       (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>);</pre>
+<p>
+Getter function for the <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox--scale-type-y" title='The "scale-type-y" property'><span class="type">"scale-type-y"</span></a> property.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> The <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox--scale-type-y" title='The "scale-type-y" property'><span class="type">"scale-type-y"</span></a> property value.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_set_enable_selection ()">
+<a name="gtk-databox-set-enable-selection"></a><h3>gtk_databox_set_enable_selection ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                gtk_databox_set_enable_selection    (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> enable</code></em>);</pre>
+<p>
+Setter function for the <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox--enable-selection" title='The "enable-selection" property'><span class="type">"enable-selection"</span></a> property.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>enable</code></em> :</span></p></td>
+<td>Whether selection via mouse is enabled or not.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_set_enable_zoom ()">
+<a name="gtk-databox-set-enable-zoom"></a><h3>gtk_databox_set_enable_zoom ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                gtk_databox_set_enable_zoom         (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> enable</code></em>);</pre>
+<p>
+Setter function for the <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox--enable-zoom" title='The "enable-zoom" property'><span class="type">"enable-zoom"</span></a> property.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>enable</code></em> :</span></p></td>
+<td>Whether zoom via mouse is enabled or not.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_get_enable_selection ()">
+<a name="gtk-databox-get-enable-selection"></a><h3>gtk_databox_get_enable_selection ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gtk_databox_get_enable_selection    (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>);</pre>
+<p>
+Getter function for the <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox--enable-selection" title='The "enable-selection" property'><span class="type">"enable-selection"</span></a> property.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> The <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox--enable-selection" title='The "enable-selection" property'><span class="type">"enable-selection"</span></a> property value.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_get_enable_zoom ()">
+<a name="gtk-databox-get-enable-zoom"></a><h3>gtk_databox_get_enable_zoom ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gtk_databox_get_enable_zoom         (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>);</pre>
+<p>
+Getter function for the <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox--enable-zoom" title='The "enable-zoom" property'><span class="type">"enable-zoom"</span></a> property.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> The <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox--enable-zoom" title='The "enable-zoom" property'><span class="type">"enable-zoom"</span></a> property value.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_zoom_to_selection ()">
+<a name="gtk-databox-zoom-to-selection"></a><h3>gtk_databox_zoom_to_selection ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                gtk_databox_zoom_to_selection       (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>);</pre>
+<p>
+This is equivalent to left-clicking into the selected area.
+</p>
+<p>
+This function works, if the attribute <span class="type">enable-zoom</span> is set to <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"><span class="type">TRUE</span></a>. Calling the function 
+then zooms to the area selected with the mouse. 
+</p>
+<p>
+Side effect: The <em class="parameter"><code>box</code></em> emits <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox-zoomed" title='The "zoomed" signal'><span class="type">"zoomed"</span></a>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_zoom_out ()">
+<a name="gtk-databox-zoom-out"></a><h3>gtk_databox_zoom_out ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                gtk_databox_zoom_out                (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>);</pre>
+<p>
+This is equivalent to right-clicking into the <em class="parameter"><code>box</code></em>.
+</p>
+<p>
+This function works, if the attribute <span class="type">enable-zoom</span> is set to <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"><span class="type">TRUE</span></a>. Calling the function 
+then zooms out by a factor of 2 in both dimensions (the maximum is defined by the total 
+limits, see <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-set-total-limits" title="gtk_databox_set_total_limits ()"><code class="function">gtk_databox_set_total_limits()</code></a>).
+</p>
+<p>
+Side effect: The <em class="parameter"><code>box</code></em> emits <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox-zoomed" title='The "zoomed" signal'><span class="type">"zoomed"</span></a>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_zoom_home ()">
+<a name="gtk-databox-zoom-home"></a><h3>gtk_databox_zoom_home ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                gtk_databox_zoom_home               (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>);</pre>
+<p>
+This is equivalent to shift right-clicking into the <em class="parameter"><code>box</code></em>.
+</p>
+<p>
+This function works, if the attribute <span class="type">enable-zoom</span> is set to <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"><span class="type">TRUE</span></a>. It is equivalent to 
+calling the <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-set-visible-limits" title="gtk_databox_set_visible_limits ()"><code class="function">gtk_databox_set_visible_limits()</code></a> with the total limits.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_value_to_pixel_x ()">
+<a name="gtk-databox-value-to-pixel-x"></a><h3>gtk_databox_value_to_pixel_x ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint16"><span class="returnvalue">gint16</span></a>              gtk_databox_value_to_pixel_x        (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> value</code></em>);</pre>
+<p>
+Calculates the horizontal pixel coordinate which represents the x <em class="parameter"><code>value</code></em>.
+Pixel coordinates are relative to the top-left corner of the <em class="parameter"><code>box</code></em> which is equivalent to (0,0).
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
+<td>An x value
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> Pixel coordinate
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_value_to_pixel_y ()">
+<a name="gtk-databox-value-to-pixel-y"></a><h3>gtk_databox_value_to_pixel_y ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint16"><span class="returnvalue">gint16</span></a>              gtk_databox_value_to_pixel_y        (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> value</code></em>);</pre>
+<p>
+Calculates the vertical pixel coordinate which represents the y <em class="parameter"><code>value</code></em>.
+Pixel coordinates are relative to the top-left corner of the <em class="parameter"><code>box</code></em> which is equivalent to (0,0).
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
+<td>A y value
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> Pixel coordinate
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_pixel_to_value_x ()">
+<a name="gtk-databox-pixel-to-value-x"></a><h3>gtk_databox_pixel_to_value_x ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="returnvalue">gfloat</span></a>              gtk_databox_pixel_to_value_x        (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint16"><span class="type">gint16</span></a> pixel</code></em>);</pre>
+<p>
+Calculates the x value which is represented by the horizontal <em class="parameter"><code>pixel</code></em> coordinate.
+Pixel coordinates are relative to the top-left corner of the <em class="parameter"><code>box</code></em> which is equivalent to (0,0).
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>pixel</code></em> :</span></p></td>
+<td>A horizontal pixel coordinate
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> x value
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_pixel_to_value_y ()">
+<a name="gtk-databox-pixel-to-value-y"></a><h3>gtk_databox_pixel_to_value_y ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="returnvalue">gfloat</span></a>              gtk_databox_pixel_to_value_y        (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint16"><span class="type">gint16</span></a> pixel</code></em>);</pre>
+<p>
+Calculates the y value which is represented by the vertical <em class="parameter"><code>pixel</code></em> coordinate.
+Pixel coordinates are relative to the top-left corner of the <em class="parameter"><code>box</code></em> which is equivalent to (0,0).
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>pixel</code></em> :</span></p></td>
+<td>A vertical pixel coordinate
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> y value
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_values_to_pixels ()">
+<a name="gtk-databox-values-to-pixels"></a><h3>gtk_databox_values_to_pixels ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                gtk_databox_values_to_pixels        (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"><span class="type">guint</span></a> len</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *values_x</code></em>,
+                                                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *values_y</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gdk/gdk-Points-Rectangles-and-Regions.html#GdkPoint"><span class="type">GdkPoint</span></a> *pixels</code></em>);</pre>
+<p>
+Calculates the pixel equivalents of the given X/Y values and stores them in the <em class="parameter"><code>pixels</code></em> array.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>len</code></em> :</span></p></td>
+<td>Number of values/pixels
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>values_x</code></em> :</span></p></td>
+<td>Array of X values (length &gt;= len)
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>values_y</code></em> :</span></p></td>
+<td>Array of Y values (length &gt;= len)
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>pixels</code></em> :</span></p></td>
+<td>Array of pixel coordinates (length &gt;= len)
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_create_box_with_scrollbars_and_rulers ()">
+<a name="gtk-databox-create-box-with-scrollbars-and-rulers"></a><h3>gtk_databox_create_box_with_scrollbars_and_rulers ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                gtk_databox_create_box_with_scrollbars_and_rulers
+                                                        (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/gtk/GtkWidget.html"><span class="type">GtkWidget</span></a> **p_box</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gtk/GtkWidget.html"><span class="type">GtkWidget</span></a> **p_table</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> scrollbar_x</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> scrollbar_y</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> ruler_x</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> ruler_y</code></em>);</pre>
+<p>
+This is a convenience function which creates a <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget in a 
+GtkTable widget optionally accompanied by scrollbars and rulers. You only 
+have to fill in the data (<a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-graph-add" title="gtk_databox_graph_add ()"><code class="function">gtk_databox_graph_add()</code></a>) and adjust the limits
+(<a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-set-total-limits" title="gtk_databox_set_total_limits ()"><code class="function">gtk_databox_set_total_limits()</code></a> or <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-auto-rescale" title="gtk_databox_auto_rescale ()"><code class="function">gtk_databox_auto_rescale()</code></a>).
+</p>
+<p>
+<em class="parameter"><code>see_also</code></em>: <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-new" title="gtk_databox_new ()"><code class="function">gtk_databox_new()</code></a>, <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-set-adjustment-x" title="gtk_databox_set_adjustment_x ()"><code class="function">gtk_databox_set_adjustment_x()</code></a>, <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-set-adjustment-y" title="gtk_databox_set_adjustment_y ()"><code class="function">gtk_databox_set_adjustment_y()</code></a>, <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-set-ruler-x" title="gtk_databox_set_ruler_x ()"><code class="function">gtk_databox_set_ruler_x()</code></a>, <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-set-ruler-y" title="gtk_databox_set_ruler_y ()"><code class="function">gtk_databox_set_ruler_y()</code></a>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>p_box</code></em> :</span></p></td>
+<td>Will contain a pointer to a <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>p_table</code></em> :</span></p></td>
+<td>Will contain a pointer to a <a href="/usr/share/gtk-doc/html/gtk/GtkTable.html"><span class="type">GtkTable</span></a> widget
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>scrollbar_x</code></em> :</span></p></td>
+<td>Whether to attach a horizontal scrollbar
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>scrollbar_y</code></em> :</span></p></td>
+<td>Whether to attach a vertical scrollbar
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>ruler_x</code></em> :</span></p></td>
+<td>Whether to attach a horizontal ruler
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>ruler_y</code></em> :</span></p></td>
+<td>Whether to attach a vertical ruler
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_get_backing_pixmap ()">
+<a name="gtk-databox-get-backing-pixmap"></a><h3>gtk_databox_get_backing_pixmap ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/gdk/gdk-Bitmaps-and-Pixmaps.html#GdkPixmap"><span class="returnvalue">GdkPixmap</span></a>*          gtk_databox_get_backing_pixmap      (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>);</pre>
+<p>
+This function returns the pixmap which is used by <em class="parameter"><code>box</code></em> and its <a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> objects 
+for drawing operations before copying the result to the screen.
+</p>
+<p>
+The function is typically called by the <a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> objects.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> Backing pixmap
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsect1" title="Property Details">
+<a name="gtkdatabox-gtkdatabox.property-details"></a><h2>Property Details</h2>
+<div class="refsect2" title='The "adjustment-x" property'>
+<a name="GtkDatabox--adjustment-x"></a><h3>The <code class="literal">"adjustment-x"</code> property</h3>
+<pre class="programlisting">  "adjustment-x"             <a href="/usr/share/gtk-doc/html/gtk/GtkAdjustment.html"><span class="type">GtkAdjustment</span></a>*        : Read / Write / Construct</pre>
+<p>GtkAdjustment for horizontal scrolling.</p>
+</div>
+<hr>
+<div class="refsect2" title='The "adjustment-y" property'>
+<a name="GtkDatabox--adjustment-y"></a><h3>The <code class="literal">"adjustment-y"</code> property</h3>
+<pre class="programlisting">  "adjustment-y"             <a href="/usr/share/gtk-doc/html/gtk/GtkAdjustment.html"><span class="type">GtkAdjustment</span></a>*        : Read / Write / Construct</pre>
+<p>GtkAdjustment for vertical scrolling.</p>
+</div>
+<hr>
+<div class="refsect2" title='The "enable-selection" property'>
+<a name="GtkDatabox--enable-selection"></a><h3>The <code class="literal">"enable-selection"</code> property</h3>
+<pre class="programlisting">  "enable-selection"         <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write / Construct</pre>
+<p>
+Defines whether the user can select
+rectangular areas with the mouse (<a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"><span class="type">TRUE</span></a>) or not (<a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"><span class="type">FALSE</span></a>).
+</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" title='The "enable-zoom" property'>
+<a name="GtkDatabox--enable-zoom"></a><h3>The <code class="literal">"enable-zoom"</code> property</h3>
+<pre class="programlisting">  "enable-zoom"              <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write / Construct</pre>
+<p>
+Defines whether the user can use the mouse to zoom in or out (<a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"><span class="type">TRUE</span></a>) or not (<a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"><span class="type">FALSE</span></a>).
+</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" title='The "ruler-x" property'>
+<a name="GtkDatabox--ruler-x"></a><h3>The <code class="literal">"ruler-x"</code> property</h3>
+<pre class="programlisting">  "ruler-x"                  <a class="link" href="gtkdatabox-gtkdatabox-ruler.html#GtkDataboxRuler"><span class="type">GtkDataboxRuler</span></a>*      : Read / Write / Construct</pre>
+<p>A horizontal GtkDataboxRuler or NULL.</p>
+</div>
+<hr>
+<div class="refsect2" title='The "ruler-y" property'>
+<a name="GtkDatabox--ruler-y"></a><h3>The <code class="literal">"ruler-y"</code> property</h3>
+<pre class="programlisting">  "ruler-y"                  <a class="link" href="gtkdatabox-gtkdatabox-ruler.html#GtkDataboxRuler"><span class="type">GtkDataboxRuler</span></a>*      : Read / Write / Construct</pre>
+<p>A vertical GtkDataboxRuler or NULL.</p>
+</div>
+<hr>
+<div class="refsect2" title='The "scale-type-x" property'>
+<a name="GtkDatabox--scale-type-x"></a><h3>The <code class="literal">"scale-type-x"</code> property</h3>
+<pre class="programlisting">  "scale-type-x"             <a class="link" href="gtkdatabox-gtkdatabox-scale.html#GtkDataboxScaleType" title="enum GtkDataboxScaleType"><span class="type">GtkDataboxScaleType</span></a>   : Read / Write / Construct</pre>
+<p>Horizontal scale type (linear or logarithmic).</p>
+<p>Default value: GTK_DATABOX_SCALE_LINEAR</p>
+</div>
+<hr>
+<div class="refsect2" title='The "scale-type-y" property'>
+<a name="GtkDatabox--scale-type-y"></a><h3>The <code class="literal">"scale-type-y"</code> property</h3>
+<pre class="programlisting">  "scale-type-y"             <a class="link" href="gtkdatabox-gtkdatabox-scale.html#GtkDataboxScaleType" title="enum GtkDataboxScaleType"><span class="type">GtkDataboxScaleType</span></a>   : Read / Write / Construct</pre>
+<p>Vertical scale type (linear or logarithmic).</p>
+<p>Default value: GTK_DATABOX_SCALE_LINEAR</p>
+</div>
+</div>
+<div class="refsect1" title="Signal Details">
+<a name="gtkdatabox-gtkdatabox.signal-details"></a><h2>Signal Details</h2>
+<div class="refsect2" title='The "selection-canceled" signal'>
+<a name="GtkDatabox-selection-canceled"></a><h3>The <code class="literal">"selection-canceled"</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box,
+                                                        <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>    user_data)      : Run First</pre>
+<p>
+This signal is emitted after a right click outside
+a selection rectangle.
+</p>
+<p>
+</p>
+@:<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>The <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget which zoomed in or out.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title='The "selection-changed" signal'>
+<a name="GtkDatabox-selection-changed"></a><h3>The <code class="literal">"selection-changed"</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box,
+                                                        <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>    selection_values,
+                                                        <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>    user_data)             : Run First</pre>
+<p>
+This signal is emitted when the mouse is moved 
+with the left button pressed (and the <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox--enable-selection" title='The "enable-selection" property'><span class="type">"enable-selection"</span></a> property 
+is set). The corners of the selection rectangle are stored in <em class="parameter"><code>selection_values</code></em>.
+</p>
+<p>
+</p>
+@:
+@:<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>The <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget in which the selection was changed.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>selection_values</code></em> :</span></p></td>
+<td>The corners of the selection rectangle.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title='The "selection-finalized" signal'>
+<a name="GtkDatabox-selection-finalized"></a><h3>The <code class="literal">"selection-finalized"</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box,
+                                                        <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>    selection_values,
+                                                        <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>    user_data)             : Run First</pre>
+<p>
+This signal is emitted when the left mouse button
+is released after a selection was started before.
+</p>
+<p>
+<em class="parameter"><code>see_also</code></em>: <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox-selection-changed" title='The "selection-changed" signal'><span class="type">"selection-changed"</span></a>
+</p>
+<p>
+</p>
+@:
+@:<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>The <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget in which the selection has been stopped.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>selection_values</code></em> :</span></p></td>
+<td>The corners of the selection rectangle.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title='The "selection-started" signal'>
+<a name="GtkDatabox-selection-started"></a><h3>The <code class="literal">"selection-started"</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box,
+                                                        <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>    selection_values,
+                                                        <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>    user_data)             : Run First</pre>
+<p>
+This signal is emitted when the mouse is firstmoved 
+with the left button pressed after the mouse-down (and the <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox--enable-selection" title='The "enable-selection" property'><span class="type">"enable-selection"</span></a> property 
+is set). The corners of the selection rectangle are stored in <em class="parameter"><code>selection_values</code></em>.
+</p>
+<p>
+<em class="parameter"><code>see_also</code></em>: <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox-selection-changed" title='The "selection-changed" signal'><span class="type">"selection-changed"</span></a>
+</p>
+<p>
+</p>
+@:
+@:<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>The <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget in which the selection has been started.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>selection_values</code></em> :</span></p></td>
+<td>The corners of the selection rectangle.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title='The "zoomed" signal'>
+<a name="GtkDatabox-zoomed"></a><h3>The <code class="literal">"zoomed"</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box,
+                                                        <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>    user_data)      : Run First</pre>
+<p>
+This signal is emitted each time the zoom of the widget is changed, see for example 
+<a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-zoom-to-selection" title="gtk_databox_zoom_to_selection ()"><code class="function">gtk_databox_zoom_to_selection()</code></a>, <a class="link" href="gtkdatabox-gtkdatabox.html#gtk-databox-set-visible-limits" title="gtk_databox_set_visible_limits ()"><code class="function">gtk_databox_set_visible_limits()</code></a>.
+</p>
+<p>
+</p>
+@:<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>The <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget which zoomed in or out.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsect1" title="See Also">
+<a name="gtkdatabox-gtkdatabox.see-also"></a><h2>See Also</h2>
+<a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a>, <a class="link" href="gtkdatabox-gtkdatabox-points.html#GtkDataboxPoints"><span class="type">GtkDataboxPoints</span></a>, <a class="link" href="gtkdatabox-gtkdatabox-lines.html#GtkDataboxLines"><span class="type">GtkDataboxLines</span></a>, <a class="link" href="gtkdatabox-gtkdatabox-markers.html#GtkDataboxMarkers"><span class="type">GtkDataboxMarkers</span></a>, <a class="link" href="gtkdatabox-gtkdatabox-grid.html#GtkDataboxGrid"><span class="type">GtkDataboxGrid</span></a>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.14</div>
+</body>
+</html>

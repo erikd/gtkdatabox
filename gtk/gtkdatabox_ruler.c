@@ -323,7 +323,7 @@ gtk_databox_ruler_set_range (GtkDataboxRuler * ruler,
    }
    g_object_thaw_notify (G_OBJECT (ruler));
 
-   if (GTK_WIDGET_DRAWABLE (ruler))
+   if (gtk_widget_is_drawable (ruler))
       gtk_widget_queue_draw (GTK_WIDGET (ruler));
 }
 
@@ -354,7 +354,7 @@ gtk_databox_ruler_set_max_length (GtkDataboxRuler * ruler, guint max_length)
    }
    g_object_thaw_notify (G_OBJECT (ruler));
 
-   if (GTK_WIDGET_DRAWABLE (ruler))
+   if (gtk_widget_is_drawable (ruler))
       gtk_widget_queue_draw (GTK_WIDGET (ruler));
 }
 
@@ -378,7 +378,7 @@ gtk_databox_ruler_set_scale_type (GtkDataboxRuler * ruler,
       /* g_object_notify (G_OBJECT (ruler), "scale-type"); */
    }
 
-   if (GTK_WIDGET_DRAWABLE (ruler))
+   if (gtk_widget_is_drawable (ruler))
       gtk_widget_queue_draw (GTK_WIDGET (ruler));
 }
 
@@ -414,7 +414,7 @@ gtk_databox_ruler_set_orientation (GtkDataboxRuler * ruler,
       widget->requisition.width = widget->style->xthickness * 2 + RULER_SIZE;
    }
 
-   if (GTK_WIDGET_DRAWABLE (ruler))
+   if (gtk_widget_is_drawable (ruler))
       gtk_widget_queue_draw (GTK_WIDGET (ruler));
 }
 
@@ -529,7 +529,7 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
       g_sprintf (format_string, "%%-%dg", ruler->priv->max_length - 1);
 
 
-   if (!GTK_WIDGET_DRAWABLE (ruler))
+   if (!gtk_widget_is_drawable (ruler))
       return;
 
    widget = GTK_WIDGET (ruler);
@@ -682,14 +682,14 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
       if (ruler->priv->orientation == GTK_ORIENTATION_HORIZONTAL)
 	 gtk_paint_layout (widget->style,
 			   ruler->priv->backing_pixmap,
-			   GTK_WIDGET_STATE (widget),
+			   gtk_widget_get_state (widget),
 			   FALSE,
 			   NULL,
 			   widget, "ruler", pos + 2, ythickness - 1, layout);
       else
 	 gtk_paint_layout (widget->style,
 			   ruler->priv->backing_pixmap,
-			   GTK_WIDGET_STATE (widget),
+			   gtk_widget_get_state (widget),
 			   FALSE,
 			   NULL,
 			   widget,
@@ -761,7 +761,7 @@ gtk_databox_ruler_draw_pos (GtkDataboxRuler * ruler)
    gint ythickness;
    gdouble increment;
 
-   if (GTK_WIDGET_DRAWABLE (ruler))
+   if (gtk_widget_is_drawable (ruler))
    {
       xthickness = widget->style->xthickness;
       ythickness = widget->style->ythickness;
@@ -893,7 +893,7 @@ gtk_databox_ruler_size_allocate (GtkWidget * widget,
 
    widget->allocation = *allocation;
 
-   if (GTK_WIDGET_REALIZED (widget))
+   if (gtk_widget_get_realized (widget))
    {
       gdk_window_move_resize (widget->window,
 			      allocation->x, allocation->y,
@@ -908,14 +908,14 @@ gtk_databox_ruler_expose (GtkWidget * widget, GdkEventExpose * event)
 {
    GtkDataboxRuler *ruler;
 
-   if (GTK_WIDGET_DRAWABLE (widget))
+   if (gtk_widget_is_drawable (widget))
    {
       ruler = GTK_DATABOX_RULER (widget);
 
       gtk_databox_ruler_draw_ticks (ruler);
 
       gdk_draw_drawable (widget->window,
-			 widget->style->fg_gc[GTK_WIDGET_STATE (ruler)],
+			 widget->style->fg_gc[gtk_widget_get_state (ruler)],
 			 ruler->priv->backing_pixmap,
 			 0, 0, 0, 0,
 			 widget->allocation.width, widget->allocation.height);

@@ -17,6 +17,9 @@ gtkdatabox_marshal
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### MACRO gtk_databox_marshal_VOID__VOID ##### -->
 <para>
 

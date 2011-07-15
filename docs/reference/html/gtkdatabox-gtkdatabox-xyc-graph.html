@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>GtkDataboxXYCGraph</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="GtkDatabox Reference Manual">
+<link rel="up" href="ch01.html" title="GtkDatabox">
+<link rel="prev" href="gtkdatabox-gtkdatabox-graph.html" title="GtkDataboxGraph">
+<link rel="next" href="gtkdatabox-gtkdatabox-points.html" title="GtkDataboxPoints">
+<meta name="generator" content="GTK-Doc V1.14 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gtkdatabox-gtkdatabox-graph.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GtkDatabox Reference Manual</th>
+<td><a accesskey="n" href="gtkdatabox-gtkdatabox-points.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gtkdatabox-gtkdatabox-xyc-graph.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gtkdatabox-gtkdatabox-xyc-graph.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gtkdatabox-gtkdatabox-xyc-graph.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gtkdatabox-gtkdatabox-xyc-graph.properties" class="shortcut">Properties</a>
+</td></tr>
+</table>
+<div class="refentry" title="GtkDataboxXYCGraph">
+<a name="gtkdatabox-gtkdatabox-xyc-graph"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gtkdatabox-gtkdatabox-xyc-graph.top_of_page"></a>GtkDataboxXYCGraph</span></h2>
+<p>GtkDataboxXYCGraph — An abstract anchestor for all graphs which display xy-values in one color.</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv" title="Synopsis">
+<a name="gtkdatabox-gtkdatabox-xyc-graph.synopsis"></a><h2>Synopsis</h2>
+<a name="GtkDataboxXYCGraph"></a><pre class="synopsis">
+#include &lt;gtkdatabox_xyc_graph.h&gt;
+
+                    <a class="link" href="gtkdatabox-gtkdatabox-xyc-graph.html#GtkDataboxXYCGraphPrivate" title="GtkDataboxXYCGraphPrivate">GtkDataboxXYCGraphPrivate</a>;
+                    <a class="link" href="gtkdatabox-gtkdatabox-xyc-graph.html#GtkDataboxXYCGraph-struct" title="GtkDataboxXYCGraph">GtkDataboxXYCGraph</a>;
+<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>               <a class="link" href="gtkdatabox-gtkdatabox-xyc-graph.html#gtk-databox-xyc-graph-get-length" title="gtk_databox_xyc_graph_get_length ()">gtk_databox_xyc_graph_get_length</a>    (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-xyc-graph.html#GtkDataboxXYCGraph"><span class="type">GtkDataboxXYCGraph</span></a> *xyc_graph</code></em>);
+<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="returnvalue">gfloat</span></a> *            <a class="link" href="gtkdatabox-gtkdatabox-xyc-graph.html#gtk-databox-xyc-graph-get-X" title="gtk_databox_xyc_graph_get_X ()">gtk_databox_xyc_graph_get_X</a>         (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-xyc-graph.html#GtkDataboxXYCGraph"><span class="type">GtkDataboxXYCGraph</span></a> *xyc_graph</code></em>);
+<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="returnvalue">gfloat</span></a> *            <a class="link" href="gtkdatabox-gtkdatabox-xyc-graph.html#gtk-databox-xyc-graph-get-Y" title="gtk_databox_xyc_graph_get_Y ()">gtk_databox_xyc_graph_get_Y</a>         (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-xyc-graph.html#GtkDataboxXYCGraph"><span class="type">GtkDataboxXYCGraph</span></a> *xyc_graph</code></em>);
+</pre>
+</div>
+<div class="refsect1" title="Object Hierarchy">
+<a name="gtkdatabox-gtkdatabox-xyc-graph.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  <a href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+   +----<a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph">GtkDataboxGraph</a>
+         +----GtkDataboxXYCGraph
+               +----<a class="link" href="gtkdatabox-gtkdatabox-points.html#GtkDataboxPoints">GtkDataboxPoints</a>
+               +----<a class="link" href="gtkdatabox-gtkdatabox-lines.html#GtkDataboxLines">GtkDataboxLines</a>
+               +----<a class="link" href="gtkdatabox-gtkdatabox-bars.html#GtkDataboxBars">GtkDataboxBars</a>
+               +----<a class="link" href="gtkdatabox-gtkdatabox-markers.html#GtkDataboxMarkers">GtkDataboxMarkers</a>
+</pre>
+</div>
+<div class="refsect1" title="Properties">
+<a name="gtkdatabox-gtkdatabox-xyc-graph.properties"></a><h2>Properties</h2>
+<pre class="synopsis">
+  "<a class="link" href="gtkdatabox-gtkdatabox-xyc-graph.html#GtkDataboxXYCGraph--X-Values" title='The "X-Values" property'>X-Values</a>"                 <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>              : Read / Write / Construct Only
+  "<a class="link" href="gtkdatabox-gtkdatabox-xyc-graph.html#GtkDataboxXYCGraph--Y-Values" title='The "Y-Values" property'>Y-Values</a>"                 <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>              : Read / Write / Construct Only
+  "<a class="link" href="gtkdatabox-gtkdatabox-xyc-graph.html#GtkDataboxXYCGraph--length" title='The "length" property'>length</a>"                   <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write / Construct Only
+</pre>
+</div>
+<div class="refsect1" title="Description">
+<a name="gtkdatabox-gtkdatabox-xyc-graph.description"></a><h2>Description</h2>
+<p>
+GtkDataboxXYCGraphs are an abstract class for displaying XY-data in one color. The values for the data are represented 
+as an array of X values and a second array of Y values. In order to actually display data, you should
+use one of the derived classes.
+</p>
+</div>
+<div class="refsect1" title="Details">
+<a name="gtkdatabox-gtkdatabox-xyc-graph.details"></a><h2>Details</h2>
+<div class="refsect2" title="GtkDataboxXYCGraphPrivate">
+<a name="GtkDataboxXYCGraphPrivate"></a><h3>GtkDataboxXYCGraphPrivate</h3>
+<pre class="programlisting">typedef struct _GtkDataboxXYCGraphPrivate GtkDataboxXYCGraphPrivate;</pre>
+<p>
+A private data structure used by the <a class="link" href="gtkdatabox-gtkdatabox-xyc-graph.html#GtkDataboxXYCGraph"><span class="type">GtkDataboxXYCGraph</span></a>. It shields all internal things
+from developers who are just using the object.
+</p>
+</div>
+<hr>
+<div class="refsect2" title="GtkDataboxXYCGraph">
+<a name="GtkDataboxXYCGraph-struct"></a><h3>GtkDataboxXYCGraph</h3>
+<pre class="programlisting">typedef struct _GtkDataboxXYCGraph GtkDataboxXYCGraph;</pre>
+<p>
+GtkDataboxXYCGraphs are an abstract class for displaying XY-data in one color. The values for the data are represented 
+as an array of X values and a second array of Y values. In order to actually display data, you should
+use one of the derived classes.
+</p>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_xyc_graph_get_length ()">
+<a name="gtk-databox-xyc-graph-get-length"></a><h3>gtk_databox_xyc_graph_get_length ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>               gtk_databox_xyc_graph_get_length    (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-xyc-graph.html#GtkDataboxXYCGraph"><span class="type">GtkDataboxXYCGraph</span></a> *xyc_graph</code></em>);</pre>
+<p>
+Gets the the length of the X and Y values arrays.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>xyc_graph</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox-xyc-graph.html#GtkDataboxXYCGraph"><span class="type">GtkDataboxXYCGraph</span></a> object
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> Length of X/Y arrays.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_xyc_graph_get_X ()">
+<a name="gtk-databox-xyc-graph-get-X"></a><h3>gtk_databox_xyc_graph_get_X ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="returnvalue">gfloat</span></a> *            gtk_databox_xyc_graph_get_X         (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-xyc-graph.html#GtkDataboxXYCGraph"><span class="type">GtkDataboxXYCGraph</span></a> *xyc_graph</code></em>);</pre>
+<p>
+Gets the X values of the <em class="parameter"><code>xzc_graph</code></em>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>xyc_graph</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox-xyc-graph.html#GtkDataboxXYCGraph"><span class="type">GtkDataboxXYCGraph</span></a> object
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> Pointer to X values
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_xyc_graph_get_Y ()">
+<a name="gtk-databox-xyc-graph-get-Y"></a><h3>gtk_databox_xyc_graph_get_Y ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="returnvalue">gfloat</span></a> *            gtk_databox_xyc_graph_get_Y         (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-xyc-graph.html#GtkDataboxXYCGraph"><span class="type">GtkDataboxXYCGraph</span></a> *xyc_graph</code></em>);</pre>
+<p>
+Gets the Y values of the <em class="parameter"><code>xzc_graph</code></em>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>xyc_graph</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox-xyc-graph.html#GtkDataboxXYCGraph"><span class="type">GtkDataboxXYCGraph</span></a> object
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> Pointer to Y values
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsect1" title="Property Details">
+<a name="gtkdatabox-gtkdatabox-xyc-graph.property-details"></a><h2>Property Details</h2>
+<div class="refsect2" title='The "X-Values" property'>
+<a name="GtkDataboxXYCGraph--X-Values"></a><h3>The <code class="literal">"X-Values"</code> property</h3>
+<pre class="programlisting">  "X-Values"                 <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>              : Read / Write / Construct Only</pre>
+<p>X values of data.</p>
+</div>
+<hr>
+<div class="refsect2" title='The "Y-Values" property'>
+<a name="GtkDataboxXYCGraph--Y-Values"></a><h3>The <code class="literal">"Y-Values"</code> property</h3>
+<pre class="programlisting">  "Y-Values"                 <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>              : Read / Write / Construct Only</pre>
+<p>Y values of data.</p>
+</div>
+<hr>
+<div class="refsect2" title='The "length" property'>
+<a name="GtkDataboxXYCGraph--length"></a><h3>The <code class="literal">"length"</code> property</h3>
+<pre class="programlisting">  "length"                   <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write / Construct Only</pre>
+<p>number of data points.</p>
+<p>Default value: 0</p>
+</div>
+</div>
+<div class="refsect1" title="See Also">
+<a name="gtkdatabox-gtkdatabox-xyc-graph.see-also"></a><h2>See Also</h2>
+<a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a>, <a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a>, <a class="link" href="gtkdatabox-gtkdatabox-points.html#GtkDataboxPoints"><span class="type">GtkDataboxPoints</span></a>, <a class="link" href="gtkdatabox-gtkdatabox-lines.html#GtkDataboxLines"><span class="type">GtkDataboxLines</span></a>, <a class="link" href="gtkdatabox-gtkdatabox-bars.html#GtkDataboxBars"><span class="type">GtkDataboxBars</span></a>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.14</div>
+</body>
+</html>

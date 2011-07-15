@@ -17,6 +17,9 @@ gtkdatabox_scale
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### ENUM GtkDataboxScaleType ##### -->
 <para>
 
@@ -31,6 +34,7 @@ gtkdatabox_scale
 
 </para>
 
+@void: 
 @Returns: 
 
 

@@ -1,0 +1,11 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: gtkdatabox
+Description: Widget to display large amounts of numerical data
+Version: 0.9.1.2
+Requires: gtk+-2.0 >= 2.8.0, pango >= 1.16.0, cairo >= 1.4.0
+Libs: -L${libdir} -lgtkdatabox
+Cflags: -I${includedir}

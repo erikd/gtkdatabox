@@ -1,0 +1,459 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>GtkDataboxGraph</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="GtkDatabox Reference Manual">
+<link rel="up" href="ch01.html" title="GtkDatabox">
+<link rel="prev" href="gtkdatabox-gtkdatabox.html" title="GtkDatabox">
+<link rel="next" href="gtkdatabox-gtkdatabox-xyc-graph.html" title="GtkDataboxXYCGraph">
+<meta name="generator" content="GTK-Doc V1.14 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gtkdatabox-gtkdatabox.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GtkDatabox Reference Manual</th>
+<td><a accesskey="n" href="gtkdatabox-gtkdatabox-xyc-graph.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gtkdatabox-gtkdatabox-graph.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gtkdatabox-gtkdatabox-graph.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gtkdatabox-gtkdatabox-graph.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gtkdatabox-gtkdatabox-graph.properties" class="shortcut">Properties</a>
+</td></tr>
+</table>
+<div class="refentry" title="GtkDataboxGraph">
+<a name="gtkdatabox-gtkdatabox-graph"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gtkdatabox-gtkdatabox-graph.top_of_page"></a>GtkDataboxGraph</span></h2>
+<p>GtkDataboxGraph — An abstract anchestor for all "real" graphs.</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv" title="Synopsis">
+<a name="gtkdatabox-gtkdatabox-graph.synopsis"></a><h2>Synopsis</h2>
+<a name="GtkDataboxGraph"></a><pre class="synopsis">
+#include &lt;gtkdatabox_graph.h&gt;
+
+                    <a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraphPrivate" title="GtkDataboxGraphPrivate">GtkDataboxGraphPrivate</a>;
+                    <a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph-struct" title="GtkDataboxGraph">GtkDataboxGraph</a>;
+<a href="/usr/share/gtk-doc/html/gdk/gdk-Graphics-Contexts.html#GdkGC"><span class="returnvalue">GdkGC</span></a>*              <a class="link" href="gtkdatabox-gtkdatabox-graph.html#gtk-databox-graph-get-gc" title="gtk_databox_graph_get_gc ()">gtk_databox_graph_get_gc</a>            (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> *graph</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="gtkdatabox-gtkdatabox-graph.html#gtk-databox-graph-set-gc" title="gtk_databox_graph_set_gc ()">gtk_databox_graph_set_gc</a>            (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> *graph</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gdk/gdk-Graphics-Contexts.html#GdkGC"><span class="type">GdkGC</span></a> *gc</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="gtkdatabox-gtkdatabox-graph.html#gtk-databox-graph-set-hide" title="gtk_databox_graph_set_hide ()">gtk_databox_graph_set_hide</a>          (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> *graph</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> hide</code></em>);
+<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gtkdatabox-gtkdatabox-graph.html#gtk-databox-graph-get-hide" title="gtk_databox_graph_get_hide ()">gtk_databox_graph_get_hide</a>          (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> *graph</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="gtkdatabox-gtkdatabox-graph.html#gtk-databox-graph-set-color" title="gtk_databox_graph_set_color ()">gtk_databox_graph_set_color</a>         (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> *graph</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gdk/gdk-Colormaps-and-Colors.html#GdkColor"><span class="type">GdkColor</span></a> *color</code></em>);
+<a href="/usr/share/gtk-doc/html/gdk/gdk-Colormaps-and-Colors.html#GdkColor"><span class="returnvalue">GdkColor</span></a> *          <a class="link" href="gtkdatabox-gtkdatabox-graph.html#gtk-databox-graph-get-color" title="gtk_databox_graph_get_color ()">gtk_databox_graph_get_color</a>         (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> *graph</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="gtkdatabox-gtkdatabox-graph.html#gtk-databox-graph-set-size" title="gtk_databox_graph_set_size ()">gtk_databox_graph_set_size</a>          (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> *graph</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a> size</code></em>);
+<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                <a class="link" href="gtkdatabox-gtkdatabox-graph.html#gtk-databox-graph-get-size" title="gtk_databox_graph_get_size ()">gtk_databox_graph_get_size</a>          (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> *graph</code></em>);
+<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                <a class="link" href="gtkdatabox-gtkdatabox-graph.html#gtk-databox-graph-calculate-extrema" title="gtk_databox_graph_calculate_extrema ()">gtk_databox_graph_calculate_extrema</a> (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> *graph</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *min_x</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *max_x</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *min_y</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *max_y</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="gtkdatabox-gtkdatabox-graph.html#gtk-databox-graph-draw" title="gtk_databox_graph_draw ()">gtk_databox_graph_draw</a>              (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> *graph</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>);
+<a href="/usr/share/gtk-doc/html/gdk/gdk-Graphics-Contexts.html#GdkGC"><span class="returnvalue">GdkGC</span></a>*              <a class="link" href="gtkdatabox-gtkdatabox-graph.html#gtk-databox-graph-create-gc" title="gtk_databox_graph_create_gc ()">gtk_databox_graph_create_gc</a>         (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> *graph</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>);
+</pre>
+</div>
+<div class="refsect1" title="Object Hierarchy">
+<a name="gtkdatabox-gtkdatabox-graph.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  <a href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+   +----GtkDataboxGraph
+         +----<a class="link" href="gtkdatabox-gtkdatabox-xyc-graph.html#GtkDataboxXYCGraph">GtkDataboxXYCGraph</a>
+         +----<a class="link" href="gtkdatabox-gtkdatabox-grid.html#GtkDataboxGrid">GtkDataboxGrid</a>
+</pre>
+</div>
+<div class="refsect1" title="Properties">
+<a name="gtkdatabox-gtkdatabox-graph.properties"></a><h2>Properties</h2>
+<pre class="synopsis">
+  "<a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph--color" title='The "color" property'>color</a>"                    <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>              : Read / Write
+  "<a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph--hide" title='The "hide" property'>hide</a>"                     <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
+  "<a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph--size" title='The "size" property'>size</a>"                     <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write
+</pre>
+</div>
+<div class="refsect1" title="Description">
+<a name="gtkdatabox-gtkdatabox-graph.description"></a><h2>Description</h2>
+<p>
+GtkDataboxGraphs can display data or other things in a <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> widget.
+</p>
+<p>
+This class is just the basic interface. Other graph classes are derived from this 
+class and implement some real things.
+</p>
+</div>
+<div class="refsect1" title="Details">
+<a name="gtkdatabox-gtkdatabox-graph.details"></a><h2>Details</h2>
+<div class="refsect2" title="GtkDataboxGraphPrivate">
+<a name="GtkDataboxGraphPrivate"></a><h3>GtkDataboxGraphPrivate</h3>
+<pre class="programlisting">typedef struct _GtkDataboxGraphPrivate GtkDataboxGraphPrivate;</pre>
+<p>
+A private data structure used by the <a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a>. It shields all internal things
+from developers who are just using the object.
+</p>
+</div>
+<hr>
+<div class="refsect2" title="GtkDataboxGraph">
+<a name="GtkDataboxGraph-struct"></a><h3>GtkDataboxGraph</h3>
+<pre class="programlisting">typedef struct _GtkDataboxGraph GtkDataboxGraph;</pre>
+<p>
+The GtkDataboxGraph is the base class for all kinds of graphs (e.g. lines, points, decorations like coordinate crosses) 
+to be shown in a <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> wiget.
+</p>
+<p>
+Implemented by <a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">_GtkDataboxGraph</span></a>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_graph_get_gc ()">
+<a name="gtk-databox-graph-get-gc"></a><h3>gtk_databox_graph_get_gc ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/gdk/gdk-Graphics-Contexts.html#GdkGC"><span class="returnvalue">GdkGC</span></a>*              gtk_databox_graph_get_gc            (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> *graph</code></em>);</pre>
+<p>
+Gets the  current graphics context of the graph.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> object
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> The current graphics context of the graph.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_graph_set_gc ()">
+<a name="gtk-databox-graph-set-gc"></a><h3>gtk_databox_graph_set_gc ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                gtk_databox_graph_set_gc            (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> *graph</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gdk/gdk-Graphics-Contexts.html#GdkGC"><span class="type">GdkGC</span></a> *gc</code></em>);</pre>
+<p>
+Sets the graphics context which the <a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> object is supposed to be using when drawing itself.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> object
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>gc</code></em> :</span></p></td>
+<td>Graphics contex for the graph object
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_graph_set_hide ()">
+<a name="gtk-databox-graph-set-hide"></a><h3>gtk_databox_graph_set_hide ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                gtk_databox_graph_set_hide          (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> *graph</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> hide</code></em>);</pre>
+<p>
+Hidden graphs are not shown, when the <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> containing them is redrawn.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> object
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>hide</code></em> :</span></p></td>
+<td>Declares whether should be hidden (true) or not (false).
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_graph_get_hide ()">
+<a name="gtk-databox-graph-get-hide"></a><h3>gtk_databox_graph_get_hide ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gtk_databox_graph_get_hide          (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> *graph</code></em>);</pre>
+<p>
+Gets the current "hide" status.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> object
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> Whether the graph is hidden (true) or not (false).
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_graph_set_color ()">
+<a name="gtk-databox-graph-set-color"></a><h3>gtk_databox_graph_set_color ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                gtk_databox_graph_set_color         (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> *graph</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gdk/gdk-Colormaps-and-Colors.html#GdkColor"><span class="type">GdkColor</span></a> *color</code></em>);</pre>
+<p>
+Sets the color which the <a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> object is supposed to be using when drawing itself.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> object
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>color</code></em> :</span></p></td>
+<td>Color which is to be used by the graph object
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_graph_get_color ()">
+<a name="gtk-databox-graph-get-color"></a><h3>gtk_databox_graph_get_color ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/gdk/gdk-Colormaps-and-Colors.html#GdkColor"><span class="returnvalue">GdkColor</span></a> *          gtk_databox_graph_get_color         (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> *graph</code></em>);</pre>
+<p>
+Gets the current color of the graph elements (e.g. points).
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> object
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> The color of the graph.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_graph_set_size ()">
+<a name="gtk-databox-graph-set-size"></a><h3>gtk_databox_graph_set_size ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                gtk_databox_graph_set_size          (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> *graph</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a> size</code></em>);</pre>
+<p>
+Sets the size (e.g. line width) which the <a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> object is supposed to be using when drawing itself.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> object
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>size</code></em> :</span></p></td>
+<td>Size of graph elements for the graph object
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_graph_get_size ()">
+<a name="gtk-databox-graph-get-size"></a><h3>gtk_databox_graph_get_size ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                gtk_databox_graph_get_size          (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> *graph</code></em>);</pre>
+<p>
+Gets the size of the graph elements (e.g. the line width).
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> object
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> size of the graph elements
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_graph_calculate_extrema ()">
+<a name="gtk-databox-graph-calculate-extrema"></a><h3>gtk_databox_graph_calculate_extrema ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                gtk_databox_graph_calculate_extrema (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> *graph</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *min_x</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *max_x</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *min_y</code></em>,
+                                                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *max_y</code></em>);</pre>
+<p>
+Virtual function which determines the minimum and maximum x and y values of the values of this 
+<a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> object if applicable (there are graphs which do 
+not contain data).
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> object
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>min_x</code></em> :</span></p></td>
+<td>Will be filled with the lowest x value of the dataset
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>max_x</code></em> :</span></p></td>
+<td>Will be filled with the highest x value of the dataset
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>min_y</code></em> :</span></p></td>
+<td>Will be filled with the lowest y value of the dataset
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>max_y</code></em> :</span></p></td>
+<td>Will be filled with the highest y value of the dataset
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> 0 on success,
+         -1 if no data is available,
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_graph_draw ()">
+<a name="gtk-databox-graph-draw"></a><h3>gtk_databox_graph_draw ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                gtk_databox_graph_draw              (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> *graph</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>);</pre>
+<p>
+Virtual function which draws the <a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> on the drawing area of the GtkDatabox object.
+</p>
+<p>
+Typically this function is called by <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> objects.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> object
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> object
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="gtk_databox_graph_create_gc ()">
+<a name="gtk-databox-graph-create-gc"></a><h3>gtk_databox_graph_create_gc ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/gdk/gdk-Graphics-Contexts.html#GdkGC"><span class="returnvalue">GdkGC</span></a>*              gtk_databox_graph_create_gc         (<em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> *graph</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> *box</code></em>);</pre>
+<p>
+Virtual function which creates a graphics context for the <em class="parameter"><code>graph</code></em>. 
+</p>
+<p>
+Typically called by derived graph objects when the graphics context is needed for the first time.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>graph</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph"><span class="type">GtkDataboxGraph</span></a> object
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>box</code></em> :</span></p></td>
+<td>A <a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a> object
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> The new graphics context.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsect1" title="Property Details">
+<a name="gtkdatabox-gtkdatabox-graph.property-details"></a><h2>Property Details</h2>
+<div class="refsect2" title='The "color" property'>
+<a name="GtkDataboxGraph--color"></a><h3>The <code class="literal">"color"</code> property</h3>
+<pre class="programlisting">  "color"                    <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>              : Read / Write</pre>
+<p>Color of graph.</p>
+</div>
+<hr>
+<div class="refsect2" title='The "hide" property'>
+<a name="GtkDataboxGraph--hide"></a><h3>The <code class="literal">"hide"</code> property</h3>
+<pre class="programlisting">  "hide"                     <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
+<p>Determine if graph is hidden or not.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" title='The "size" property'>
+<a name="GtkDataboxGraph--size"></a><h3>The <code class="literal">"size"</code> property</h3>
+<pre class="programlisting">  "size"                     <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write</pre>
+<p>Size of displayed items.</p>
+<p>Default value: 0</p>
+</div>
+</div>
+<div class="refsect1" title="See Also">
+<a name="gtkdatabox-gtkdatabox-graph.see-also"></a><h2>See Also</h2>
+<a class="link" href="gtkdatabox-gtkdatabox.html#GtkDatabox"><span class="type">GtkDatabox</span></a>, <a class="link" href="gtkdatabox-gtkdatabox-points.html#GtkDataboxPoints"><span class="type">GtkDataboxPoints</span></a>, <a class="link" href="gtkdatabox-gtkdatabox-lines.html#GtkDataboxLines"><span class="type">GtkDataboxLines</span></a>, <a class="link" href="gtkdatabox-gtkdatabox-bars.html#GtkDataboxBars"><span class="type">GtkDataboxBars</span></a>, <a class="link" href="gtkdatabox-gtkdatabox-grid.html#GtkDataboxGrid"><span class="type">GtkDataboxGrid</span></a>, <a class="link" href="gtkdatabox-gtkdatabox-cross-simple.html#GtkDataboxCrossSimple"><span class="type">GtkDataboxCrossSimple</span></a>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.14</div>
+</body>
+</html>

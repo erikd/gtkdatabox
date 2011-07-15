@@ -1,0 +1,17 @@
+***************
+*** 31,36 ****
+                                      GdkEventButton * event);
+  static gint gtk_databox_button_release (GtkWidget * widget,
+                                        GdkEventButton * event);
+  static gint gtk_databox_motion_notify (GtkWidget * widget,
+                                       GdkEventMotion * event);
+  static void gtk_databox_realize (GtkWidget * widget);
+--- 31,38 ----
+                                      GdkEventButton * event);
+  static gint gtk_databox_button_release (GtkWidget * widget,
+                                        GdkEventButton * event);
++ static gint gtk_databox_scroll_event (GtkWidget *widget,
++                                     GdkEventScroll *event);
+  static gint gtk_databox_motion_notify (GtkWidget * widget,
+                                       GdkEventMotion * event);
+  static void gtk_databox_realize (GtkWidget * widget);

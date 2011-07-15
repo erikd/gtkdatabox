@@ -17,6 +17,9 @@ GtkDataboxGrid
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT GtkDataboxGridPrivate ##### -->
 <para>
 

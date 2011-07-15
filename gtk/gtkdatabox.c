@@ -1108,7 +1108,7 @@ gtk_databox_size_allocate (GtkWidget * widget, GtkAllocation * allocation)
 
    widget->allocation = *allocation;
 
-   if (GTK_WIDGET_REALIZED (widget))
+   if (gtk_widget_get_realized (widget))
    {
       gdk_window_move_resize (widget->window,
 			      allocation->x, allocation->y,
@@ -1158,7 +1158,7 @@ gtk_databox_expose (GtkWidget * widget, GdkEventExpose * event)
    }
 
    gdk_draw_drawable (widget->window,
-		      widget->style->fg_gc[GTK_WIDGET_STATE (widget)],
+		      widget->style->fg_gc[gtk_widget_get_state (widget)],
 		      box->priv->backing_pixmap, 
                       event->area.x, event->area.y,
 		      event->area.x, event->area.y, 
@@ -1538,7 +1538,7 @@ gtk_databox_draw_selection (GtkDatabox * box, GdkRectangle * pixmapCopyRect)
    /* Copy a part of the backing_pixmap to the screen */
    if (pixmapCopyRect)
       gdk_draw_drawable (widget->window,
-			 widget->style->fg_gc[GTK_WIDGET_STATE (box)],
+			 widget->style->fg_gc[gtk_widget_get_state (box)],
 			 box->priv->backing_pixmap,
 			 pixmapCopyRect->x,
 			 pixmapCopyRect->y,
@@ -1866,7 +1866,7 @@ gtk_databox_set_visible_limits (GtkDatabox * box,
 static void
 gtk_databox_calculate_visible_limits (GtkDatabox * box)
 {
-   if (!GTK_WIDGET_VISIBLE (box))
+   if (!gtk_widget_get_visible (box))
       return;
 
    if (box->priv->scale_type_x == GTK_DATABOX_SCALE_LINEAR)
