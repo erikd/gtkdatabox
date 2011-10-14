@@ -457,7 +457,8 @@ gtk_databox_motion_notify (GtkWidget * widget, GdkEventMotion * event)
       gint width;
       gint height;
 
-      gdk_drawable_get_size (widget->window, &width, &height);
+      width = gdk_window_get_width(widget->window);
+      height = gdk_window_get_height(widget->window);
       x = MAX (0, MIN (width - 1, x));
       y = MAX (0, MIN (height - 1, y));
 
@@ -591,7 +592,7 @@ gtk_databox_realize (GtkWidget * widget)
    gint attributes_mask;
 
    box = GTK_DATABOX (widget);
-   GTK_WIDGET_SET_FLAGS (box, GTK_REALIZED);
+   gtk_widget_set_realized(box, GTK_REALIZED);
 
    attributes.window_type = GDK_WINDOW_CHILD;
    attributes.x = widget->allocation.x;

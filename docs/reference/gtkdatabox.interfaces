@@ -1,4 +1,0 @@
-GtkWidget AtkImplementorIface GtkBuildable
-GtkDatabox AtkImplementorIface GtkBuildable
-GtkDataboxRuler AtkImplementorIface GtkBuildable
-GtkContainer AtkImplementorIface GtkBuildable

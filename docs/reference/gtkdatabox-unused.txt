@@ -1,7 +1,0 @@
-GtkDatabox(priv, box)
-GtkDataboxBars(see_also)
-GtkDataboxCrossSimple(see_also)
-GtkDataboxGraph(parent, priv)
-GtkDataboxLinesPrivate(see_also)
-GtkDataboxMarkers(parent, priv)
-GtkDataboxPoints(see_also)

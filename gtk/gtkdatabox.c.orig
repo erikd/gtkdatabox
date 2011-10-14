@@ -29,6 +29,8 @@
 
 static gint gtk_databox_button_press (GtkWidget * widget,
 				      GdkEventButton * event);
+static gint gtk_databox_scroll_event (GtkWidget *widget,
+                                     GdkEventScroll *event);
 static gint gtk_databox_button_release (GtkWidget * widget,
 					GdkEventButton * event);
 static gint gtk_databox_motion_notify (GtkWidget * widget,
@@ -56,6 +58,7 @@ static void gtk_databox_calculate_visible_limits (GtkDatabox * box);
 static void gtk_databox_create_backing_pixmap (GtkDatabox * box);
 static void gtk_databox_calculate_selection_values (GtkDatabox * box);
 static void gtk_databox_selection_cancel (GtkDatabox * box);
+static void gtk_databox_zoomed (GtkDatabox * box);
 static void gtk_databox_draw_selection (GtkDatabox * box,
 					GdkRectangle * pixmapCopyRect);
 static void gtk_databox_adjustment_value_changed (GtkDatabox * box);
@@ -160,6 +163,7 @@ gtk_databox_class_init (GtkDataboxClass * class)
    widget_class->motion_notify_event = gtk_databox_motion_notify;
    widget_class->button_press_event = gtk_databox_button_press;
    widget_class->button_release_event = gtk_databox_button_release;
+   widget_class->scroll_event = gtk_databox_scroll_event;
 
    /**
     * GtkDatabox:enable-selection:
@@ -1104,7 +1108,7 @@ gtk_databox_size_allocate (GtkWidget * widget, GtkAllocation * allocation)
 
    widget->allocation = *allocation;
 
-   if (GTK_WIDGET_REALIZED (widget))
+   if (gtk_widget_get_realized (widget))
    {
       gdk_window_move_resize (widget->window,
 			      allocation->x, allocation->y,
@@ -1154,7 +1158,7 @@ gtk_databox_expose (GtkWidget * widget, GdkEventExpose * event)
    }
 
    gdk_draw_drawable (widget->window,
-		      widget->style->fg_gc[GTK_WIDGET_STATE (widget)],
+		      widget->style->fg_gc[gtk_widget_get_state (widget)],
 		      box->priv->backing_pixmap, 
                       event->area.x, event->area.y,
 		      event->area.x, event->area.y, 
@@ -1241,6 +1245,97 @@ gtk_databox_button_release (GtkWidget * widget, GdkEventButton * event)
    }
 
    return FALSE;
+}
+
+static gint
+gtk_databox_scroll_event (GtkWidget *widget, GdkEventScroll *event)
+{
+  GtkDatabox  *box = GTK_DATABOX (widget);
+
+  if (event->state & GDK_CONTROL_MASK && box->priv->enable_zoom)
+    {
+      if (event->direction == GDK_SCROLL_DOWN)
+      {
+        gtk_databox_zoom_out(box);
+      }
+      else if (event->direction == GDK_SCROLL_UP &&
+             box->priv->adj_x->page_size / 2 >= box->priv->zoom_limit &&
+             box->priv->adj_y->page_size / 2 >= box->priv->zoom_limit)
+      {
+        gdouble       x_val, y_val;
+        gdouble       x_proportion, y_proportion;
+
+        x_val = gtk_databox_pixel_to_value_x(box, event->x);
+        y_val = gtk_databox_pixel_to_value_y(box, event->y);
+
+        if (box->priv->scale_type_x == GTK_DATABOX_SCALE_LINEAR)
+          {
+            x_proportion = (x_val - box->priv->total_left) /
+              (box->priv->total_right - box->priv->total_left);
+          }
+        else
+          {
+            x_proportion = log(x_val/box->priv->total_left) /
+              log(box->priv->total_right / box->priv->total_left);
+          }
+
+        if (box->priv->scale_type_y == GTK_DATABOX_SCALE_LINEAR)
+          {
+            y_proportion = (y_val - box->priv->total_top) /
+              (box->priv->total_bottom - box->priv->total_top);
+          }
+        else
+          {
+            y_proportion = log(y_val/box->priv->total_top) /
+              log(box->priv->total_bottom / box->priv->total_top);
+          }
+
+        box->priv->adj_x->page_size = box->priv->adj_x->page_size/2;
+        box->priv->adj_x->value = (x_proportion +
+                                   box->priv->adj_x->value) / 2;
+
+        box->priv->adj_y->page_size = box->priv->adj_y->page_size/2;
+        box->priv->adj_y->value = (y_proportion +
+                                   box->priv->adj_y->value) / 2;
+
+        gtk_databox_calculate_visible_limits(box);
+        gtk_databox_zoomed (box);
+      }
+    }
+  else
+    {
+      GtkAdjustment *adj;
+      gdouble delta, new_value;
+
+      if ((event->direction == GDK_SCROLL_UP ||
+         event->direction == GDK_SCROLL_DOWN) &&
+        !(event->state & GDK_MOD1_MASK))
+      {
+        adj = box->priv->adj_y;
+      }
+      else
+      {
+        adj = box->priv->adj_x;
+      }
+
+      switch (event->direction)
+      {
+      case GDK_SCROLL_UP:
+      case GDK_SCROLL_LEFT:
+        delta = - adj->step_increment;
+        break;
+      case GDK_SCROLL_DOWN:
+      case GDK_SCROLL_RIGHT:
+        delta = adj->step_increment;
+        break;
+      }
+
+      new_value = CLAMP (adj->value + delta, adj->lower,
+                       adj->upper - adj->page_size);
+      gtk_adjustment_set_value(adj, new_value);
+    }
+
+  return FALSE;
 }
 
 static void
@@ -1443,7 +1538,7 @@ gtk_databox_draw_selection (GtkDatabox * box, GdkRectangle * pixmapCopyRect)
    /* Copy a part of the backing_pixmap to the screen */
    if (pixmapCopyRect)
       gdk_draw_drawable (widget->window,
-			 widget->style->fg_gc[GTK_WIDGET_STATE (box)],
+			 widget->style->fg_gc[gtk_widget_get_state (box)],
 			 box->priv->backing_pixmap,
 			 pixmapCopyRect->x,
 			 pixmapCopyRect->y,
@@ -1771,7 +1866,7 @@ gtk_databox_set_visible_limits (GtkDatabox * box,
 static void
 gtk_databox_calculate_visible_limits (GtkDatabox * box)
 {
-   if (!GTK_WIDGET_VISIBLE (box))
+   if (!gtk_widget_get_visible (box))
       return;
 
    if (box->priv->scale_type_x == GTK_DATABOX_SCALE_LINEAR)

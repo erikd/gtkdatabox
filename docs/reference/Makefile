@@ -39,8 +39,8 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-build_triplet = x86_64-unknown-linux-gnu
-host_triplet = x86_64-unknown-linux-gnu
+build_triplet = i686-pc-linux-gnu
+host_triplet = i686-pc-linux-gnu
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(top_srcdir)/gtk-doc.make
 subdir = docs/reference
@@ -55,14 +55,14 @@ CONFIG_CLEAN_VPATH_FILES =
 SOURCES =
 DIST_SOURCES =
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} /home/brphelps/BRP-PACU-Staging/gtkdatabox_git/missing --run aclocal-1.11
-AMTAR = ${SHELL} /home/brphelps/BRP-PACU-Staging/gtkdatabox_git/missing --run tar
+ACLOCAL = ${SHELL} /home/brianp/BRP-PACU-Staging/gtkdatabox_git/missing --run aclocal-1.11
+AMTAR = ${SHELL} /home/brianp/BRP-PACU-Staging/gtkdatabox_git/missing --run tar
 AR = ar
-AUTOCONF = ${SHELL} /home/brphelps/BRP-PACU-Staging/gtkdatabox_git/missing --run autoconf
-AUTOHEADER = ${SHELL} /home/brphelps/BRP-PACU-Staging/gtkdatabox_git/missing --run autoheader
-AUTOMAKE = ${SHELL} /home/brphelps/BRP-PACU-Staging/gtkdatabox_git/missing --run automake-1.11
-AWK = gawk
-CAIRO_CFLAGS = -D_REENTRANT -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/directfb -I/usr/include/libpng12  
+AUTOCONF = ${SHELL} /home/brianp/BRP-PACU-Staging/gtkdatabox_git/missing --run autoconf
+AUTOHEADER = ${SHELL} /home/brianp/BRP-PACU-Staging/gtkdatabox_git/missing --run autoheader
+AUTOMAKE = ${SHELL} /home/brianp/BRP-PACU-Staging/gtkdatabox_git/missing --run automake-1.11
+AWK = mawk
+CAIRO_CFLAGS = -pthread -I/usr/include/glib-2.0 -I/usr/lib/i386-linux-gnu/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/cairo -I/usr/include/pixman-1  
 CAIRO_LIBS = -lcairo  
 CAIRO_REQUIRED = 1.4.0
 CC = gcc
@@ -88,8 +88,8 @@ GREP = /bin/grep
 GTKDOC_CHECK = /usr/bin/gtkdoc-check
 GTKDOC_MKPDF = /usr/bin/gtkdoc-mkpdf
 GTKDOC_REBASE = /usr/bin/gtkdoc-rebase
-GTK_CFLAGS = -pthread -D_REENTRANT -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/directfb -I/usr/include/libpng12  
-GTK_LIBS = -pthread -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgio-2.0 -lpangoft2-1.0 -lgdk_pixbuf-2.0 -lm -lpangocairo-1.0 -lcairo -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lrt -lglib-2.0  
+GTK_CFLAGS = -pthread -I/usr/include/atk-1.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/i386-linux-gnu/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pixman-1  
+GTK_LIBS = -pthread -L/usr/lib/i386-linux-gnu -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgio-2.0 -lpangoft2-1.0 -lpangocairo-1.0 -lgdk_pixbuf-2.0 -lm -lcairo -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lrt -lglib-2.0  
 GTK_REQUIRED = 2.8.0
 HTML_DIR = ${datadir}/gtk-doc/html
 INSTALL = /usr/bin/install -c
@@ -97,7 +97,7 @@ INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
-LD = /usr/bin/ld -m elf_x86_64
+LD = /usr/bin/ld
 LDFLAGS = 
 LIBGLADE_CFLAGS = 
 LIBGLADE_LIBS = 
@@ -109,7 +109,7 @@ LN_S = ln -s
 LTLIBOBJS = 
 LT_CURRENT = 3
 LT_RELEASE = 0.9.1
-MAKEINFO = ${SHELL} /home/brphelps/BRP-PACU-Staging/gtkdatabox_git/missing --run makeinfo
+MAKEINFO = ${SHELL} /home/brianp/BRP-PACU-Staging/gtkdatabox_git/missing --run makeinfo
 MKDIR_P = /bin/mkdir -p
 NM = /usr/bin/nm -B
 NMEDIT = 
@@ -124,21 +124,23 @@ PACKAGE_STRING = gtkdatabox 0.9.1.3
 PACKAGE_TARNAME = gtkdatabox
 PACKAGE_URL = 
 PACKAGE_VERSION = 0.9.1.3
-PANGO_CFLAGS = -pthread -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include  
-PANGO_LIBS = -pthread -lpango-1.0 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lrt -lglib-2.0  
+PANGO_CFLAGS = -pthread -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/i386-linux-gnu/glib-2.0/include  
+PANGO_LIBS = -pthread -L/usr/lib/i386-linux-gnu -lpango-1.0 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lrt -lglib-2.0  
 PANGO_REQUIRED = 1.16.0
 PATH_SEPARATOR = :
 PKG_CONFIG = /usr/bin/pkg-config
+PKG_CONFIG_LIBDIR = 
+PKG_CONFIG_PATH = 
 RANLIB = ranlib
 SED = /bin/sed
 SET_MAKE = 
 SHELL = /bin/bash
 STRIP = strip
 VERSION = 0.9.1.3
-abs_builddir = /home/brphelps/BRP-PACU-Staging/gtkdatabox_git/docs/reference
-abs_srcdir = /home/brphelps/BRP-PACU-Staging/gtkdatabox_git/docs/reference
-abs_top_builddir = /home/brphelps/BRP-PACU-Staging/gtkdatabox_git
-abs_top_srcdir = /home/brphelps/BRP-PACU-Staging/gtkdatabox_git
+abs_builddir = /home/brianp/BRP-PACU-Staging/gtkdatabox_git/docs/reference
+abs_srcdir = /home/brianp/BRP-PACU-Staging/gtkdatabox_git/docs/reference
+abs_top_builddir = /home/brianp/BRP-PACU-Staging/gtkdatabox_git
+abs_top_srcdir = /home/brianp/BRP-PACU-Staging/gtkdatabox_git
 ac_ct_CC = gcc
 ac_ct_DUMPBIN = 
 am__include = include
@@ -147,11 +149,11 @@ am__quote =
 am__tar = ${AMTAR} chof - "$$tardir"
 am__untar = ${AMTAR} xf -
 bindir = ${exec_prefix}/bin
-build = x86_64-unknown-linux-gnu
+build = i686-pc-linux-gnu
 build_alias = 
-build_cpu = x86_64
+build_cpu = i686
 build_os = linux-gnu
-build_vendor = unknown
+build_vendor = pc
 builddir = .
 datadir = ${datarootdir}
 datarootdir = ${prefix}/share
@@ -160,15 +162,15 @@ dvidir = ${docdir}
 exec_prefix = ${prefix}
 glade_catalogdir = 
 glade_moduledir = 
-host = x86_64-unknown-linux-gnu
+host = i686-pc-linux-gnu
 host_alias = 
-host_cpu = x86_64
+host_cpu = i686
 host_os = linux-gnu
-host_vendor = unknown
+host_vendor = pc
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /home/brphelps/BRP-PACU-Staging/gtkdatabox_git/install-sh
+install_sh = ${SHELL} /home/brianp/BRP-PACU-Staging/gtkdatabox_git/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 libglade_moduledir = 
@@ -259,7 +261,7 @@ expand_content_files =
 # e.g. INCLUDES=-I$(top_srcdir) -I$(top_builddir) $(GTK_DEBUG_FLAGS)
 # e.g. GTKDOC_LIBS=$(top_builddir)/gtk/$(gtktargetlib)
 INCLUDES = `pkg-config gtk+-2.0 --cflags`
-GTKDOC_LIBS = -pthread -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgio-2.0 -lpangoft2-1.0 -lgdk_pixbuf-2.0 -lm -lpangocairo-1.0 -lcairo -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lrt -lglib-2.0   $(top_builddir)/gtk/libgtkdatabox.la
+GTKDOC_LIBS = -pthread -L/usr/lib/i386-linux-gnu -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgio-2.0 -lpangoft2-1.0 -lpangocairo-1.0 -lgdk_pixbuf-2.0 -lm -lcairo -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lrt -lglib-2.0   $(top_builddir)/gtk/libgtkdatabox.la
 #GTKDOC_CC = $(CC) $(INCLUDES) $(AM_CFLAGS) $(CFLAGS)
 GTKDOC_CC = $(LIBTOOL) --mode=compile $(CC) $(INCLUDES) $(AM_CFLAGS) $(CFLAGS)
 #GTKDOC_LD = $(CC) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS)
@@ -482,8 +484,8 @@ uninstall-am: uninstall-local
 	uninstall uninstall-am uninstall-local
 
 
-all-local: html-build.stamp
-#all-local:
+#all-local: html-build.stamp
+all-local:
 
 docs: html-build.stamp
 
@@ -572,10 +574,10 @@ uninstall-local:
 #
 # Require gtk-doc when making dist
 #
-dist-check-gtkdoc:
 #dist-check-gtkdoc:
-#	@echo "*** gtk-doc must be installed and enabled in order to make dist"
-#	@false
+dist-check-gtkdoc:
+	@echo "*** gtk-doc must be installed and enabled in order to make dist"
+	@false
 
 dist-hook: dist-check-gtkdoc dist-hook-local
 	mkdir $(distdir)/tmpl
