@@ -6,12 +6,12 @@
  * modify it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation; either version 2.1
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -134,7 +134,7 @@ struct _GtkDataboxPrivate
    gboolean selection_finalized;
 };
 
-/** 
+/**
  * gtk_databox_get_type
  *
  * Determines the #GType of the GtkDatabox widget type.
@@ -168,12 +168,12 @@ gtk_databox_class_init (GtkDataboxClass * class)
    /**
     * GtkDatabox:enable-selection:
     *
-    * Defines whether the user can select 
-    * rectangular areas with the mouse (#TRUE) or not (#FALSE). 
+    * Defines whether the user can select
+    * rectangular areas with the mouse (#TRUE) or not (#FALSE).
     *
     */
    g_object_class_install_property (gobject_class,
-         ENABLE_SELECTION, 
+         ENABLE_SELECTION,
          g_param_spec_boolean ("enable-selection",
             "Enable Selection",
             "Enable selection of areas via mouse (TRUE/FALSE)",
@@ -187,7 +187,7 @@ gtk_databox_class_init (GtkDataboxClass * class)
     *
     */
    g_object_class_install_property (gobject_class,
-         ENABLE_ZOOM, 
+         ENABLE_ZOOM,
          g_param_spec_boolean ("enable-zoom",
             "Enable Zoom",
             "Enable zooming in or out via mouse click (TRUE/FALSE)",
@@ -197,13 +197,13 @@ gtk_databox_class_init (GtkDataboxClass * class)
    /**
     * GtkDatabox:adjustment_x:
     *
-    * The #GtkAdjustment associated with the horizontal scrollbar. The #GtkDatabox widget 
-    * creates a GtkAdjustment itself. Normally there is no need for you to create another 
+    * The #GtkAdjustment associated with the horizontal scrollbar. The #GtkDatabox widget
+    * creates a GtkAdjustment itself. Normally there is no need for you to create another
     * GtkAdjustment. You could simply use the one you get via gtk_databox_get_adjustment_x().
     *
     */
    g_object_class_install_property (gobject_class,
-         ADJUSTMENT_X, 
+         ADJUSTMENT_X,
          g_param_spec_object ("adjustment-x",
             "Horizontal Adjustment",
             "GtkAdjustment for horizontal scrolling",
@@ -213,8 +213,8 @@ gtk_databox_class_init (GtkDataboxClass * class)
    /**
     * GtkDatabox:adjustment_y:
     *
-    * The #GtkAdjustment associated with the vertical scrollbar. The #GtkDatabox widget 
-    * creates a GtkAdjustment itself. Normally there is no need for you to create another 
+    * The #GtkAdjustment associated with the vertical scrollbar. The #GtkDatabox widget
+    * creates a GtkAdjustment itself. Normally there is no need for you to create another
     * GtkAdjustment. You could simply use the one you get via gtk_databox_get_adjustment_y().
     *
     */
@@ -233,7 +233,7 @@ gtk_databox_class_init (GtkDataboxClass * class)
     *
     */
    g_object_class_install_property (gobject_class,
-         RULER_X, 
+         RULER_X,
          g_param_spec_object ("ruler-x",
             "Horizontal Ruler",
             "A horizontal GtkDataboxRuler or NULL",
@@ -247,7 +247,7 @@ gtk_databox_class_init (GtkDataboxClass * class)
     *
     */
    g_object_class_install_property (gobject_class,
-         RULER_Y, 
+         RULER_Y,
          g_param_spec_object ("ruler-y",
             "Vertical Ruler",
             "A vertical GtkDataboxRuler or NULL",
@@ -287,14 +287,14 @@ gtk_databox_class_init (GtkDataboxClass * class)
     * GtkDatabox::zoomed:
     * @box: The #GtkDatabox widget which zoomed in or out.
     *
-    * This signal is emitted each time the zoom of the widget is changed, see for example 
+    * This signal is emitted each time the zoom of the widget is changed, see for example
     * gtk_databox_zoom_to_selection(), gtk_databox_set_visible_limits().
     */
-   gtk_databox_signals[ZOOMED_SIGNAL] = 
-      g_signal_new ("zoomed", 
-            G_TYPE_FROM_CLASS (gobject_class), 
-            G_SIGNAL_RUN_FIRST, 
-            G_STRUCT_OFFSET (GtkDataboxClass, zoomed), 
+   gtk_databox_signals[ZOOMED_SIGNAL] =
+      g_signal_new ("zoomed",
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_FIRST,
+            G_STRUCT_OFFSET (GtkDataboxClass, zoomed),
             NULL,	/* accumulator */
 	    NULL,	/* accumulator_data */
 	    gtk_databox_marshal_VOID__VOID,
@@ -305,17 +305,17 @@ gtk_databox_class_init (GtkDataboxClass * class)
     * @box: The #GtkDatabox widget in which the selection has been started.
     * @selection_values: The corners of the selection rectangle.
     *
-    * This signal is emitted when the mouse is firstmoved 
-    * with the left button pressed after the mouse-down (and the #GtkDatabox:enable-selection property 
+    * This signal is emitted when the mouse is firstmoved
+    * with the left button pressed after the mouse-down (and the #GtkDatabox:enable-selection property
     * is set). The corners of the selection rectangle are stored in @selection_values.
     *
     * @see_also: #GtkDatabox::selection-changed
     */
-   gtk_databox_signals[SELECTION_STARTED_SIGNAL] = 
-      g_signal_new ("selection-started", 
-            G_TYPE_FROM_CLASS (gobject_class), 
-            G_SIGNAL_RUN_FIRST, 
-            G_STRUCT_OFFSET (GtkDataboxClass, selection_started), 
+   gtk_databox_signals[SELECTION_STARTED_SIGNAL] =
+      g_signal_new ("selection-started",
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_FIRST,
+            G_STRUCT_OFFSET (GtkDataboxClass, selection_started),
             NULL,	/* accumulator */
 	    NULL,	/* accumulator_data */
 	    gtk_databox_marshal_VOID__POINTER,
@@ -328,15 +328,15 @@ gtk_databox_class_init (GtkDataboxClass * class)
     * @box: The #GtkDatabox widget in which the selection was changed.
     * @selection_values: The corners of the selection rectangle.
     *
-    * This signal is emitted when the mouse is moved 
-    * with the left button pressed (and the #GtkDatabox:enable-selection property 
+    * This signal is emitted when the mouse is moved
+    * with the left button pressed (and the #GtkDatabox:enable-selection property
     * is set). The corners of the selection rectangle are stored in @selection_values.
     */
-   gtk_databox_signals[SELECTION_CHANGED_SIGNAL] = 
-      g_signal_new ("selection-changed", 
-            G_TYPE_FROM_CLASS (gobject_class), 
-            G_SIGNAL_RUN_FIRST, 
-            G_STRUCT_OFFSET (GtkDataboxClass, selection_changed), 
+   gtk_databox_signals[SELECTION_CHANGED_SIGNAL] =
+      g_signal_new ("selection-changed",
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_FIRST,
+            G_STRUCT_OFFSET (GtkDataboxClass, selection_changed),
             NULL,	/* accumulator */
 	    NULL,	/* accumulator_data */
 	    gtk_databox_marshal_VOID__POINTER,
@@ -354,11 +354,11 @@ gtk_databox_class_init (GtkDataboxClass * class)
     *
     * @see_also: #GtkDatabox::selection-changed
     */
-    gtk_databox_signals[SELECTION_FINALIZED_SIGNAL] = 
-       g_signal_new ("selection-finalized", 
-             G_TYPE_FROM_CLASS (gobject_class), 
-             G_SIGNAL_RUN_FIRST, 
-             G_STRUCT_OFFSET (GtkDataboxClass, selection_finalized), 
+    gtk_databox_signals[SELECTION_FINALIZED_SIGNAL] =
+       g_signal_new ("selection-finalized",
+             G_TYPE_FROM_CLASS (gobject_class),
+             G_SIGNAL_RUN_FIRST,
+             G_STRUCT_OFFSET (GtkDataboxClass, selection_finalized),
              NULL,	/* accumulator */
 	     NULL,	/* accumulator_data */
              gtk_databox_marshal_VOID__POINTER,
@@ -370,14 +370,14 @@ gtk_databox_class_init (GtkDataboxClass * class)
     * GtkDatabox::selection-canceled:
     * @box: The #GtkDatabox widget which zoomed in or out.
     *
-    * This signal is emitted after a right click outside 
+    * This signal is emitted after a right click outside
     * a selection rectangle.
     */
-    gtk_databox_signals[SELECTION_CANCELED_SIGNAL] = 
-       g_signal_new ("selection-canceled", 
-             G_TYPE_FROM_CLASS (gobject_class), 
-             G_SIGNAL_RUN_FIRST, 
-             G_STRUCT_OFFSET (GtkDataboxClass, selection_canceled), 
+    gtk_databox_signals[SELECTION_CANCELED_SIGNAL] =
+       g_signal_new ("selection-canceled",
+             G_TYPE_FROM_CLASS (gobject_class),
+             G_SIGNAL_RUN_FIRST,
+             G_STRUCT_OFFSET (GtkDataboxClass, selection_canceled),
              NULL,	/* accumulator */
              NULL,	/* accumulator_data */
 	     gtk_databox_marshal_VOID__VOID,
@@ -415,7 +415,7 @@ gtk_databox_init (GtkDatabox * box)
    gtk_databox_set_total_limits(box, -1., 1., 1., -1.);
 }
 
-/** 
+/**
  * gtk_databox_new
  *
  * Creates a new #GtkDatabox widget.
@@ -644,7 +644,7 @@ gtk_databox_unrealize (GtkWidget * widget)
 }
 
 
-/** 
+/**
  * gtk_databox_set_enable_selection
  * @box: A #GtkDatabox widget
  * @enable: Whether selection via mouse is enabled or not.
@@ -666,7 +666,7 @@ gtk_databox_set_enable_selection (GtkDatabox * box, gboolean enable)
    g_object_notify (G_OBJECT (box), "enable-selection");
 }
 
-/** 
+/**
  * gtk_databox_set_enable_zoom
  * @box: A #GtkDatabox widget
  * @enable: Whether zoom via mouse is enabled or not.
@@ -684,12 +684,12 @@ gtk_databox_set_enable_zoom (GtkDatabox * box, gboolean enable)
    g_object_notify (G_OBJECT (box), "enable-zoom");
 }
 
-/** 
+/**
  * gtk_databox_set_adjustment_x
  * @box: A #GtkDatabox widget
  * @adj: A #GtkAdjustment object
  *
- * Setter function for the #GtkDatabox:adjustment-x property. Normally, it should not be 
+ * Setter function for the #GtkDatabox:adjustment-x property. Normally, it should not be
  * required to use this function, see property documentation.
  *
  */
@@ -730,12 +730,12 @@ gtk_databox_set_adjustment_x (GtkDatabox * box, GtkAdjustment * adj)
    g_object_notify (G_OBJECT (box), "adjustment-x");
 }
 
-/** 
+/**
  * gtk_databox_set_adjustment_y
  * @box: A #GtkDatabox widget
  * @adj: A #GtkAdjustment object
  *
- * Setter function for the #GtkDatabox:adjustment-y property. Normally, it should not be 
+ * Setter function for the #GtkDatabox:adjustment-y property. Normally, it should not be
  * required to use this function, see property documentation.
  *
  */
@@ -776,7 +776,7 @@ gtk_databox_set_adjustment_y (GtkDatabox * box, GtkAdjustment * adj)
    g_object_notify (G_OBJECT (box), "adjustment-y");
 }
 
-/** 
+/**
  * gtk_databox_set_ruler_x
  * @box: A #GtkDatabox widget
  * @ruler: A #GtkDataboxRuler object
@@ -815,7 +815,7 @@ gtk_databox_set_ruler_x (GtkDatabox * box, GtkDataboxRuler * ruler)
    g_object_notify (G_OBJECT (box), "ruler-x");
 }
 
-/** 
+/**
  * gtk_databox_set_ruler_y
  * @box: A #GtkDatabox widget
  * @ruler: An #GtkDataboxRuler object
@@ -854,7 +854,7 @@ gtk_databox_set_ruler_y (GtkDatabox * box, GtkDataboxRuler * ruler)
    g_object_notify (G_OBJECT (box), "ruler-y");
 }
 
-/** 
+/**
  * gtk_databox_set_scale_type_x
  * @box: A #GtkDatabox widget
  * @scale_type: An #GtkDataboxScaleType (linear or logarithmic)
@@ -874,7 +874,7 @@ gtk_databox_set_scale_type_x (GtkDatabox * box,
    g_object_notify (G_OBJECT (box), "scale-type-x");
 }
 
-/** 
+/**
  * gtk_databox_set_scale_type_y
  * @box: A #GtkDatabox widget
  * @scale_type: An #GtkDataboxScaleType (linear or logarithmic)
@@ -887,14 +887,14 @@ gtk_databox_set_scale_type_y (GtkDatabox * box,
 			      GtkDataboxScaleType scale_type)
 {
    box->priv->scale_type_y = scale_type;
-   
+
    if (box->priv->ruler_y)
       gtk_databox_ruler_set_scale_type (box->priv->ruler_y, scale_type);
 
    g_object_notify (G_OBJECT (box), "scale-type-y");
 }
 
-/** 
+/**
  * gtk_databox_get_enable_selection
  * @box: A #GtkDatabox widget.
  *
@@ -911,7 +911,7 @@ gtk_databox_get_enable_selection (GtkDatabox * box)
    return box->priv->enable_selection;
 }
 
-/** 
+/**
  * gtk_databox_get_enable_zoom
  * @box: A #GtkDatabox widget.
  *
@@ -928,7 +928,7 @@ gtk_databox_get_enable_zoom (GtkDatabox * box)
    return box->priv->enable_zoom;
 }
 
-/** 
+/**
  * gtk_databox_get_adjustment_x
  * @box: A #GtkDatabox widget.
  *
@@ -945,7 +945,7 @@ gtk_databox_get_adjustment_x (GtkDatabox * box)
    return box->priv->adj_x;
 }
 
-/** 
+/**
  * gtk_databox_get_adjustment_y
  * @box: A #GtkDatabox widget.
  *
@@ -962,7 +962,7 @@ gtk_databox_get_adjustment_y (GtkDatabox * box)
    return box->priv->adj_y;
 }
 
-/** 
+/**
  * gtk_databox_get_ruler_x
  * @box: A #GtkDatabox widget.
  *
@@ -979,7 +979,7 @@ gtk_databox_get_ruler_x (GtkDatabox * box)
    return box->priv->ruler_x;
 }
 
-/** 
+/**
  * gtk_databox_get_ruler_y
  * @box: A #GtkDatabox widget.
  *
@@ -996,7 +996,7 @@ gtk_databox_get_ruler_y (GtkDatabox * box)
    return box->priv->ruler_y;
 }
 
-/** 
+/**
  * gtk_databox_get_scale_type_x
  * @box: A #GtkDatabox widget.
  *
@@ -1011,7 +1011,7 @@ gtk_databox_get_scale_type_x (GtkDatabox * box)
    return box->priv->scale_type_x;
 }
 
-/** 
+/**
  * gtk_databox_get_scale_type_y
  * @box: A #GtkDatabox widget.
  *
@@ -1083,11 +1083,11 @@ gtk_databox_create_backing_pixmap(GtkDatabox * box)
 					  widget->allocation.height, -1);
 }
 
-/** 
+/**
  * gtk_databox_get_backing_pixmap:
  * @box: A #GtkDatabox widget
  *
- * This function returns the pixmap which is used by @box and its #GtkDataboxGraph objects 
+ * This function returns the pixmap which is used by @box and its #GtkDataboxGraph objects
  * for drawing operations before copying the result to the screen.
  *
  * The function is typically called by the #GtkDataboxGraph objects.
@@ -1132,7 +1132,7 @@ gtk_databox_expose (GtkWidget * widget, GdkEventExpose * event)
    GtkDatabox *box = GTK_DATABOX (widget);
    GList *list;
 
-   gdk_draw_rectangle (box->priv->backing_pixmap, 
+   gdk_draw_rectangle (box->priv->backing_pixmap,
                        widget->style->bg_gc[0],
 		       TRUE, 0, 0,
 		       widget->allocation.width,
@@ -1160,9 +1160,9 @@ gtk_databox_expose (GtkWidget * widget, GdkEventExpose * event)
 
    gdk_draw_drawable (widget->window,
 		      widget->style->fg_gc[gtk_widget_get_state (widget)],
-		      box->priv->backing_pixmap, 
+		      box->priv->backing_pixmap,
                       event->area.x, event->area.y,
-		      event->area.x, event->area.y, 
+		      event->area.x, event->area.y,
                       event->area.width,
 		      event->area.height);
 
@@ -1379,14 +1379,14 @@ gtk_databox_zoomed (GtkDatabox * box)
 		  gtk_databox_signals[ZOOMED_SIGNAL], 0, NULL);
 }
 
-/** 
+/**
  * gtk_databox_zoom_to_selection:
  * @box: A #GtkDatabox widget
  *
  * This is equivalent to left-clicking into the selected area.
  *
- * This function works, if the attribute #enable-zoom is set to #TRUE. Calling the function 
- * then zooms to the area selected with the mouse. 
+ * This function works, if the attribute #enable-zoom is set to #TRUE. Calling the function
+ * then zooms to the area selected with the mouse.
  *
  * Side effect: The @box emits #GtkDatabox::zoomed.
  */
@@ -1449,16 +1449,16 @@ gtk_databox_zoom_to_selection (GtkDatabox * box)
    gtk_databox_zoomed (box);
 }
 
-/** 
+/**
  * gtk_databox_zoom_out:
  * @box: A #GtkDatabox widget
  *
  * This is equivalent to right-clicking into the @box.
  *
- * This function works, if the attribute #enable-zoom is set to #TRUE. Calling the function 
- * then zooms out by a factor of 2 in both dimensions (the maximum is defined by the total 
+ * This function works, if the attribute #enable-zoom is set to #TRUE. Calling the function
+ * then zooms out by a factor of 2 in both dimensions (the maximum is defined by the total
  * limits, see gtk_databox_set_total_limits()).
- * 
+ *
  * Side effect: The @box emits #GtkDatabox::zoomed.
  */
 void
@@ -1486,15 +1486,15 @@ gtk_databox_zoom_out (GtkDatabox * box)
    gtk_databox_zoomed (box);
 }
 
-/** 
+/**
  * gtk_databox_zoom_home:
  * @box: A #GtkDatabox widget
  *
  * This is equivalent to shift right-clicking into the @box.
  *
- * This function works, if the attribute #enable-zoom is set to #TRUE. It is equivalent to 
+ * This function works, if the attribute #enable-zoom is set to #TRUE. It is equivalent to
  * calling the gtk_databox_set_visible_limits() with the total limits.
- * 
+ *
  */
 void
 gtk_databox_zoom_home (GtkDatabox * box)
@@ -1504,8 +1504,8 @@ gtk_databox_zoom_home (GtkDatabox * box)
       return;
    }
 
-   gtk_databox_set_visible_limits (box, 
-         box->priv->total_left, box->priv->total_right, 
+   gtk_databox_set_visible_limits (box,
+         box->priv->total_left, box->priv->total_right,
          box->priv->total_top, box->priv->total_bottom);
 }
 
@@ -1578,15 +1578,15 @@ gtk_databox_ruler_update (GtkDatabox * box)
    }
 }
 
-/** 
+/**
  * gtk_databox_auto_rescale:
  * @box: A #GtkDatabox widget
  * @border: Relative border width (e.g. 0.1 means that the border on each side is 10% of the data area).
  *
- * This function is similar to gtk_databox_set_total_limits(). It sets the total limits 
- * to match the data extrema (see gtk_databox_calculate_extrema()). If you do not like data pixels exactly at the 
- * widget's border, you can add modify the limits using the border parameter: The limits are extended by  
- * @border*(max-min) if max!=min. If max==min, they are extended by @border*max (otherwise the data could not be 
+ * This function is similar to gtk_databox_set_total_limits(). It sets the total limits
+ * to match the data extrema (see gtk_databox_calculate_extrema()). If you do not like data pixels exactly at the
+ * widget's border, you can add modify the limits using the border parameter: The limits are extended by
+ * @border*(max-min) if max!=min. If max==min, they are extended by @border*max (otherwise the data could not be
  * scaled to the pixel realm).
  *
  * After calling this function, x values grow from left to right, y values grow from bottom to top.
@@ -1627,7 +1627,7 @@ gtk_databox_auto_rescale (GtkDatabox * box, gfloat border)
 }
 
 
-/** 
+/**
  * gtk_databox_calculate_extrema:
  * @box: A #GtkDatabox widget
  * @min_x: Will be filled with the lowest x value of all datasets
@@ -1635,7 +1635,7 @@ gtk_databox_auto_rescale (GtkDatabox * box, gfloat border)
  * @min_y: Will be filled with the lowest y value of all datasets
  * @max_y: Will be filled with the highest y value of all datasets
  *
- * Determines the minimum and maximum x and y values of all 
+ * Determines the minimum and maximum x and y values of all
  * #GtkDataboxGraph objects which have been added to the #GtkDatabox widget via gtk_databox_graph_add().
  *
  * Return value: 0 on success,
@@ -1682,7 +1682,7 @@ gtk_databox_calculate_extrema (GtkDatabox * box,
 
 	 if (first)
 	 {
-	    /* The min and max values need to be initialized with the 
+	    /* The min and max values need to be initialized with the
 	     * first valid values from the graph
 	     */
 	    *min_x = graph_min_x;
@@ -1763,7 +1763,7 @@ gtk_databox_get_page_size_y (GtkDatabox* box)
 	 / log10 (box->priv->total_top / box->priv->total_bottom);
 }
 
-/** 
+/**
  * gtk_databox_set_total_limits:
  * @box: A #GtkDatabox widget
  * @left: Left total limit
@@ -1771,9 +1771,9 @@ gtk_databox_get_page_size_y (GtkDatabox* box)
  * @top: Top total limit
  * @bottom: Bottom total limit
  *
- * This function is used to set the limits of the total 
+ * This function is used to set the limits of the total
  * display area of @box.
- * This function can be used to invert the orientation of the displayed graphs, 
+ * This function can be used to invert the orientation of the displayed graphs,
  * e.g. @top=-1000 and  @bottom=0.
  *
  * Side effect: The @box also internally calls gtk_databox_set_visible_limits() with the same values.
@@ -1796,7 +1796,7 @@ gtk_databox_set_total_limits (GtkDatabox * box,
    gtk_databox_set_visible_limits(box, left, right, top, bottom);
 }
 
-/** 
+/**
  * gtk_databox_set_visible_limits:
  * @box: A #GtkDatabox widget
  * @left: Left visible limit
@@ -1804,12 +1804,12 @@ gtk_databox_set_total_limits (GtkDatabox * box,
  * @top: Top visible limit
  * @bottom: Bottom visible limit
  *
- * This function is used to set the limits of the visible 
- * display area of @box. The visible display area can be section of the total 
+ * This function is used to set the limits of the visible
+ * display area of @box. The visible display area can be section of the total
  * area, i.e. the @box zooms in, showing only a part of the complete picture.
  *
- * The orientation of the values have to be the same as in gtk_databox_set_total_limits() and 
- * the visible limits have to be within the total limits. The 
+ * The orientation of the values have to be the same as in gtk_databox_set_total_limits() and
+ * the visible limits have to be within the total limits. The
  * values will not be used otherwise.
  *
  * Side effect: The @box emits #GtkDatabox::zoomed.
@@ -1857,7 +1857,7 @@ gtk_databox_set_visible_limits (GtkDatabox * box,
    gtk_databox_zoomed (box);
 }
 
-/** 
+/**
  * gtk_databox_calculate_visible_limits:
  * @box: A #GtkDatabox widget
  *
@@ -1873,51 +1873,51 @@ gtk_databox_calculate_visible_limits (GtkDatabox * box)
    if (box->priv->scale_type_x == GTK_DATABOX_SCALE_LINEAR)
    {
       box->priv->visible_left =
-           box->priv->total_left 
-           + (box->priv->total_right - box->priv->total_left) 
+           box->priv->total_left
+           + (box->priv->total_right - box->priv->total_left)
            * box->priv->adj_x->value;
       box->priv->visible_right =
-           box->priv->total_left 
-           + (box->priv->total_right - box->priv->total_left) 
+           box->priv->total_left
+           + (box->priv->total_right - box->priv->total_left)
            * (box->priv->adj_x->value + box->priv->adj_x->page_size);
    }
    else
    {
       box->priv->visible_left =
-            box->priv->total_left 
-            * pow (box->priv->total_right / box->priv->total_left, 
+            box->priv->total_left
+            * pow (box->priv->total_right / box->priv->total_left,
                   box->priv->adj_x->value);
       box->priv->visible_right =
-            box->priv->total_left 
-            * pow (box->priv->total_right / box->priv->total_left, 
+            box->priv->total_left
+            * pow (box->priv->total_right / box->priv->total_left,
                    box->priv->adj_x->value + box->priv->adj_x->page_size);
    }
 
    if (box->priv->scale_type_y == GTK_DATABOX_SCALE_LINEAR)
    {
       box->priv->visible_top =
-           box->priv->total_top 
-           + (box->priv->total_bottom - box->priv->total_top) 
+           box->priv->total_top
+           + (box->priv->total_bottom - box->priv->total_top)
            * box->priv->adj_y->value;
       box->priv->visible_bottom =
-           box->priv->total_top 
-           + (box->priv->total_bottom - box->priv->total_top) 
+           box->priv->total_top
+           + (box->priv->total_bottom - box->priv->total_top)
            * (box->priv->adj_y->value + box->priv->adj_y->page_size);
    }
    else
    {
       box->priv->visible_top =
-            box->priv->total_top 
-            * pow (box->priv->total_bottom / box->priv->total_top, 
+            box->priv->total_top
+            * pow (box->priv->total_bottom / box->priv->total_top,
                    box->priv->adj_y->value),
       box->priv->visible_bottom =
-            box->priv->total_top 
-            * pow (box->priv->total_bottom / box->priv->total_top, 
+            box->priv->total_top
+            * pow (box->priv->total_bottom / box->priv->total_top,
                   box->priv->adj_y->value + box->priv->adj_y->page_size);
    }
 
    /* Adjustments are the basis for the calculations in this function
-    * so they do not need to be updated 
+    * so they do not need to be updated
     */
 
    /* Update rulers */
@@ -1926,7 +1926,7 @@ gtk_databox_calculate_visible_limits (GtkDatabox * box)
    gtk_databox_calculate_translation_factors (box);
 }
 
-/** 
+/**
  * gtk_databox_get_total_limits:
  * @box: A #GtkDatabox widget
  * @left: Space for total left value or #NULL
@@ -1953,7 +1953,7 @@ gtk_databox_get_total_limits (GtkDatabox * box,
       *bottom = box->priv->total_bottom;
 }
 
-/** 
+/**
  * gtk_databox_get_visible_limits:
  * @box: A #GtkDatabox widget
  * @left: Space for visible left value or #NULL
@@ -1961,7 +1961,7 @@ gtk_databox_get_total_limits (GtkDatabox * box,
  * @top: Space for visible top value or #NULL
  * @bottom: Space for visible bottom value or #NULL
  *
- * Gives the current visible limits. These differ from those given by gtk_databox_get_total_limits() if 
+ * Gives the current visible limits. These differ from those given by gtk_databox_get_total_limits() if
  * you zoomed into the data for instance by gtk_databox_zoom_to_selection() or gtk_databox_set_visible_limits() (these values
  * can be changed by scrolling, of course).
  */
@@ -1983,7 +1983,7 @@ gtk_databox_get_visible_limits (GtkDatabox * box,
 }
 
 
-/** 
+/**
  * gtk_databox_graph_add:
  * @box: A #GtkDatabox widget
  * @graph: A graph, e.g. a #GtkDataboxPoints or a #GtkDataboxGrid object
@@ -2005,12 +2005,34 @@ gtk_databox_graph_add (GtkDatabox * box, GtkDataboxGraph * graph)
    return (box->priv->graphs == NULL) ? -1 : 0;
 }
 
-/** 
+/**
+ * gtk_databox_graph_add_front:
+ * @box: A #GtkDatabox widget
+ * @graph: A graph, e.g. a #GtkDataboxPoints or a #GtkDataboxGrid object
+ *
+ * Adds the @graph to the @box and will be plotted on top. The next time the @box is re-drawn, the graph will be shown.
+ *
+ * It might be becessary to modify the total_limits in order for the graph to be displayed properly (see gtk_databox_set_total_limits()).
+ *
+ * Return value: 0 on success, -1 otherwise
+ */
+gint
+gtk_databox_graph_add_front (GtkDatabox * box, GtkDataboxGraph * graph)
+{
+   g_return_val_if_fail (GTK_IS_DATABOX (box), -1);
+   g_return_val_if_fail (GTK_DATABOX_IS_GRAPH (graph), -1);
+
+   box->priv->graphs = g_list_prepend (box->priv->graphs, graph);
+
+   return (box->priv->graphs == NULL) ? -1 : 0;
+}
+
+/**
  * gtk_databox_graph_remove:
  * @box: A #GtkDatabox widget
  * @graph: A graph, e.g. a #GtkDataboxPoints or a #GtkDataboxGrid object
  *
- * Removes the @graph from the @box once. The next time the @box is re-drawn, the graph will not be shown (unless it was added more 
+ * Removes the @graph from the @box once. The next time the @box is re-drawn, the graph will not be shown (unless it was added more
  * than once).
  *
  * Return value: 0 on success, -1 otherwise
@@ -2031,7 +2053,7 @@ gtk_databox_graph_remove (GtkDatabox * box, GtkDataboxGraph * graph)
    return 0;
 }
 
-/** 
+/**
  * gtk_databox_graph_remove_all:
  * @box: A #GtkDatabox widget
  *
@@ -2051,7 +2073,7 @@ gtk_databox_graph_remove_all (GtkDatabox * box)
    return 0;
 }
 
-/** 
+/**
  * gtk_databox_values_to_pixels:
  * @box: A #GtkDatabox widget
  * @len: Number of values/pixels
@@ -2099,7 +2121,7 @@ gtk_databox_values_to_pixels (GtkDatabox * box, guint len,
    }
 }
 
-/** 
+/**
  * gtk_databox_value_to_pixel_x:
  * @box: A #GtkDatabox widget
  * @value: An x value
@@ -2124,7 +2146,7 @@ gtk_databox_value_to_pixel_x (GtkDatabox * box, gfloat value)
 	 box->priv->translation_factor_x;
 }
 
-/** 
+/**
  * gtk_databox_value_to_pixel_y:
  * @box: A #GtkDatabox widget
  * @value: A y value
@@ -2148,7 +2170,7 @@ gtk_databox_value_to_pixel_y (GtkDatabox * box, gfloat value)
 	 box->priv->translation_factor_y;
 }
 
-/** 
+/**
  * gtk_databox_pixel_to_value_x:
  * @box: A #GtkDatabox widget
  * @pixel: A horizontal pixel coordinate
@@ -2176,7 +2198,7 @@ gtk_databox_pixel_to_value_x (GtkDatabox * box, gint16 pixel)
 					       translation_factor_x);
 }
 
-/** 
+/**
  * gtk_databox_pixel_to_value_y:
  * @box: A #GtkDatabox widget
  * @pixel: A vertical pixel coordinate
@@ -2204,7 +2226,7 @@ gtk_databox_pixel_to_value_y (GtkDatabox * box, gint16 pixel)
 					      translation_factor_y);
 }
 
-/** 
+/**
  * gtk_databox_create_box_with_scrollbars_and_rulers:
  * @p_box: Will contain a pointer to a #GtkDatabox widget
  * @p_table: Will contain a pointer to a #GtkTable widget
@@ -2213,8 +2235,8 @@ gtk_databox_pixel_to_value_y (GtkDatabox * box, gint16 pixel)
  * @ruler_x: Whether to attach a horizontal ruler
  * @ruler_y: Whether to attach a vertical ruler
  *
- * This is a convenience function which creates a #GtkDatabox widget in a 
- * GtkTable widget optionally accompanied by scrollbars and rulers. You only 
+ * This is a convenience function which creates a #GtkDatabox widget in a
+ * GtkTable widget optionally accompanied by scrollbars and rulers. You only
  * have to fill in the data (gtk_databox_graph_add()) and adjust the limits
  * (gtk_databox_set_total_limits() or gtk_databox_auto_rescale()).
  *

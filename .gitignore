@@ -1,4 +1,6 @@
 autom4te.cache
+Makefile.in
+*/Makefile.in
 Makefile
 */Makefile
 */*/Makefile
@@ -17,6 +19,12 @@ examples/lissajous
 examples/Makefile
 examples/markers
 examples/signals
+examples/basics
+examples/basics2
+examples/basics_libglade
+examples/colors
+examples/keycontrol
+examples/logarithmic
 .gitignore~
 config.*
 libtool

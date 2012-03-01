@@ -6,12 +6,12 @@
  * modify it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation; either version 2.1
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -32,21 +32,21 @@
  * @include: gtkdatabox.h
  * @see_also: #GtkDataboxGraph, #GtkDataboxPoints, #GtkDataboxLines, #GtkDataboxMarkers, #GtkDataboxGrid
  *
- * #GtkDatabox is a widget for the GTK+ library designed to display 
- * large amounts of numerical data quickly and easily. It allows 
- * for one or more data sets of thousands of data points (X and Y coordinates) 
- * to be displayed and updated in split seconds. 
- * 
- * It offers the ability to zoom into and out of the data, and to navigate 
- * through your data by scrolling. 
+ * #GtkDatabox is a widget for the GTK+ library designed to display
+ * large amounts of numerical data quickly and easily. It allows
+ * for one or more data sets of thousands of data points (X and Y coordinates)
+ * to be displayed and updated in split seconds.
  *
- * In addition to rulers and a simple 
- * coordinate cross, it allows you to add one (or even more) configurable grids 
- * like on an oscilloscope. 
- * 
- * Data may be presented as dots, lines connecting the data, 
- * or vertical bars. The widget allows you to easily transform pixel 
- * coordinates into data coordinates, thus allowing you to easily create 
+ * It offers the ability to zoom into and out of the data, and to navigate
+ * through your data by scrolling.
+ *
+ * In addition to rulers and a simple
+ * coordinate cross, it allows you to add one (or even more) configurable grids
+ * like on an oscilloscope.
+ *
+ * Data may be presented as dots, lines connecting the data,
+ * or vertical bars. The widget allows you to easily transform pixel
+ * coordinates into data coordinates, thus allowing you to easily create
  * powerful applications for data analysis.
  *
  **/
@@ -74,7 +74,7 @@ G_BEGIN_DECLS
     * GtkDataboxPrivate
     *
     * A private data structure used by the #GtkDatabox. It shields all internal things
-    * from developers who are just using the widget. 
+    * from developers who are just using the widget.
     *
     **/
    typedef struct _GtkDataboxPrivate GtkDataboxPrivate;
@@ -89,7 +89,7 @@ G_BEGIN_DECLS
 
    /**
     * _GtkDatabox
-    * @box: The parent object 
+    * @box: The parent object
     * @priv: A private structure containing internal data.
     *
     * Implementation of #GtkDatabox.
@@ -123,6 +123,8 @@ G_BEGIN_DECLS
    GtkWidget *gtk_databox_new (void);
 
    gint gtk_databox_graph_add (GtkDatabox * box, GtkDataboxGraph * graph);
+   gint gtk_databox_graph_add_front (GtkDatabox * box, GtkDataboxGraph * graph);
+
    gint gtk_databox_graph_remove (GtkDatabox * box, GtkDataboxGraph * graph);
    gint gtk_databox_graph_remove_all (GtkDatabox * box);
 
@@ -189,7 +191,7 @@ G_BEGIN_DECLS
 							   gboolean scrollbar_y,
 							   gboolean ruler_x,
 							   gboolean ruler_y);
-   
+
    /* Used by graph objects */
    GdkPixmap* gtk_databox_get_backing_pixmap(GtkDatabox * box);
 

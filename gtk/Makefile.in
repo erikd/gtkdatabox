@@ -74,10 +74,11 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 libgtkdatabox_la_LIBADD =
 am_libgtkdatabox_la_OBJECTS = gtkdatabox.lo gtkdatabox_marshal.lo \
 	gtkdatabox_scale.lo gtkdatabox_graph.lo \
-	gtkdatabox_xyc_graph.lo gtkdatabox_points.lo \
-	gtkdatabox_lines.lo gtkdatabox_bars.lo gtkdatabox_markers.lo \
-	gtkdatabox_cross_simple.lo gtkdatabox_grid.lo \
-	gtkdatabox_ruler.lo
+	gtkdatabox_xyc_graph.lo gtkdatabox_xyyc_graph.lo \
+	gtkdatabox_points.lo gtkdatabox_lines.lo gtkdatabox_bars.lo \
+	gtkdatabox_offset_bars.lo gtkdatabox_regions.lo \
+	gtkdatabox_markers.lo gtkdatabox_cross_simple.lo \
+	gtkdatabox_grid.lo gtkdatabox_ruler.lo
 libgtkdatabox_la_OBJECTS = $(am_libgtkdatabox_la_OBJECTS)
 libgtkdatabox_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
@@ -249,12 +250,15 @@ libgtkdatabox_la_SOURCES = \
 			gtkdatabox_scale.c\
 			gtkdatabox_graph.c\
 			gtkdatabox_xyc_graph.c\
+			gtkdatabox_xyyc_graph.c\
  			gtkdatabox_points.c\
-                        gtkdatabox_lines.c\
-                        gtkdatabox_bars.c\
+            gtkdatabox_lines.c\
+            gtkdatabox_bars.c\
+            gtkdatabox_offset_bars.c\
+            gtkdatabox_regions.c\
 			gtkdatabox_markers.c\
-                        gtkdatabox_cross_simple.c\
-                        gtkdatabox_grid.c\
+            gtkdatabox_cross_simple.c\
+            gtkdatabox_grid.c\
 			gtkdatabox_ruler.c
 
 libgtkdatabox_la_LDFLAGS = \
@@ -269,12 +273,15 @@ include_HEADERS = \
 			gtkdatabox_scale.h\
 			gtkdatabox_graph.h\
 			gtkdatabox_xyc_graph.h\
+			gtkdatabox_xyyc_graph.h\
  			gtkdatabox_points.h\
-                        gtkdatabox_lines.h\
-                        gtkdatabox_bars.h\
+            gtkdatabox_lines.h\
+            gtkdatabox_bars.h\
+            gtkdatabox_offset_bars.h\
+            gtkdatabox_regions.h\
 			gtkdatabox_markers.h\
-                        gtkdatabox_cross_simple.h\
-                        gtkdatabox_grid.h\
+            gtkdatabox_cross_simple.h\
+            gtkdatabox_grid.h\
 			gtkdatabox_ruler.h
 
 EXTRA_DIST = gtkdatabox_marshal.list
@@ -375,10 +382,13 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtkdatabox_lines.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtkdatabox_markers.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtkdatabox_marshal.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtkdatabox_offset_bars.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtkdatabox_points.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtkdatabox_regions.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtkdatabox_ruler.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtkdatabox_scale.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtkdatabox_xyc_graph.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtkdatabox_xyyc_graph.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
