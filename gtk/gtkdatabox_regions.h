@@ -83,8 +83,7 @@ G_BEGIN_DECLS
 
    GType gtk_databox_regions_get_type (void);
 
-   GtkDataboxGraph *gtk_databox_regions_new (guint len, gfloat * X, gfloat * Y1, gfloat * Y2,
-					  GdkColor * color, guint size);
+   GtkDataboxGraph *gtk_databox_regions_new (guint len, gfloat * X, gfloat * Y1, gfloat * Y2, GdkColor * color);
 
 G_END_DECLS
 #endif				/* __GTK_DATABOX_REGIONS_H__ */

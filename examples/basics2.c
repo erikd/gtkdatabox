@@ -220,7 +220,7 @@ create_basics (void)
    color.green = 0.25*65535;
    color.blue = 0.5*65535;
 
-   graph = gtk_databox_regions_new (BARS, X, Y1, Y2, &color, 1);
+   graph = gtk_databox_regions_new (BARS, X, Y1, Y2, &color);
    gtk_databox_graph_add (GTK_DATABOX (box), graph);
 
    /* Instead of doing stuff what you see below, you could call

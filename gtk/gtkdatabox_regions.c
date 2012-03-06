@@ -105,15 +105,13 @@ gtk_databox_regions_get_type (void)
  * @Y1: array of co-ordinates
  * @Y2: array of co-ordinates
  * @color: color of the markers
- * @size: marker size or line width (depending on the @type)
  *
  * Creates a new #GtkDataboxRegions object which can be added to a #GtkDatabox widget
  *
  * Return value: A new #GtkDataboxRegions object
  **/
 GtkDataboxGraph *
-gtk_databox_regions_new (guint len, gfloat * X, gfloat * Y1, gfloat * Y2,
-		      GdkColor * color, guint size)
+gtk_databox_regions_new (guint len, gfloat * X, gfloat * Y1, gfloat * Y2, GdkColor * color)
 {
    GtkDataboxRegions *regions;
    g_return_val_if_fail (X, NULL);
@@ -125,7 +123,7 @@ gtk_databox_regions_new (guint len, gfloat * X, gfloat * Y1, gfloat * Y2,
 			"X-Values", X,
 			"Y1-Values", Y1,
 			"Y2-Values", Y2,
-			"length", len, "color", color, "size", size, NULL);
+			"length", len, "color", color);
 
    return GTK_DATABOX_GRAPH (regions);
 }

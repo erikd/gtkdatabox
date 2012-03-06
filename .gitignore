@@ -1,6 +1,9 @@
+aclocal.m4
+configure
 autom4te.cache
 Makefile.in
 */Makefile.in
+*/*/Makefile.in
 Makefile
 */Makefile
 */*/Makefile
