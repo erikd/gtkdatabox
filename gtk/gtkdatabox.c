@@ -1187,12 +1187,11 @@ gtk_databox_button_press (GtkWidget * widget, GdkEventButton * event)
 {
    GtkDatabox *box = GTK_DATABOX (widget);
 
-   if (event->type != GDK_BUTTON_PRESS)
+   if (event->type != GDK_BUTTON_PRESS && event->type != GDK_2BUTTON_PRESS)
       return FALSE;
 
    box->priv->selection_finalized = FALSE;
-
-   if ((event->button == 1 || event->button == 2))
+   if ((event->button == 1 || event->button == 2) & !(event->type==GDK_2BUTTON_PRESS))
    {
       if (box->priv->selection_active)
       {
@@ -1213,7 +1212,7 @@ gtk_databox_button_press (GtkWidget * widget, GdkEventButton * event)
       }
    }
 
-   if (event->button == 3)
+   if ((event->button == 3) || (event->button == 1 && event->type==GDK_2BUTTON_PRESS))
    {
       if (event->state & GDK_SHIFT_MASK)
       {
