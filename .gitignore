@@ -28,7 +28,8 @@ examples/basics_libglade
 examples/colors
 examples/keycontrol
 examples/logarithmic
+examples/rulers
 .gitignore~
 config.*
 libtool
-
+gtkdatabox/*

@@ -4,6 +4,7 @@ noinst_PROGRAMS         = \
                           basics\
                           basics2\
                           logarithmic\
+                          rulers\
                           keycontrol\
                           colors\
                           markers\
@@ -11,7 +12,7 @@ noinst_PROGRAMS         = \
                           grid_array\
                           signals\
                           lissajous\
-			  basics_libglade \
+			              basics_libglade \
                           enable_disable\
                           addremove
 
@@ -21,6 +22,8 @@ basics_SOURCES          = basics.c
 basics2_SOURCES         = basics2.c
 
 logarithmic_SOURCES     = logarithmic.c
+
+rulers_SOURCES     = rulers.c
 
 keycontrol_SOURCES      = keycontrol.c
 
@@ -58,7 +61,7 @@ AM_CFLAGS			=\
 
 
 LDADD 			= $(top_builddir)/gtk/libgtkdatabox.la\
-		 	@GTK_LIBS@ 
+		 	@GTK_LIBS@
 
 
 if BUILD_LIBGLADE
