@@ -140,5 +140,14 @@ gtk_databox_ruler_get_type (void)
      void gtk_databox_ruler_set_draw_subticks(GtkDataboxRuler * ruler, gboolean draw);
     gboolean gtk_databox_ruler_get_draw_subticks(GtkDataboxRuler * ruler);
 
+     void gtk_databox_ruler_set_invert_edge(GtkDataboxRuler * ruler, gboolean invert);
+    gboolean gtk_databox_ruler_get_invert_edge(GtkDataboxRuler * ruler);
+
+    void gtk_databox_ruler_set_linear_label_format(GtkDataboxRuler * ruler, gchar *format);
+    void gtk_databox_ruler_set_log_label_format(GtkDataboxRuler * ruler, gchar *format);
+
+    gchar* gtk_databox_ruler_get_linear_label_format(GtkDataboxRuler * ruler);
+    gchar* gtk_databox_ruler_get_log_label_format(GtkDataboxRuler * ruler);
+
 G_END_DECLS
 #endif /* __GTK_DATABOX_RULER_H__ */

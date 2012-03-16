@@ -32,9 +32,16 @@
 #include <math.h>
 #include <glib/gprintf.h>
 
+#include <string.h>
+
 #define RULER_SIZE          14
 
 #define ROUND(x) ((int) ((x) + 0.5))
+
+#define FORMAT_LENGTH 20 /* the length of the label format string */
+
+#define LINEAR_FORMAT_MARKUP "%%-+%dg"
+#define LOG_FORMAT_MARKUP "%%-%dg"
 
 static void gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler);
 static void gtk_databox_ruler_draw_pos (GtkDataboxRuler * ruler);
@@ -66,6 +73,9 @@ enum
     PROP_ORIENTATION,
     PROP_TEXT_ORIENTATION,
     PROP_DRAW_SUBTICKS,
+    PROP_INVERT_EDGE,
+    PROP_LINEAR_LABEL_FORMAT,
+    PROP_LOG_LABEL_FORMAT,
     PROP_END_OF_LIST
 };
 
@@ -96,6 +106,12 @@ struct _GtkDataboxRulerPrivate
 
     /* When true draw the subticks */
     gboolean draw_subticks;
+
+    /* Whether the ruler is inverted (i.e. drawn with the edge on the left or right, top or bottom) */
+    gboolean invert_edge;
+
+    /* Strings used to mark up the g_sprintf label format - one for log scaling and one for linear scaling */
+    gchar linear_format[FORMAT_LENGTH], log_format[FORMAT_LENGTH];
 };
 
 G_DEFINE_TYPE (GtkDataboxRuler, gtk_databox_ruler, GTK_TYPE_WIDGET)
@@ -183,6 +199,29 @@ static void gtk_databox_ruler_class_init (GtkDataboxRulerClass * class)
                                              TRUE,
                                              TRUE,
                                              G_PARAM_READWRITE));
+    g_object_class_install_property (gobject_class,
+                                     PROP_INVERT_EDGE,
+                                     g_param_spec_uint ("invert-edge",
+                                             "Invert Edge",
+                                             "Invert the Edge - the edge is drawn inverted: true or false",
+                                             FALSE,
+                                             TRUE,
+                                             FALSE,
+                                             G_PARAM_READWRITE));
+    g_object_class_install_property (gobject_class,
+                                     PROP_LINEAR_LABEL_FORMAT,
+                                     g_param_spec_string ("linear-label-format",
+                                             "Linear Label Format",
+                                             "Linear Label format mark up strings: marked up formatting strings for linear labels (i.e. \"%%-+%dg\")",
+                                             LINEAR_FORMAT_MARKUP,
+                                             G_PARAM_READWRITE));
+    g_object_class_install_property (gobject_class,
+                                     PROP_LOG_LABEL_FORMAT,
+                                     g_param_spec_string ("log-label-format",
+                                             "Log Label Format",
+                                             "Log Label format mark up strings: marked up formatting strings for log labels (i.e. \"%%-%dg\")",
+                                             LOG_FORMAT_MARKUP,
+                                             G_PARAM_READWRITE));
 }
 
 static void
@@ -202,6 +241,9 @@ gtk_databox_ruler_init (GtkDataboxRuler * ruler)
     ruler->priv->max_x_text_height = 0;
     ruler->priv->max_y_text_width = 0;
     ruler->priv->draw_subticks = TRUE;
+    ruler->priv->invert_edge = FALSE;
+    g_stpcpy(ruler->priv->linear_format, LINEAR_FORMAT_MARKUP);
+    g_stpcpy(ruler->priv->log_format, LOG_FORMAT_MARKUP);
 }
 
 /**
@@ -290,6 +332,15 @@ gtk_databox_ruler_set_property (GObject * object,
     case PROP_DRAW_SUBTICKS:
         gtk_databox_ruler_set_draw_subticks (ruler, (gboolean) g_value_get_boolean (value));
         break;
+    case PROP_INVERT_EDGE:
+        gtk_databox_ruler_set_invert_edge (ruler, (gboolean) g_value_get_boolean (value));
+        break;
+    case PROP_LINEAR_LABEL_FORMAT:
+        gtk_databox_ruler_set_linear_label_format (ruler, (gchar *) g_value_get_string (value));
+        break;
+    case PROP_LOG_LABEL_FORMAT:
+        gtk_databox_ruler_set_log_label_format (ruler, (gchar *) g_value_get_string (value));
+        break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
         break;
@@ -325,6 +376,15 @@ gtk_databox_ruler_get_property (GObject * object,
         break;
     case PROP_DRAW_SUBTICKS:
         g_value_set_boolean (value, ruler->priv->draw_subticks);
+        break;
+    case PROP_INVERT_EDGE:
+        g_value_set_boolean (value, ruler->priv->invert_edge);
+        break;
+    case PROP_LINEAR_LABEL_FORMAT:
+        g_value_set_string (value, ruler->priv->linear_format);
+        break;
+    case PROP_LOG_LABEL_FORMAT:
+        g_value_set_string (value, ruler->priv->log_format);
         break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -537,7 +597,7 @@ gtk_databox_ruler_get_text_orientation (GtkDataboxRuler * ruler)
 }
 
 /**
- * gtk_databox_ruler_draw_subticks:
+ * gtk_databox_ruler_set_draw_subticks:
  * @ruler: a #GtkDataboxRuler
  * @draw: whether to draw the subticks on the ruler
  *
@@ -573,6 +633,135 @@ gtk_databox_ruler_get_draw_subticks(GtkDataboxRuler * ruler)
     g_return_val_if_fail (GTK_DATABOX_IS_RULER (ruler), -1);
 
     return ruler->priv->draw_subticks;
+}
+
+/**
+ * gtk_databox_ruler_set_invert_edge:
+ * @ruler: a #GtkDataboxRuler
+ * @invert: whether to draw the ruler detail with the edge inverted
+ *
+ * Sets the option for drawing the ruler detail on the opposite edge
+ **/
+void
+gtk_databox_ruler_set_invert_edge(GtkDataboxRuler * ruler, gboolean invert)
+{
+    g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
+
+    if (ruler->priv->invert_edge!= invert)
+    {
+        ruler->priv->invert_edge = invert;
+        g_object_notify (G_OBJECT (ruler), "invert-edge");
+
+        if (gtk_widget_is_drawable (GTK_WIDGET (ruler)))
+            gtk_widget_queue_draw (GTK_WIDGET (ruler));
+    }
+}
+
+/**
+ * gtk_databox_ruler_get_invert_edge:
+ * @ruler: a #GtkDataboxRuler
+ *
+ * Gets the invert edge option from the @ruler (horizontal or vertical).
+ *
+ * Return value: Edge inversion option of the @ruler.
+ **/
+gboolean
+gtk_databox_ruler_get_invert_edge(GtkDataboxRuler * ruler)
+{
+
+    g_return_val_if_fail (GTK_DATABOX_IS_RULER (ruler), -1);
+
+    return ruler->priv->invert_edge;
+}
+
+/**
+ * gtk_databox_ruler_linear_label_format:
+ * @ruler: a #GtkDataboxRuler
+ * @invert: How to format the labels for linear rulers
+ *
+ * Sets the meta format string for the labels of linear rulers, for example "%%+-%dg" will become "%+-#g" where # is the int variable
+ **/
+void
+gtk_databox_ruler_set_linear_label_format(GtkDataboxRuler * ruler, gchar *format)
+{
+    g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
+
+    if (g_strcmp0(ruler->priv->linear_format, format)!=0)
+    {
+        if (strlen(format)>FORMAT_LENGTH)
+        {
+            g_warning("maximum format length = %d chars exceeded, truncating to the maximum from %d",FORMAT_LENGTH,(int)strlen(format));
+            format[FORMAT_LENGTH]='\0';
+        }
+
+        g_stpcpy(ruler->priv->linear_format, format);
+        g_object_notify (G_OBJECT (ruler), "linear-label-format");
+
+        if (gtk_widget_is_drawable (GTK_WIDGET (ruler)))
+            gtk_widget_queue_draw (GTK_WIDGET (ruler));
+    }
+}
+
+/**
+ * gtk_databox_ruler_get_linear_label_format:
+ * @ruler: a #GtkDataboxRuler
+ *
+ * Gets the linear label meta format of the @ruler (horizontal or vertical).
+ *
+ * Return value: The string meta format the @ruler NULL on failure.
+ **/
+gchar*
+gtk_databox_ruler_get_linear_label_format(GtkDataboxRuler * ruler)
+{
+
+    g_return_val_if_fail (GTK_DATABOX_IS_RULER (ruler), NULL);
+
+    return ruler->priv->linear_format;
+}
+
+/**
+ * gtk_databox_ruler_log_label_format:
+ * @ruler: a #GtkDataboxRuler
+ * @invert: How to format the labels for log scaled rulers
+ *
+ * Sets the meta format string for the labels of log scaled rulers, for example "%%-%dg" will become "%-#g" where # is the int variable
+ **/
+void
+gtk_databox_ruler_set_log_label_format(GtkDataboxRuler * ruler, gchar *format)
+{
+    g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
+
+    if (g_strcmp0(ruler->priv->log_format, format)!=0)
+    {
+        if (strlen(format)>FORMAT_LENGTH)
+        {
+            g_warning("maximum format length = %d chars exceeded, truncating to the maximum from %d",FORMAT_LENGTH,(int)strlen(format));
+            format[FORMAT_LENGTH]='\0';
+        }
+
+        g_stpcpy(ruler->priv->log_format, format);
+        g_object_notify (G_OBJECT (ruler), "log-label-format");
+
+        if (gtk_widget_is_drawable (GTK_WIDGET (ruler)))
+            gtk_widget_queue_draw (GTK_WIDGET (ruler));
+    }
+}
+
+/**
+ * gtk_databox_ruler_get_log_label_format:
+ * @ruler: a #GtkDataboxRuler
+ *
+ * Gets the log label meta format of the @ruler (horizontal or vertical).
+ *
+ * Return value: The string meta format the @ruler, NULL on failure.
+ **/
+gchar*
+gtk_databox_ruler_get_log_label_format(GtkDataboxRuler * ruler)
+{
+
+    g_return_val_if_fail (GTK_DATABOX_IS_RULER (ruler), NULL);
+
+    return ruler->priv->log_format;
 }
 
 /**
@@ -657,18 +846,18 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
     gint digit_offset;*/
     gint text_width;
     gint pos;
-    gint yLoc;
-    gchar format_string[10];
+    gint y_loc;
+    gint subtick_start;
+    gchar format_string[FORMAT_LENGTH];
     PangoMatrix matrix = PANGO_MATRIX_INIT;
     PangoContext *context;
     PangoLayout *layout;
     PangoRectangle logical_rect, ink_rect;
 
     if (ruler->priv->scale_type == GTK_DATABOX_SCALE_LINEAR)
-        g_sprintf (format_string, "%%-+%dg", ruler->priv->max_length - 1);
+        g_sprintf (format_string, ruler->priv->linear_format, ruler->priv->max_length - 1);
     else
-        g_sprintf (format_string, "%%-%dg", ruler->priv->max_length - 1);
-
+        g_sprintf (format_string, ruler->priv->log_format, ruler->priv->max_length - 1);
 
     if (!gtk_widget_is_drawable (GTK_WIDGET (ruler)))
         return;
@@ -820,7 +1009,7 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
         pango_layout_get_pixel_extents (layout, NULL, &logical_rect);
 
         /* remember the pixel extents for sizing later. */
-        if (ruler->priv->orientation == GTK_ORIENTATION_VERTICAL & ruler->priv->max_y_text_width<logical_rect.width)
+        if ((ruler->priv->orientation == GTK_ORIENTATION_VERTICAL) & (ruler->priv->max_y_text_width<logical_rect.width))
         {
             if (ruler->priv->text_orientation ==GTK_ORIENTATION_VERTICAL)
                 ruler->priv->max_y_text_width=logical_rect.height;
@@ -847,10 +1036,11 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
                               FALSE,
                               NULL,
                               widget, "ruler", pos + 2, ythickness - 1, layout);
-        else {
-            gint yLoc=pos - logical_rect.width - 2; /* standard vertical text y alignment */
+        else
+        {
+            y_loc=pos - logical_rect.width - 2; /* standard vertical text y alignment */
             if (ruler->priv->text_orientation == GTK_ORIENTATION_HORIZONTAL)
-                yLoc=pos - logical_rect.width*2/3; /* horizontal text y alignment */
+                y_loc=pos - logical_rect.width*2/3; /* horizontal text y alignment */
             gtk_paint_layout (widget->style,
                               ruler->priv->backing_pixmap,
                               gtk_widget_get_state (widget),
@@ -859,25 +1049,26 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
                               widget,
                               "ruler",
                               xthickness - 1,
-                              yLoc, layout);
+                              y_loc, layout);
         }
 
         /* Draw sub-ticks */
         if (ruler->priv->draw_subticks)
         {
+            if (!ruler->priv->invert_edge) /* sub-ticks on the bottom */
+                subtick_start=length / 2;
+            else
+                subtick_start=length;
+
             if (ruler->priv->scale_type == GTK_DATABOX_SCALE_LINEAR)
                 for (i = 1; i < 5; ++i)
                 {
                     pos = ROUND ((cur - lower + subd_incr / 5 * i) * increment);
 
                     if (ruler->priv->orientation == GTK_ORIENTATION_HORIZONTAL)
-                        cairo_rectangle (cr,
-                                         pos, height + ythickness - length / 2,
-                                         1, length / 2);
+                        cairo_rectangle (cr, pos, height + ythickness - subtick_start, 1, length / 2);
                     else
-                        cairo_rectangle (cr,
-                                         width + xthickness - length / 2, pos,
-                                         length / 2, 1);
+                        cairo_rectangle (cr, width + xthickness - subtick_start, pos, length / 2, 1);
                 }
             else  if (ruler->priv->scale_type == GTK_DATABOX_SCALE_LOG2)
                 for (i = 1; i < 8; ++i)
@@ -885,13 +1076,9 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
                     pos = ROUND ((cur - lower + log2 (i)) * increment);
 
                     if (ruler->priv->orientation == GTK_ORIENTATION_HORIZONTAL)
-                        cairo_rectangle (cr,
-                                         pos, height + ythickness - length / 2,
-                                         1, length / 2);
+                        cairo_rectangle (cr, pos, height + ythickness - subtick_start, 1, length / 2);
                     else
-                        cairo_rectangle (cr,
-                                         width + xthickness - length / 2, pos,
-                                         length / 2, 1);
+                        cairo_rectangle (cr, width + xthickness - subtick_start, pos, length / 2, 1);
                 }
             else
                 for (i = 2; i < 10; ++i)
@@ -899,13 +1086,9 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
                     pos = ROUND ((cur - lower + log10 (i)) * increment);
 
                     if (ruler->priv->orientation == GTK_ORIENTATION_HORIZONTAL)
-                        cairo_rectangle (cr,
-                                         pos, height + ythickness - length / 2,
-                                         1, length / 2);
+                        cairo_rectangle (cr, pos, height + ythickness - subtick_start, 1, length / 2);
                     else
-                        cairo_rectangle (cr,
-                                         width + xthickness - length / 2, pos,
-                                         length / 2, 1);
+                        cairo_rectangle (cr, width + xthickness - subtick_start, pos, length / 2, 1);
                 }
         }
     }
@@ -927,6 +1110,7 @@ gtk_databox_ruler_draw_pos (GtkDataboxRuler * ruler)
     gint xthickness;
     gint ythickness;
     gdouble increment;
+    cairo_t *cr;
 
     if (gtk_widget_is_drawable (GTK_WIDGET (ruler)))
     {
@@ -940,62 +1124,74 @@ gtk_databox_ruler_draw_pos (GtkDataboxRuler * ruler)
             bs_width = height / 2 + 2;
             bs_width |= 1;		/* make sure it's odd */
             bs_height = bs_width / 2 + 1;
+            if (ruler->priv->invert_edge)
+                bs_height=-bs_height;
         }
         else
         {
             bs_height = width / 2 + 2;
             bs_height |= 1;	/* make sure it's odd */
             bs_width = bs_height / 2 + 1;
+            if (ruler->priv->invert_edge)
+                bs_width=-bs_width;
         }
 
-        if ((bs_width > 0) && (bs_height > 0))
+        if (!ruler->priv->invert_edge && (bs_width < 0) && (bs_height < 0))
+            return; /* return if negative values and not inverted */
+
+        if (ruler->priv->invert_edge && (bs_width > 0) && (bs_height > 0))
+            return; /* return if positive values and inverted */
+
+        cr = gdk_cairo_create (widget->window);
+
+        /*  If a backing store exists, restore the ruler  */
+        if (ruler->priv->backing_pixmap)
+            gdk_draw_drawable (widget->window,
+                               widget->style->black_gc,
+                               ruler->priv->backing_pixmap,
+                               ruler->priv->xsrc, ruler->priv->ysrc,
+                               ruler->priv->xsrc, ruler->priv->ysrc, bs_width, bs_height);
+
+        if (ruler->priv->orientation == GTK_ORIENTATION_HORIZONTAL)
         {
-            cairo_t *cr = gdk_cairo_create (widget->window);
+            increment = (gdouble) width / (ruler->priv->upper - ruler->priv->lower);
 
-            /*  If a backing store exists, restore the ruler  */
-            if (ruler->priv->backing_pixmap)
-                gdk_draw_drawable (widget->window,
-                                   widget->style->black_gc,
-                                   ruler->priv->backing_pixmap,
-                                   ruler->priv->xsrc, ruler->priv->ysrc,
-                                   ruler->priv->xsrc, ruler->priv->ysrc, bs_width, bs_height);
+            x = ROUND ((ruler->priv->position - ruler->priv->lower) * increment) +
+                (xthickness - bs_width) / 2 - 1;
+            y = (height + bs_height) / 2 + ythickness;
 
+            gdk_cairo_set_source_color (cr, &widget->style->fg[widget->state]);
+
+            cairo_move_to (cr, x, y);
+            cairo_line_to (cr, x + bs_width / 2., y + bs_height);
+            cairo_line_to (cr, x + bs_width, y);
+        }
+        else
+        {
+            increment = (gdouble) height / (ruler->priv->upper - ruler->priv->lower);
+
+            x = (width + bs_width) / 2 + xthickness;
+            y = ROUND ((ruler->priv->position - ruler->priv->lower) * increment) +
+                (ythickness - bs_height) / 2 - 1;
+
+            gdk_cairo_set_source_color (cr, &widget->style->fg[widget->state]);
+
+            cairo_move_to (cr, x, y);
+            cairo_line_to (cr, x + bs_width, y + bs_height / 2.);
+            cairo_line_to (cr, x, y + bs_height);
+        }
+        cairo_fill (cr);
+
+        cairo_destroy (cr);
+
+        /* remember the rectangle of the arrow - so that it may be cleared on re-run */
+        ruler->priv->xsrc = x;
+        ruler->priv->ysrc = y;
+        if (ruler->priv->invert_edge){ /* inverted edges need clearing in the negative direction */
             if (ruler->priv->orientation == GTK_ORIENTATION_HORIZONTAL)
-            {
-                increment = (gdouble) width / (ruler->priv->upper - ruler->priv->lower);
-
-                x = ROUND ((ruler->priv->position - ruler->priv->lower) * increment) +
-                    (xthickness - bs_width) / 2 - 1;
-                y = (height + bs_height) / 2 + ythickness;
-
-                gdk_cairo_set_source_color (cr,
-                                            &widget->style->fg[widget->state]);
-
-                cairo_move_to (cr, x, y);
-                cairo_line_to (cr, x + bs_width / 2., y + bs_height);
-                cairo_line_to (cr, x + bs_width, y);
-            }
+                ruler->priv->ysrc = y+bs_height; /* bs_height is negative */
             else
-            {
-                increment = (gdouble) height / (ruler->priv->upper - ruler->priv->lower);
-
-                x = (width + bs_width) / 2 + xthickness;
-                y = ROUND ((ruler->priv->position - ruler->priv->lower) * increment) +
-                    (ythickness - bs_height) / 2 - 1;
-
-                gdk_cairo_set_source_color (cr,
-                                            &widget->style->fg[widget->state]);
-
-                cairo_move_to (cr, x, y);
-                cairo_line_to (cr, x + bs_width, y + bs_height / 2.);
-                cairo_line_to (cr, x, y + bs_height);
-            }
-            cairo_fill (cr);
-
-            cairo_destroy (cr);
-
-            ruler->priv->xsrc = x;
-            ruler->priv->ysrc = y;
+                ruler->priv->xsrc = x+bs_width; /* bs_width is negative */
         }
     }
 }
