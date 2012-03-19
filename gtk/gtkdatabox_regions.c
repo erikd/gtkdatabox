@@ -123,7 +123,7 @@ gtk_databox_regions_new (guint len, gfloat * X, gfloat * Y1, gfloat * Y2, GdkCol
 			"X-Values", X,
 			"Y1-Values", Y1,
 			"Y2-Values", Y2,
-			"length", len, "color", color);
+			"length", len, "color", color,NULL);
 
    return GTK_DATABOX_GRAPH (regions);
 }
