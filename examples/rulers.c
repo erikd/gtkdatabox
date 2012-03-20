@@ -55,6 +55,9 @@ create_rulers (void)
     GdkColor color;
     gint i;
 
+    guint manual_tick_cnt=4;
+    gfloat manual_ticks[]={100., 300., 500., 700.};
+
     window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
     gtk_widget_set_size_request (window, 1000, 500);
 
@@ -80,7 +83,7 @@ create_rulers (void)
     label = gtk_label_new ("Rulers on the other side:");
     gtk_box_pack_start (GTK_BOX (hbox), label, TRUE, TRUE, 0);
 
-    label = gtk_label_new ("Horizontal y axis text example:");
+    label = gtk_label_new ("Horizontal y axis text\n manual x axis ticks example:");
     gtk_box_pack_start (GTK_BOX (hbox), label, TRUE, TRUE, 0);
 
     label = gtk_label_new ("Subticks turned off example:");
@@ -109,7 +112,10 @@ create_rulers (void)
     GtkDataboxRuler *ruler=gtk_databox_get_ruler_y(GTK_DATABOX (box[1]));
     gtk_databox_ruler_set_text_orientation(ruler, GTK_ORIENTATION_HORIZONTAL);
     gtk_databox_set_ruler_y (GTK_DATABOX (box[1]), ruler);
-
+    ruler=gtk_databox_get_ruler_x(GTK_DATABOX (box[1]));     /* set box 1's x ruler to have manual ticks */
+    gtk_databox_ruler_set_manual_tick_cnt(ruler, manual_tick_cnt);
+    gtk_databox_ruler_set_manual_ticks(ruler, manual_ticks);
+    gtk_databox_set_ruler_x (GTK_DATABOX (box[1]), ruler);
     /* set box 2 to have no subticks */
     ruler=gtk_databox_get_ruler_x(GTK_DATABOX (box[2]));
     gtk_databox_ruler_set_draw_subticks(ruler, FALSE);

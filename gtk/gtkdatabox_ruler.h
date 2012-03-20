@@ -149,5 +149,10 @@ gtk_databox_ruler_get_type (void)
     gchar* gtk_databox_ruler_get_linear_label_format(GtkDataboxRuler * ruler);
     gchar* gtk_databox_ruler_get_log_label_format(GtkDataboxRuler * ruler);
 
+    void gtk_databox_ruler_set_manual_ticks(GtkDataboxRuler * ruler, gfloat* manual_ticks);
+    gfloat* gtk_databox_ruler_get_manual_ticks(GtkDataboxRuler * ruler);
+
+    void gtk_databox_ruler_set_manual_tick_cnt(GtkDataboxRuler * ruler, guint manual_tick_cnt);
+    guint gtk_databox_ruler_get_manual_tick_cnt(GtkDataboxRuler * ruler);
 G_END_DECLS
 #endif /* __GTK_DATABOX_RULER_H__ */

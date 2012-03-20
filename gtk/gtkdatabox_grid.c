@@ -421,7 +421,7 @@ gtk_databox_grid_get_vlines (GtkDataboxGrid * grid)
 /**
  * gtk_databox_grid_set_hline_vals:
  * @grid: a #GtkDataboxGrid graph object
- * @vlines: sets the pointer to the hline values for the grid
+ * @hline_vals: sets the pointer to the hline values for the grid
  *
  * Sets the pointer to the horizontal lines in the @grid.
  **/
@@ -454,7 +454,7 @@ gtk_databox_grid_get_hline_vals (GtkDataboxGrid * grid)
 /**
  * gtk_databox_grid_set_vline_vals:
  * @grid: a #GtkDataboxGrid graph object
- * @vlines: sets the pointer to the vline values for the grid
+ * @vline_vals: sets the pointer to the vline values for the grid
  *
  * Sets the pointer to the vertical lines in the @grid.
  **/

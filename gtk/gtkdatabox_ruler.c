@@ -73,6 +73,8 @@ enum
     PROP_ORIENTATION,
     PROP_TEXT_ORIENTATION,
     PROP_DRAW_SUBTICKS,
+    PROP_MANUAL_TICKS,
+    PROP_MANUAL_TICK_CNT,
     PROP_INVERT_EDGE,
     PROP_LINEAR_LABEL_FORMAT,
     PROP_LOG_LABEL_FORMAT,
@@ -112,6 +114,10 @@ struct _GtkDataboxRulerPrivate
 
     /* Strings used to mark up the g_sprintf label format - one for log scaling and one for linear scaling */
     gchar linear_format[FORMAT_LENGTH], log_format[FORMAT_LENGTH];
+
+    /* If we are manually setting ticks, this will be non-null */
+    gfloat *manual_ticks;
+    guint manual_tick_cnt;
 };
 
 G_DEFINE_TYPE (GtkDataboxRuler, gtk_databox_ruler, GTK_TYPE_WIDGET)
@@ -200,6 +206,21 @@ static void gtk_databox_ruler_class_init (GtkDataboxRulerClass * class)
                                              TRUE,
                                              G_PARAM_READWRITE));
     g_object_class_install_property (gobject_class,
+                                     PROP_MANUAL_TICKS,
+                                     g_param_spec_pointer ("manual-ticks",
+                                             "Manual Ticks",
+                                             "Manually specify the tick locations",
+                                             G_PARAM_READWRITE));
+    g_object_class_install_property (gobject_class,
+                                     PROP_MANUAL_TICK_CNT,
+                                     g_param_spec_uint ("manual-tick-cnt",
+                                             "Manual Tick Count",
+                                             "The number of manual ticks in the manual_tick array: horizontal or vertical",
+                                             0,
+                                             G_MAXUINT,
+                                             0,
+                                             G_PARAM_READWRITE));
+    g_object_class_install_property (gobject_class,
                                      PROP_INVERT_EDGE,
                                      g_param_spec_uint ("invert-edge",
                                              "Invert Edge",
@@ -244,6 +265,8 @@ gtk_databox_ruler_init (GtkDataboxRuler * ruler)
     ruler->priv->invert_edge = FALSE;
     g_stpcpy(ruler->priv->linear_format, LINEAR_FORMAT_MARKUP);
     g_stpcpy(ruler->priv->log_format, LOG_FORMAT_MARKUP);
+    ruler->priv->manual_ticks=NULL;
+    ruler->priv->manual_tick_cnt=0;
 }
 
 /**
@@ -332,6 +355,12 @@ gtk_databox_ruler_set_property (GObject * object,
     case PROP_DRAW_SUBTICKS:
         gtk_databox_ruler_set_draw_subticks (ruler, (gboolean) g_value_get_boolean (value));
         break;
+    case PROP_MANUAL_TICKS:
+        gtk_databox_ruler_set_manual_ticks (ruler, (gfloat *) g_value_get_pointer (value));
+        break;
+    case PROP_MANUAL_TICK_CNT:
+        gtk_databox_ruler_set_manual_tick_cnt (ruler, g_value_get_uint (value));
+        break;
     case PROP_INVERT_EDGE:
         gtk_databox_ruler_set_invert_edge (ruler, (gboolean) g_value_get_boolean (value));
         break;
@@ -376,6 +405,12 @@ gtk_databox_ruler_get_property (GObject * object,
         break;
     case PROP_DRAW_SUBTICKS:
         g_value_set_boolean (value, ruler->priv->draw_subticks);
+        break;
+    case PROP_MANUAL_TICKS:
+        g_value_set_pointer (value, ruler->priv->manual_ticks);
+        break;
+    case PROP_MANUAL_TICK_CNT:
+        g_value_set_uint (value, ruler->priv->manual_tick_cnt);
         break;
     case PROP_INVERT_EDGE:
         g_value_set_boolean (value, ruler->priv->invert_edge);
@@ -636,6 +671,72 @@ gtk_databox_ruler_get_draw_subticks(GtkDataboxRuler * ruler)
 }
 
 /**
+ * gtk_databox_grid_set_manual_ticks:
+ * @ruler: a #GtkDataboxRuler
+ * @manual_ticks: sets the pointer to the hline values for the @ruler
+ *
+ * Gets the draw subticks option from the @ruler (horizontal or vertical).
+ **/
+void
+gtk_databox_ruler_set_manual_ticks (GtkDataboxRuler * ruler, gfloat *manual_ticks)
+{
+   g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
+
+   ruler->priv->manual_ticks = manual_ticks;
+
+   g_object_notify (G_OBJECT(ruler), "manual-ticks");
+}
+
+/**
+ * gtk_databox_grid_get_manual_ticks:
+ * @ruler: a #GtkDataboxRuler
+ *
+ * Gets the pointer to the manual tick values for the @ruler.
+ *
+ * Return value: Pointer to the manual tick values for the @ruler.
+ **/
+gfloat*
+gtk_databox_ruler_get_manual_ticks (GtkDataboxRuler * ruler)
+{
+   g_return_val_if_fail (GTK_DATABOX_IS_RULER (ruler), NULL);
+
+   return ruler->priv->manual_ticks;
+}
+
+/**
+ * gtk_databox_grid_set_manual_tick_cnt:
+ * @ruler: a #GtkDataboxRuler
+ * @manual_tick_cnt: sets the number of manual ticks for the @ruler
+ *
+ * Sets the number of manual ticks for the @ruler (horizontal or vertical).
+ **/
+void
+gtk_databox_ruler_set_manual_tick_cnt (GtkDataboxRuler * ruler, guint manual_tick_cnt)
+{
+   g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
+
+   ruler->priv->manual_tick_cnt = manual_tick_cnt;
+
+   g_object_notify (G_OBJECT(ruler), "manual-tick-cnt");
+}
+
+/**
+ * gtk_databox_grid_get_manual_tick_cnt:
+ * @ruler: a #GtkDataboxRuler
+ *
+ * Gets the number manual tick values for the @ruler.
+ *
+ * Return value: The number of manual tick values for the @ruler.
+ **/
+guint
+gtk_databox_ruler_get_manual_tick_cnt (GtkDataboxRuler * ruler)
+{
+   g_return_val_if_fail (GTK_DATABOX_IS_RULER (ruler), -1);
+
+   return ruler->priv->manual_tick_cnt;
+}
+
+/**
  * gtk_databox_ruler_set_invert_edge:
  * @ruler: a #GtkDataboxRuler
  * @invert: whether to draw the ruler detail with the edge inverted
@@ -839,7 +940,7 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
     gint power;
     gint digit;
     gdouble subd_incr;
-    gdouble start, end, cur;
+    gdouble start, end, cur, cur_text;
     gchar unit_str[GTK_DATABOX_RULER_MAX_MAX_LENGTH + 1];	/* buffer for writing numbers */
     gint digit_width;
     /*gint digit_height;
@@ -968,22 +1069,32 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
     length = (ruler->priv->orientation == GTK_ORIENTATION_HORIZONTAL)
              ? height - 1 : width - 1;
 
-    if (lower < upper)
-    {
-        start = floor (lower / subd_incr) * subd_incr;
-        end = ceil (upper / subd_incr) * subd_incr;
-    }
-    else
-    {
-        start = floor (upper / subd_incr) * subd_incr;
-        end = ceil (lower / subd_incr) * subd_incr;
+    if (ruler->priv->manual_ticks==NULL)
+        if (lower < upper)
+        {
+            start = floor (lower / subd_incr) * subd_incr;
+            end = ceil (upper / subd_incr) * subd_incr;
+        }
+        else
+        {
+            start = floor (upper / subd_incr) * subd_incr;
+            end = ceil (lower / subd_incr) * subd_incr;
+        }
+    else { /* we are manually setting the tick labels and marks. */
+            start = 0.;
+            end = (gfloat)ruler->priv->manual_tick_cnt-1;
+            subd_incr=1.;
     }
 
 
     for (cur = start; cur <= end; cur += subd_incr)
     {
-        pos = ROUND ((cur - lower) * increment);
-
+        if (ruler->priv->manual_ticks==NULL)
+            pos = ROUND (((cur_text=cur) - lower) * increment);
+        else {
+            cur_text=ruler->priv->manual_ticks[(int)cur];
+            pos = ROUND ((cur_text - lower) * increment);
+        }
         if (ruler->priv->orientation == GTK_ORIENTATION_HORIZONTAL)
             cairo_rectangle (cr, pos, height + ythickness - length, 1, length);
         else
@@ -993,17 +1104,17 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
         /* draw label */
         if (ruler->priv->scale_type == GTK_DATABOX_SCALE_LINEAR)
         {
-            if (ABS (cur) < 0.1 * subd_incr)	/* Rounding errors occur and might make "0" look funny without this check */
-                cur = 0;
+            if (ABS (cur_text) < 0.1 * subd_incr)	/* Rounding errors occur and might make "0" look funny without this check */
+                cur_text = 0;
 
-            g_snprintf (unit_str, ruler->priv->max_length + 1, format_string, cur);
+            g_snprintf (unit_str, ruler->priv->max_length + 1, format_string, cur_text);
         }
         else if (ruler->priv->scale_type == GTK_DATABOX_SCALE_LOG2)
             g_snprintf (unit_str, ruler->priv->max_length + 1, format_string,
-                        pow (2, cur));
+                        pow (2, cur_text));
         else
             g_snprintf (unit_str, ruler->priv->max_length + 1, format_string,
-                        pow (10, cur));
+                        pow (10, cur_text));
 
         pango_layout_set_text (layout, unit_str, -1);
         pango_layout_get_pixel_extents (layout, NULL, &logical_rect);
