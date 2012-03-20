@@ -680,11 +680,11 @@ gtk_databox_ruler_get_draw_subticks(GtkDataboxRuler * ruler)
 void
 gtk_databox_ruler_set_manual_ticks (GtkDataboxRuler * ruler, gfloat *manual_ticks)
 {
-   g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
+    g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
 
-   ruler->priv->manual_ticks = manual_ticks;
+    ruler->priv->manual_ticks = manual_ticks;
 
-   g_object_notify (G_OBJECT(ruler), "manual-ticks");
+    g_object_notify (G_OBJECT(ruler), "manual-ticks");
 }
 
 /**
@@ -698,9 +698,9 @@ gtk_databox_ruler_set_manual_ticks (GtkDataboxRuler * ruler, gfloat *manual_tick
 gfloat*
 gtk_databox_ruler_get_manual_ticks (GtkDataboxRuler * ruler)
 {
-   g_return_val_if_fail (GTK_DATABOX_IS_RULER (ruler), NULL);
+    g_return_val_if_fail (GTK_DATABOX_IS_RULER (ruler), NULL);
 
-   return ruler->priv->manual_ticks;
+    return ruler->priv->manual_ticks;
 }
 
 /**
@@ -713,11 +713,11 @@ gtk_databox_ruler_get_manual_ticks (GtkDataboxRuler * ruler)
 void
 gtk_databox_ruler_set_manual_tick_cnt (GtkDataboxRuler * ruler, guint manual_tick_cnt)
 {
-   g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
+    g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
 
-   ruler->priv->manual_tick_cnt = manual_tick_cnt;
+    ruler->priv->manual_tick_cnt = manual_tick_cnt;
 
-   g_object_notify (G_OBJECT(ruler), "manual-tick-cnt");
+    g_object_notify (G_OBJECT(ruler), "manual-tick-cnt");
 }
 
 /**
@@ -731,9 +731,9 @@ gtk_databox_ruler_set_manual_tick_cnt (GtkDataboxRuler * ruler, guint manual_tic
 guint
 gtk_databox_ruler_get_manual_tick_cnt (GtkDataboxRuler * ruler)
 {
-   g_return_val_if_fail (GTK_DATABOX_IS_RULER (ruler), -1);
+    g_return_val_if_fail (GTK_DATABOX_IS_RULER (ruler), -1);
 
-   return ruler->priv->manual_tick_cnt;
+    return ruler->priv->manual_tick_cnt;
 }
 
 /**
@@ -1080,10 +1080,11 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
             start = floor (upper / subd_incr) * subd_incr;
             end = ceil (lower / subd_incr) * subd_incr;
         }
-    else { /* we are manually setting the tick labels and marks. */
-            start = 0.;
-            end = (gfloat)ruler->priv->manual_tick_cnt-1;
-            subd_incr=1.;
+    else   /* we are manually setting the tick labels and marks. */
+    {
+        start = 0.;
+        end = (gfloat)ruler->priv->manual_tick_cnt-1;
+        subd_incr=1.;
     }
 
 
@@ -1091,18 +1092,24 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
     {
         if (ruler->priv->manual_ticks==NULL)
             pos = ROUND (((cur_text=cur) - lower) * increment);
-        else {
-            cur_text=ruler->priv->manual_ticks[(int)cur];
+        else
+        { /* manual ticks must be positioned according to the scale */
+            if (ruler->priv->scale_type == GTK_DATABOX_SCALE_LINEAR)
+                cur_text=ruler->priv->manual_ticks[(int)cur];
+            else if (ruler->priv->scale_type == GTK_DATABOX_SCALE_LOG2)
+                cur_text=log2(ruler->priv->manual_ticks[(int)cur]);
+            else
+                cur_text=log10(ruler->priv->manual_ticks[(int)cur]);
             pos = ROUND ((cur_text - lower) * increment);
+            cur_text=ruler->priv->manual_ticks[(int)cur];
         }
         if (ruler->priv->orientation == GTK_ORIENTATION_HORIZONTAL)
             cairo_rectangle (cr, pos, height + ythickness - length, 1, length);
         else
             cairo_rectangle (cr, width + xthickness - length, pos, length, 1);
 
-
         /* draw label */
-        if (ruler->priv->scale_type == GTK_DATABOX_SCALE_LINEAR)
+        if (ruler->priv->scale_type == GTK_DATABOX_SCALE_LINEAR | ruler->priv->manual_ticks!=NULL)
         {
             if (ABS (cur_text) < 0.1 * subd_incr)	/* Rounding errors occur and might make "0" look funny without this check */
                 cur_text = 0;
@@ -1110,8 +1117,7 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
             g_snprintf (unit_str, ruler->priv->max_length + 1, format_string, cur_text);
         }
         else if (ruler->priv->scale_type == GTK_DATABOX_SCALE_LOG2)
-            g_snprintf (unit_str, ruler->priv->max_length + 1, format_string,
-                        pow (2, cur_text));
+            g_snprintf (unit_str, ruler->priv->max_length + 1, format_string, pow (2, cur_text));
         else
             g_snprintf (unit_str, ruler->priv->max_length + 1, format_string,
                         pow (10, cur_text));
@@ -1157,10 +1163,7 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
                               gtk_widget_get_state (widget),
                               FALSE,
                               NULL,
-                              widget,
-                              "ruler",
-                              xthickness - 1,
-                              y_loc, layout);
+                              widget, "ruler", xthickness - 1, y_loc, layout);
         }
 
         /* Draw sub-ticks */
@@ -1298,7 +1301,8 @@ gtk_databox_ruler_draw_pos (GtkDataboxRuler * ruler)
         /* remember the rectangle of the arrow - so that it may be cleared on re-run */
         ruler->priv->xsrc = x;
         ruler->priv->ysrc = y;
-        if (ruler->priv->invert_edge){ /* inverted edges need clearing in the negative direction */
+        if (ruler->priv->invert_edge)  /* inverted edges need clearing in the negative direction */
+        {
             if (ruler->priv->orientation == GTK_ORIENTATION_HORIZONTAL)
                 ruler->priv->ysrc = y+bs_height; /* bs_height is negative */
             else
