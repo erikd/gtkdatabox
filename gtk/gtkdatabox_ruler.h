@@ -137,6 +137,9 @@ gtk_databox_ruler_get_type (void)
      void gtk_databox_ruler_set_text_orientation (GtkDataboxRuler * ruler, GtkOrientation orientation);
      GtkOrientation gtk_databox_ruler_get_text_orientation (GtkDataboxRuler *ruler);
 
+     void gtk_databox_ruler_set_draw_ticks(GtkDataboxRuler * ruler, gboolean draw);
+    gboolean gtk_databox_ruler_get_draw_ticks(GtkDataboxRuler * ruler);
+
      void gtk_databox_ruler_set_draw_subticks(GtkDataboxRuler * ruler, gboolean draw);
     gboolean gtk_databox_ruler_get_draw_subticks(GtkDataboxRuler * ruler);
 

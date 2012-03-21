@@ -72,6 +72,7 @@ enum
     PROP_MAX_LENGTH,
     PROP_ORIENTATION,
     PROP_TEXT_ORIENTATION,
+    PROP_DRAW_TICKS,
     PROP_DRAW_SUBTICKS,
     PROP_MANUAL_TICKS,
     PROP_MANUAL_TICK_CNT,
@@ -105,6 +106,9 @@ struct _GtkDataboxRulerPrivate
     gint max_x_text_height;
     /* The maximum width of text on the horizontal ruler */
     gint max_y_text_width;
+
+    /* When true draw the ticks */
+    gboolean draw_ticks;
 
     /* When true draw the subticks */
     gboolean draw_subticks;
@@ -197,6 +201,15 @@ static void gtk_databox_ruler_class_init (GtkDataboxRulerClass * class)
                                              GTK_ORIENTATION_VERTICAL,
                                              G_PARAM_READWRITE));
     g_object_class_install_property (gobject_class,
+                                     PROP_DRAW_TICKS,
+                                     g_param_spec_uint ("draw-ticks",
+                                             "Draw Ticks",
+                                             "Draw the Ticks: true or false",
+                                             FALSE,
+                                             TRUE,
+                                             TRUE,
+                                             G_PARAM_READWRITE));
+    g_object_class_install_property (gobject_class,
                                      PROP_DRAW_SUBTICKS,
                                      g_param_spec_uint ("draw-subticks",
                                              "Draw Subticks",
@@ -261,6 +274,7 @@ gtk_databox_ruler_init (GtkDataboxRuler * ruler)
     ruler->priv->text_orientation = GTK_ORIENTATION_VERTICAL;
     ruler->priv->max_x_text_height = 0;
     ruler->priv->max_y_text_width = 0;
+    ruler->priv->draw_ticks = TRUE;
     ruler->priv->draw_subticks = TRUE;
     ruler->priv->invert_edge = FALSE;
     g_stpcpy(ruler->priv->linear_format, LINEAR_FORMAT_MARKUP);
@@ -352,6 +366,9 @@ gtk_databox_ruler_set_property (GObject * object,
     case PROP_TEXT_ORIENTATION:
         gtk_databox_ruler_set_text_orientation (ruler, (GtkOrientation) g_value_get_uint (value));
         break;
+    case PROP_DRAW_TICKS:
+        gtk_databox_ruler_set_draw_ticks (ruler, (gboolean) g_value_get_boolean (value));
+        break;
     case PROP_DRAW_SUBTICKS:
         gtk_databox_ruler_set_draw_subticks (ruler, (gboolean) g_value_get_boolean (value));
         break;
@@ -402,6 +419,9 @@ gtk_databox_ruler_get_property (GObject * object,
         break;
     case PROP_TEXT_ORIENTATION:
         g_value_set_uint (value, ruler->priv->text_orientation);
+        break;
+    case PROP_DRAW_TICKS:
+        g_value_set_boolean (value, ruler->priv->draw_ticks);
         break;
     case PROP_DRAW_SUBTICKS:
         g_value_set_boolean (value, ruler->priv->draw_subticks);
@@ -629,6 +649,46 @@ gtk_databox_ruler_get_text_orientation (GtkDataboxRuler * ruler)
     g_return_val_if_fail (GTK_DATABOX_IS_RULER (ruler), -1);
 
     return ruler->priv->text_orientation;
+}
+
+/**
+ * gtk_databox_ruler_set_draw_ticks:
+ * @ruler: a #GtkDataboxRuler
+ * @draw: whether to draw the ticks on the ruler at all
+ *
+ * Sets the option for drawing the ticks. If false, don't draw any ticks,
+ * If true draw major ticks and subticks if the draw_subticks boolean is set.
+ **/
+void
+gtk_databox_ruler_set_draw_ticks(GtkDataboxRuler * ruler, gboolean draw)
+{
+    g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
+
+    if (ruler->priv->draw_ticks!= draw)
+    {
+        ruler->priv->draw_ticks = draw;
+        g_object_notify (G_OBJECT (ruler), "draw-ticks");
+
+        if (gtk_widget_is_drawable (GTK_WIDGET (ruler)))
+            gtk_widget_queue_draw (GTK_WIDGET (ruler));
+    }
+}
+
+/**
+ * gtk_databox_ruler_get_draw_ticks:
+ * @ruler: a #GtkDataboxRuler
+ *
+ * Gets the draw ticks option from the @ruler (horizontal or vertical).
+ *
+ * Return value: Tick drawing option of the @ruler.
+ **/
+gboolean
+gtk_databox_ruler_get_draw_ticks(GtkDataboxRuler * ruler)
+{
+
+    g_return_val_if_fail (GTK_DATABOX_IS_RULER (ruler), -1);
+
+    return ruler->priv->draw_ticks;
 }
 
 /**
@@ -943,8 +1003,6 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
     gdouble start, end, cur, cur_text;
     gchar unit_str[GTK_DATABOX_RULER_MAX_MAX_LENGTH + 1];	/* buffer for writing numbers */
     gint digit_width;
-    /*gint digit_height;
-    gint digit_offset;*/
     gint text_width;
     gint pos;
     gint y_loc;
@@ -1103,10 +1161,12 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
             pos = ROUND ((cur_text - lower) * increment);
             cur_text=ruler->priv->manual_ticks[(int)cur];
         }
-        if (ruler->priv->orientation == GTK_ORIENTATION_HORIZONTAL)
-            cairo_rectangle (cr, pos, height + ythickness - length, 1, length);
-        else
-            cairo_rectangle (cr, width + xthickness - length, pos, length, 1);
+        if (ruler->priv->draw_ticks){
+            if (ruler->priv->orientation == GTK_ORIENTATION_HORIZONTAL)
+                cairo_rectangle (cr, pos, height + ythickness - length, 1, length);
+            else
+                cairo_rectangle (cr, width + xthickness - length, pos, length, 1);
+        }
 
         /* draw label */
         if (ruler->priv->scale_type == GTK_DATABOX_SCALE_LINEAR | ruler->priv->manual_ticks!=NULL)
@@ -1167,7 +1227,7 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
         }
 
         /* Draw sub-ticks */
-        if (ruler->priv->draw_subticks)
+        if (ruler->priv->draw_subticks & ruler->priv->draw_ticks)
         {
             if (!ruler->priv->invert_edge) /* sub-ticks on the bottom */
                 subtick_start=length / 2;
