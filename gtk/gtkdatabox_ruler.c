@@ -76,6 +76,7 @@ enum
     PROP_DRAW_SUBTICKS,
     PROP_MANUAL_TICKS,
     PROP_MANUAL_TICK_CNT,
+    PROP_MANUAL_TICK_LABELS,
     PROP_INVERT_EDGE,
     PROP_LINEAR_LABEL_FORMAT,
     PROP_LOG_LABEL_FORMAT,
@@ -122,6 +123,8 @@ struct _GtkDataboxRulerPrivate
     /* If we are manually setting ticks, this will be non-null */
     gfloat *manual_ticks;
     guint manual_tick_cnt;
+    /* we have the option of manually setting the tick labels. */
+    gchar **manual_tick_labels;
 };
 
 G_DEFINE_TYPE (GtkDataboxRuler, gtk_databox_ruler, GTK_TYPE_WIDGET)
@@ -234,6 +237,12 @@ static void gtk_databox_ruler_class_init (GtkDataboxRulerClass * class)
                                              0,
                                              G_PARAM_READWRITE));
     g_object_class_install_property (gobject_class,
+                                     PROP_MANUAL_TICK_LABELS,
+                                     g_param_spec_pointer ("manual-tick-labels",
+                                             "Manual Tick Labels",
+                                             "Manually specify the tick labels",
+                                             G_PARAM_READWRITE));
+    g_object_class_install_property (gobject_class,
                                      PROP_INVERT_EDGE,
                                      g_param_spec_uint ("invert-edge",
                                              "Invert Edge",
@@ -281,6 +290,7 @@ gtk_databox_ruler_init (GtkDataboxRuler * ruler)
     g_stpcpy(ruler->priv->log_format, LOG_FORMAT_MARKUP);
     ruler->priv->manual_ticks=NULL;
     ruler->priv->manual_tick_cnt=0;
+    ruler->priv->manual_tick_labels=NULL;
 }
 
 /**
@@ -378,6 +388,9 @@ gtk_databox_ruler_set_property (GObject * object,
     case PROP_MANUAL_TICK_CNT:
         gtk_databox_ruler_set_manual_tick_cnt (ruler, g_value_get_uint (value));
         break;
+    case PROP_MANUAL_TICK_LABELS:
+        gtk_databox_ruler_set_manual_tick_labels (ruler, (gchar **) g_value_get_pointer (value));
+        break;
     case PROP_INVERT_EDGE:
         gtk_databox_ruler_set_invert_edge (ruler, (gboolean) g_value_get_boolean (value));
         break;
@@ -431,6 +444,9 @@ gtk_databox_ruler_get_property (GObject * object,
         break;
     case PROP_MANUAL_TICK_CNT:
         g_value_set_uint (value, ruler->priv->manual_tick_cnt);
+        break;
+    case PROP_MANUAL_TICK_LABELS:
+        g_value_set_pointer (value, ruler->priv->manual_tick_labels);
         break;
     case PROP_INVERT_EDGE:
         g_value_set_boolean (value, ruler->priv->invert_edge);
@@ -502,7 +518,6 @@ void
 gtk_databox_ruler_set_max_length (GtkDataboxRuler * ruler, guint max_length)
 {
     g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
-    g_return_if_fail (max_length > 1);
     g_return_if_fail (max_length < GTK_DATABOX_RULER_MAX_MAX_LENGTH + 1);
 
     g_object_freeze_notify (G_OBJECT (ruler));
@@ -735,7 +750,7 @@ gtk_databox_ruler_get_draw_subticks(GtkDataboxRuler * ruler)
  * @ruler: a #GtkDataboxRuler
  * @manual_ticks: sets the pointer to the hline values for the @ruler
  *
- * Gets the draw subticks option from the @ruler (horizontal or vertical).
+ * Sets the ticks for the @ruler (horizontal or vertical).
  **/
 void
 gtk_databox_ruler_set_manual_ticks (GtkDataboxRuler * ruler, gfloat *manual_ticks)
@@ -794,6 +809,42 @@ gtk_databox_ruler_get_manual_tick_cnt (GtkDataboxRuler * ruler)
     g_return_val_if_fail (GTK_DATABOX_IS_RULER (ruler), -1);
 
     return ruler->priv->manual_tick_cnt;
+}
+
+/**
+ * gtk_databox_grid_set_manual_tick_labels:
+ * @ruler: a #GtkDataboxRuler
+ * @manual_tick_labels: sets the pointer to the labels for the ticks on the @ruler
+ *
+ * Note: This function should be preceeded by calls to gtk_databox_ruler_set_manual_ticks() and  gtk_databox_ruler_set_manual_tick_cnt().
+ *       The number of tick labels should match gtk_databox_ruler_get_manual_tick_cnt().
+ *
+ * Sets the tick labels of the @ruler (horizontal or vertical).
+ **/
+void
+gtk_databox_ruler_set_manual_tick_labels (GtkDataboxRuler * ruler, gchar **manual_tick_labels)
+{
+    g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
+
+    ruler->priv->manual_tick_labels = manual_tick_labels;
+
+    g_object_notify (G_OBJECT(ruler), "manual-tick-labels");
+}
+
+/**
+ * gtk_databox_grid_get_manual_tick_labels:
+ * @ruler: a #GtkDataboxRuler
+ *
+ * Gets the pointer to the manual tick labels for the @ruler.
+ *
+ * Return value: Pointer to the manual tick labels for the @ruler.
+ **/
+gchar**
+gtk_databox_ruler_get_manual_tick_labels (GtkDataboxRuler * ruler)
+{
+    g_return_val_if_fail (GTK_DATABOX_IS_RULER (ruler), NULL);
+
+    return ruler->priv->manual_tick_labels;
 }
 
 /**
@@ -1014,9 +1065,15 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
     PangoRectangle logical_rect, ink_rect;
 
     if (ruler->priv->scale_type == GTK_DATABOX_SCALE_LINEAR)
-        g_sprintf (format_string, ruler->priv->linear_format, ruler->priv->max_length - 1);
+        if (ruler->priv->max_length==1)
+        g_snprintf (format_string, FORMAT_LENGTH, ruler->priv->linear_format, ruler->priv->max_length);
+        else
+        g_snprintf (format_string, FORMAT_LENGTH, ruler->priv->linear_format, ruler->priv->max_length - 1);
     else
-        g_sprintf (format_string, ruler->priv->log_format, ruler->priv->max_length - 1);
+        if (ruler->priv->max_length==1)
+        g_snprintf (format_string, FORMAT_LENGTH, ruler->priv->log_format, ruler->priv->max_length);
+        else
+        g_snprintf (format_string, FORMAT_LENGTH, ruler->priv->log_format, ruler->priv->max_length - 1);
 
     if (!gtk_widget_is_drawable (GTK_WIDGET (ruler)))
         return;
@@ -1182,7 +1239,11 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
             g_snprintf (unit_str, ruler->priv->max_length + 1, format_string,
                         pow (10, cur_text));
 
-        pango_layout_set_text (layout, unit_str, -1);
+		/* if manual tick labels are present, display them instead of calculated labels */
+        if ((ruler->priv->manual_ticks!=NULL) && (ruler->priv->manual_tick_cnt!=0) && (ruler->priv->manual_tick_labels!=NULL))
+            pango_layout_set_text (layout, ruler->priv->manual_tick_labels[(int)cur], -1);
+        else
+            pango_layout_set_text (layout, unit_str, -1);
         pango_layout_get_pixel_extents (layout, NULL, &logical_rect);
 
         /* remember the pixel extents for sizing later. */
