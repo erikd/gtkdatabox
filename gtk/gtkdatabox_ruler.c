@@ -591,8 +591,10 @@ gtk_databox_ruler_set_orientation (GtkDataboxRuler * ruler,
             widget->requisition.width = ruler->priv->max_y_text_width;
     }
 
-    if (gtk_widget_is_drawable (GTK_WIDGET (ruler)))
+    if (gtk_widget_is_drawable (GTK_WIDGET (ruler))){
+        gtk_widget_queue_resize (GTK_WIDGET (ruler));
         gtk_widget_queue_draw (GTK_WIDGET (ruler));
+    }
 }
 
 /**
@@ -1066,13 +1068,12 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
 
     if (ruler->priv->scale_type == GTK_DATABOX_SCALE_LINEAR)
         if (ruler->priv->max_length==1)
-        g_snprintf (format_string, FORMAT_LENGTH, ruler->priv->linear_format, ruler->priv->max_length);
+            g_snprintf (format_string, FORMAT_LENGTH, ruler->priv->linear_format, ruler->priv->max_length);
         else
-        g_snprintf (format_string, FORMAT_LENGTH, ruler->priv->linear_format, ruler->priv->max_length - 1);
-    else
-        if (ruler->priv->max_length==1)
+            g_snprintf (format_string, FORMAT_LENGTH, ruler->priv->linear_format, ruler->priv->max_length - 1);
+    else if (ruler->priv->max_length==1)
         g_snprintf (format_string, FORMAT_LENGTH, ruler->priv->log_format, ruler->priv->max_length);
-        else
+    else
         g_snprintf (format_string, FORMAT_LENGTH, ruler->priv->log_format, ruler->priv->max_length - 1);
 
     if (!gtk_widget_is_drawable (GTK_WIDGET (ruler)))
@@ -1084,18 +1085,20 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
     ythickness = widget->style->ythickness;
 
     layout = gtk_widget_create_pango_layout (widget, "E+-012456789");
-    pango_layout_get_pixel_extents (layout, &ink_rect, &logical_rect);
 
-    digit_width = ceil ((logical_rect.width) / 12);
-
-    if ((ruler->priv->orientation == GTK_ORIENTATION_VERTICAL) & (ruler->priv->text_orientation == GTK_ORIENTATION_VERTICAL))
+    if ((ruler->priv->orientation == GTK_ORIENTATION_VERTICAL) && (ruler->priv->text_orientation == GTK_ORIENTATION_VERTICAL))
     {
         /* vertical ruler with vertical text */
         context = gtk_widget_get_pango_context (widget);
         pango_context_set_base_gravity (context, PANGO_GRAVITY_WEST);
         pango_matrix_rotate (&matrix, 90.);
         pango_context_set_matrix (context, &matrix);
+        pango_layout_context_changed(layout);
     }
+
+    pango_layout_get_pixel_extents (layout, &ink_rect, &logical_rect);
+
+    digit_width = ceil ((logical_rect.width) / 12);
 
     width = widget->allocation.width;
     height = widget->allocation.height;
@@ -1208,7 +1211,8 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
         if (ruler->priv->manual_ticks==NULL)
             pos = ROUND (((cur_text=cur) - lower) * increment);
         else
-        { /* manual ticks must be positioned according to the scale */
+        {
+            /* manual ticks must be positioned according to the scale */
             if (ruler->priv->scale_type == GTK_DATABOX_SCALE_LINEAR)
                 cur_text=ruler->priv->manual_ticks[(int)cur];
             else if (ruler->priv->scale_type == GTK_DATABOX_SCALE_LOG2)
@@ -1218,32 +1222,35 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
             pos = ROUND ((cur_text - lower) * increment);
             cur_text=ruler->priv->manual_ticks[(int)cur];
         }
-        if (ruler->priv->draw_ticks){
+        if (ruler->priv->draw_ticks)
+        {
             if (ruler->priv->orientation == GTK_ORIENTATION_HORIZONTAL)
                 cairo_rectangle (cr, pos, height + ythickness - length, 1, length);
             else
                 cairo_rectangle (cr, width + xthickness - length, pos, length, 1);
         }
 
+
         /* draw label */
-        if (ruler->priv->scale_type == GTK_DATABOX_SCALE_LINEAR | ruler->priv->manual_ticks!=NULL)
-        {
-            if (ABS (cur_text) < 0.1 * subd_incr)	/* Rounding errors occur and might make "0" look funny without this check */
-                cur_text = 0;
-
-            g_snprintf (unit_str, ruler->priv->max_length + 1, format_string, cur_text);
-        }
-        else if (ruler->priv->scale_type == GTK_DATABOX_SCALE_LOG2)
-            g_snprintf (unit_str, ruler->priv->max_length + 1, format_string, pow (2, cur_text));
-        else
-            g_snprintf (unit_str, ruler->priv->max_length + 1, format_string,
-                        pow (10, cur_text));
-
-		/* if manual tick labels are present, display them instead of calculated labels */
+        /* if manual tick labels are present, display them instead of calculated labels */
         if ((ruler->priv->manual_ticks!=NULL) && (ruler->priv->manual_tick_cnt!=0) && (ruler->priv->manual_tick_labels!=NULL))
             pango_layout_set_text (layout, ruler->priv->manual_tick_labels[(int)cur], -1);
         else
+        {
+            if ((ruler->priv->scale_type == GTK_DATABOX_SCALE_LINEAR) || (ruler->priv->manual_ticks!=NULL))
+            {
+                if (ABS (cur_text) < 0.1 * subd_incr)	/* Rounding errors occur and might make "0" look funny without this check */
+                    cur_text = 0;
+
+                g_snprintf (unit_str, ruler->priv->max_length + 1, format_string, cur_text);
+            }
+            else if (ruler->priv->scale_type == GTK_DATABOX_SCALE_LOG2)
+                g_snprintf (unit_str, ruler->priv->max_length + 1, format_string, pow (2, cur_text));
+            else
+                g_snprintf (unit_str, ruler->priv->max_length + 1, format_string, pow (10, cur_text));
+
             pango_layout_set_text (layout, unit_str, -1);
+        }
         pango_layout_get_pixel_extents (layout, NULL, &logical_rect);
 
         /* remember the pixel extents for sizing later. */
@@ -1441,8 +1448,8 @@ gtk_databox_ruler_realize (GtkWidget * widget)
     gint attributes_mask;
 
     ruler = GTK_DATABOX_RULER (widget);
-    gtk_widget_set_realized(GTK_WIDGET (ruler), GTK_REALIZED);
 
+    ruler->priv->backing_pixmap=NULL;
     attributes.window_type = GDK_WINDOW_CHILD;
     attributes.x = widget->allocation.x;
     attributes.y = widget->allocation.y;
@@ -1467,6 +1474,7 @@ gtk_databox_ruler_realize (GtkWidget * widget)
     gtk_style_set_background (widget->style, widget->window, GTK_STATE_ACTIVE);
 
     gtk_databox_ruler_make_pixmap (ruler);
+    gtk_widget_set_realized(GTK_WIDGET (ruler), GTK_REALIZED);
 }
 
 static void
@@ -1478,10 +1486,9 @@ gtk_databox_ruler_unrealize (GtkWidget * widget)
         g_object_unref (ruler->priv->backing_pixmap);
 
     g_free (ruler->priv);
-
+    gtk_widget_set_realized(widget, FALSE);
     if (GTK_WIDGET_CLASS (gtk_databox_ruler_parent_class)->unrealize)
-        (*GTK_WIDGET_CLASS (gtk_databox_ruler_parent_class)->
-         unrealize) (widget);
+        (*GTK_WIDGET_CLASS (gtk_databox_ruler_parent_class)->unrealize) (widget);
 }
 
 static void
@@ -1534,9 +1541,10 @@ gtk_databox_ruler_make_pixmap (GtkDataboxRuler * ruler)
 
     widget = GTK_WIDGET (ruler);
 
+    if (gtk_widget_get_realized (widget))
     if (ruler->priv->backing_pixmap)
     {
-        gdk_drawable_get_size (ruler->priv->backing_pixmap, &width, &height);
+        gdk_pixmap_get_size (ruler->priv->backing_pixmap, &width, &height);
         if ((width == widget->allocation.width) &&
                 (height == widget->allocation.height))
             return;
