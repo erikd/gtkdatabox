@@ -1084,7 +1084,6 @@ gtk_databox_create_backing_pixmap(GtkDatabox * box)
   box->priv->backing_pixmap = gdk_pixmap_new (widget->window,
                               widget->allocation.width,
                               widget->allocation.height, -1);
-  printf("gtkdatabox : gtk_databox_create_backing_pixmap exit\n");
 }
 
 /**
