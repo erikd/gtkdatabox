@@ -57,8 +57,8 @@ create_basics (void)
    gfloat min_y, max_y;
    gfloat *X;
    gfloat *Y;
-   gfloat *Y1; // for the offset bars and regions
-   gfloat *Y2; // for the offset bars and regions
+   gfloat *Y1; /*  for the offset bars and regions*/
+   gfloat *Y2; /* for the offset bars and regions */
    gfloat buffer;
    GdkColor color;
    gint i;

@@ -171,7 +171,7 @@ gtk_databox_regions_real_draw (GtkDataboxGraph * graph,
    X++; Y1++; Y2++;
    for (i = 0; i < len-1; i++, X++, Y1++, Y2++)
    {
-      data1->x = data3->x; // 4 points in the polygon
+      data1->x = data3->x; /* 4 points in the polygon */
       data1->y = data3->y;
       data2->x = data4->x;
       data2->y = data4->y;
@@ -179,7 +179,7 @@ gtk_databox_regions_real_draw (GtkDataboxGraph * graph,
       data3->y = gtk_databox_value_to_pixel_y (box, *Y2);
       data4->x = gtk_databox_value_to_pixel_x (box, *X);
       data4->y = gtk_databox_value_to_pixel_y (box, *Y1);
-      gdk_draw_polygon (pixmap, gc, 1, // 1 for a filled polygon
+      gdk_draw_polygon (pixmap, gc, 1, /* 1 for a filled polygon*/
 			 regions->priv->data,4);
    }
    return;

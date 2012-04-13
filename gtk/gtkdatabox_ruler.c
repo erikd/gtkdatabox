@@ -69,6 +69,7 @@ enum
     PROP_LOWER,
     PROP_UPPER,
     PROP_POSITION,
+    PROP_DRAW_POSITION,
     PROP_MAX_LENGTH,
     PROP_ORIENTATION,
     PROP_TEXT_ORIENTATION,
@@ -94,6 +95,9 @@ struct _GtkDataboxRulerPrivate
     gdouble upper;
     /* The position of the mark on the ruler */
     gdouble position;
+    /* whether to draw the position arrows*/
+    gboolean draw_position;
+
     /* The maximum length of the labels (in characters) */
     guint max_length;
     /* The scale type of the ruler */
@@ -133,6 +137,8 @@ static void gtk_databox_ruler_class_init (GtkDataboxRulerClass * class)
 {
     GObjectClass *gobject_class;
     GtkWidgetClass *widget_class;
+    printf("gtk_databox_ruler_class_init \n");
+    fflush(stdout);
 
     gobject_class = G_OBJECT_CLASS (class);
     widget_class = (GtkWidgetClass *) class;
@@ -174,6 +180,16 @@ static void gtk_databox_ruler_class_init (GtkDataboxRulerClass * class)
                                              -G_MAXDOUBLE,
                                              G_MAXDOUBLE,
                                              0.0,
+                                             G_PARAM_READWRITE));
+
+    g_object_class_install_property (gobject_class,
+                                     PROP_DRAW_POSITION,
+                                     g_param_spec_uint ("draw-position",
+                                             "Draw Position Arrows",
+                                             "Draw the position arrows: true or false",
+                                             FALSE,
+                                             TRUE,
+                                             TRUE,
                                              G_PARAM_READWRITE));
 
     g_object_class_install_property (gobject_class,
@@ -277,6 +293,7 @@ gtk_databox_ruler_init (GtkDataboxRuler * ruler)
     ruler->priv->lower = 0;
     ruler->priv->upper = 0;
     ruler->priv->position = 0;
+    ruler->priv->draw_position = TRUE;
     ruler->priv->max_length = 6;
     ruler->priv->scale_type = GTK_DATABOX_SCALE_LINEAR;
     ruler->priv->orientation = GTK_ORIENTATION_HORIZONTAL;
@@ -315,7 +332,10 @@ gtk_databox_ruler_motion_notify (GtkWidget * widget, GdkEventMotion * event)
     gint x;
     gint y;
 
+
     ruler = GTK_DATABOX_RULER (widget);
+
+    if (gtk_databox_ruler_get_draw_position (ruler)){
 
     if (event->is_hint)
     {
@@ -339,9 +359,10 @@ gtk_databox_ruler_motion_notify (GtkWidget * widget, GdkEventMotion * event)
     g_object_notify (G_OBJECT (ruler), "position");
 
     /*  Make sure the ruler has been allocated already  */
-    if (ruler->priv->backing_pixmap != NULL)
-        gtk_databox_ruler_draw_pos (ruler);
-
+        if (ruler->priv->backing_pixmap != NULL)
+            if (ruler->priv->draw_position)
+                gtk_databox_ruler_draw_pos (ruler);
+    }
     return FALSE;
 }
 
@@ -366,6 +387,9 @@ gtk_databox_ruler_set_property (GObject * object,
     case PROP_POSITION:
         gtk_databox_ruler_set_range (ruler, ruler->priv->lower, ruler->priv->upper,
                                      g_value_get_double (value));
+        break;
+    case PROP_DRAW_POSITION:
+            gtk_databox_ruler_set_draw_position (ruler, (gboolean) g_value_get_boolean (value));
         break;
     case PROP_MAX_LENGTH:
         gtk_databox_ruler_set_max_length (ruler, g_value_get_uint (value));
@@ -423,6 +447,9 @@ gtk_databox_ruler_get_property (GObject * object,
         break;
     case PROP_POSITION:
         g_value_set_double (value, ruler->priv->position);
+        break;
+    case PROP_DRAW_POSITION:
+        g_value_set_boolean (value, ruler->priv->draw_position);
         break;
     case PROP_MAX_LENGTH:
         g_value_set_uint (value, ruler->priv->max_length);
@@ -666,6 +693,46 @@ gtk_databox_ruler_get_text_orientation (GtkDataboxRuler * ruler)
     g_return_val_if_fail (GTK_DATABOX_IS_RULER (ruler), -1);
 
     return ruler->priv->text_orientation;
+}
+
+/**
+ * gtk_databox_ruler_set_draw_position:
+ * @ruler: a #GtkDataboxRuler
+ * @draw: whether to draw the position arrows on the ruler at all
+ *
+ * Sets the option for drawing the position arrows. If false, don't draw any arrows,
+ * If true draw arrows.
+ **/
+void
+gtk_databox_ruler_set_draw_position(GtkDataboxRuler * ruler, gboolean draw)
+{
+    g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
+
+    if (ruler->priv->draw_position!= draw)
+    {
+        ruler->priv->draw_position = draw;
+        g_object_notify (G_OBJECT (ruler), "draw-position");
+
+        if (gtk_widget_is_drawable (GTK_WIDGET (ruler)))
+            gtk_widget_queue_draw (GTK_WIDGET (ruler));
+    }
+}
+
+/**
+ * gtk_databox_ruler_get_draw_position:
+ * @ruler: a #GtkDataboxRuler
+ *
+ * Gets the draw position arrows option from the @ruler (horizontal or vertical).
+ *
+ * Return value: Position drawing option of the @ruler.
+ **/
+gboolean
+gtk_databox_ruler_get_draw_position(GtkDataboxRuler * ruler)
+{
+
+    g_return_val_if_fail (GTK_DATABOX_IS_RULER (ruler), -1);
+
+    return ruler->priv->draw_position;
 }
 
 /**
@@ -1449,7 +1516,7 @@ gtk_databox_ruler_realize (GtkWidget * widget)
 
     ruler = GTK_DATABOX_RULER (widget);
 
-    ruler->priv->backing_pixmap=NULL;
+    gtk_widget_set_realized(GTK_WIDGET (ruler), GTK_REALIZED);
     attributes.window_type = GDK_WINDOW_CHILD;
     attributes.x = widget->allocation.x;
     attributes.y = widget->allocation.y;
@@ -1474,19 +1541,19 @@ gtk_databox_ruler_realize (GtkWidget * widget)
     gtk_style_set_background (widget->style, widget->window, GTK_STATE_ACTIVE);
 
     gtk_databox_ruler_make_pixmap (ruler);
-    gtk_widget_set_realized(GTK_WIDGET (ruler), GTK_REALIZED);
 }
 
 static void
 gtk_databox_ruler_unrealize (GtkWidget * widget)
 {
     GtkDataboxRuler *ruler = GTK_DATABOX_RULER (widget);
+    gtk_widget_set_realized(widget, FALSE);
 
     if (ruler->priv->backing_pixmap)
         g_object_unref (ruler->priv->backing_pixmap);
+    ruler->priv->backing_pixmap=NULL;
 
-    g_free (ruler->priv);
-    gtk_widget_set_realized(widget, FALSE);
+
     if (GTK_WIDGET_CLASS (gtk_databox_ruler_parent_class)->unrealize)
         (*GTK_WIDGET_CLASS (gtk_databox_ruler_parent_class)->unrealize) (widget);
 }
@@ -1500,7 +1567,7 @@ gtk_databox_ruler_size_allocate (GtkWidget * widget,
     widget->allocation = *allocation;
 
     if (gtk_widget_get_realized (widget))
-    {
+        if (gtk_widget_is_drawable(widget)) {
         gdk_window_move_resize (widget->window,
                                 allocation->x, allocation->y,
                                 allocation->width, allocation->height);
@@ -1526,7 +1593,7 @@ gtk_databox_ruler_expose (GtkWidget * widget, GdkEventExpose * event)
                            0, 0, 0, 0,
                            widget->allocation.width, widget->allocation.height);
 
-        gtk_databox_ruler_draw_pos (ruler);
+            gtk_databox_ruler_draw_pos (ruler);
     }
 
     return FALSE;
@@ -1541,7 +1608,6 @@ gtk_databox_ruler_make_pixmap (GtkDataboxRuler * ruler)
 
     widget = GTK_WIDGET (ruler);
 
-    if (gtk_widget_get_realized (widget))
     if (ruler->priv->backing_pixmap)
     {
         gdk_pixmap_get_size (ruler->priv->backing_pixmap, &width, &height);

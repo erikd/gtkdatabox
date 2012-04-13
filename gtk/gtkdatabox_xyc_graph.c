@@ -39,7 +39,6 @@ struct _GtkDataboxXYCGraphPrivate
    guint len;
    gfloat *X;
    gfloat *Y;
-//   GdkPoint *xyc_graph;
 };
 
 static gpointer parent_class = NULL;
@@ -196,7 +195,6 @@ xyc_graph_finalize (GObject * object)
 {
    GtkDataboxXYCGraph *xyc_graph = GTK_DATABOX_XYC_GRAPH (object);
 
-//   g_free (xyc_graph->priv->xyc_graph);
    g_free (xyc_graph->priv);
 
    /* Chain up to the parent class */

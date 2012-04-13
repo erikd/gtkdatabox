@@ -140,6 +140,9 @@ gtk_databox_ruler_get_type (void)
      void gtk_databox_ruler_set_draw_ticks(GtkDataboxRuler * ruler, gboolean draw);
     gboolean gtk_databox_ruler_get_draw_ticks(GtkDataboxRuler * ruler);
 
+     void gtk_databox_ruler_set_draw_position(GtkDataboxRuler * ruler, gboolean draw);
+    gboolean gtk_databox_ruler_get_draw_position(GtkDataboxRuler * ruler);
+
      void gtk_databox_ruler_set_draw_subticks(GtkDataboxRuler * ruler, gboolean draw);
     gboolean gtk_databox_ruler_get_draw_subticks(GtkDataboxRuler * ruler);
 
