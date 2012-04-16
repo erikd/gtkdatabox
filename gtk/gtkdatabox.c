@@ -572,8 +572,6 @@ gtk_databox_realize (GtkWidget * widget) {
     gint attributes_mask;
 
 
-    printf ("gtk_databox_realize \n");
-    fflush(stdout);
     box = GTK_DATABOX (widget);
     gtk_widget_set_realized(widget, GTK_REALIZED);
 
@@ -611,7 +609,7 @@ gtk_databox_unrealize (GtkWidget * widget) {
 
     if (box->priv->backing_pixmap)
         g_object_unref (box->priv->backing_pixmap);
-    box->priv->backing_pixmap=NULL;
+/*    box->priv->backing_pixmap=NULL;*/
     if (box->priv->select_gc)
         gtk_gc_release (box->priv->select_gc);
     if (box->priv->adj_x)
@@ -620,7 +618,7 @@ gtk_databox_unrealize (GtkWidget * widget) {
         g_object_unref (box->priv->adj_y);
 
     g_list_free (box->priv->graphs);
-    box->priv->graphs=NULL;
+/*    box->priv->graphs=NULL;*/
 
     if (GTK_WIDGET_CLASS (gtk_databox_parent_class)->unrealize)
         (*GTK_WIDGET_CLASS (gtk_databox_parent_class)->unrealize) (widget);
@@ -1703,7 +1701,6 @@ gtk_databox_set_visible_limits (GtkDatabox * box,
     gboolean visible_inside_total = FALSE;
 
     g_return_if_fail (GTK_IS_DATABOX (box));
-    g_object_freeze_notify (G_OBJECT (box));
 
     visible_inside_total =
         ((box->priv->total_left <= left && left < right
@@ -1736,7 +1733,6 @@ gtk_databox_set_visible_limits (GtkDatabox * box,
     gtk_databox_calculate_translation_factors (box);
 
     gtk_databox_zoomed (box);
-    g_object_thaw_notify (G_OBJECT (box));
 }
 
 /**

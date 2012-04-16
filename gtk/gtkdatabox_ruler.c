@@ -137,8 +137,6 @@ static void gtk_databox_ruler_class_init (GtkDataboxRulerClass * class)
 {
     GObjectClass *gobject_class;
     GtkWidgetClass *widget_class;
-    printf("gtk_databox_ruler_class_init \n");
-    fflush(stdout);
 
     gobject_class = G_OBJECT_CLASS (class);
     widget_class = (GtkWidgetClass *) class;
