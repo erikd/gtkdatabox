@@ -609,7 +609,7 @@ gtk_databox_unrealize (GtkWidget * widget) {
 
     if (box->priv->backing_pixmap)
         g_object_unref (box->priv->backing_pixmap);
-/*    box->priv->backing_pixmap=NULL;*/
+    box->priv->backing_pixmap=NULL;
     if (box->priv->select_gc)
         gtk_gc_release (box->priv->select_gc);
     if (box->priv->adj_x)
@@ -618,7 +618,7 @@ gtk_databox_unrealize (GtkWidget * widget) {
         g_object_unref (box->priv->adj_y);
 
     g_list_free (box->priv->graphs);
-/*    box->priv->graphs=NULL;*/
+    box->priv->graphs=NULL;
 
     if (GTK_WIDGET_CLASS (gtk_databox_parent_class)->unrealize)
         (*GTK_WIDGET_CLASS (gtk_databox_parent_class)->unrealize) (widget);
