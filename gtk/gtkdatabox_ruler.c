@@ -63,8 +63,7 @@ static void gtk_databox_ruler_get_property (GObject * object,
         GValue * value,
         GParamSpec * pspec);
 
-enum
-{
+enum {
     PROP_0,
     PROP_LOWER,
     PROP_UPPER,
@@ -84,8 +83,7 @@ enum
     PROP_END_OF_LIST
 };
 
-struct _GtkDataboxRulerPrivate
-{
+struct _GtkDataboxRulerPrivate {
     GdkPixmap *backing_pixmap;
     gint xsrc;
     gint ysrc;
@@ -133,8 +131,7 @@ struct _GtkDataboxRulerPrivate
 
 G_DEFINE_TYPE (GtkDataboxRuler, gtk_databox_ruler, GTK_TYPE_WIDGET)
 
-static void gtk_databox_ruler_class_init (GtkDataboxRulerClass * class)
-{
+static void gtk_databox_ruler_class_init (GtkDataboxRulerClass * class) {
     GObjectClass *gobject_class;
     GtkWidgetClass *widget_class;
 
@@ -282,8 +279,7 @@ static void gtk_databox_ruler_class_init (GtkDataboxRulerClass * class)
 }
 
 static void
-gtk_databox_ruler_init (GtkDataboxRuler * ruler)
-{
+gtk_databox_ruler_init (GtkDataboxRuler * ruler) {
     ruler->priv = g_new0 (GtkDataboxRulerPrivate, 1);
     ruler->priv->backing_pixmap = NULL;
     ruler->priv->xsrc = 0;
@@ -317,15 +313,13 @@ gtk_databox_ruler_init (GtkDataboxRuler * ruler)
  * Return value: A new #GtkDataboxRuler
  **/
 GtkWidget *
-gtk_databox_ruler_new (GtkOrientation orientation)
-{
+gtk_databox_ruler_new (GtkOrientation orientation) {
     return g_object_new (GTK_DATABOX_TYPE_RULER, "orientation", orientation,
                          NULL);
 }
 
 static gint
-gtk_databox_ruler_motion_notify (GtkWidget * widget, GdkEventMotion * event)
-{
+gtk_databox_ruler_motion_notify (GtkWidget * widget, GdkEventMotion * event) {
     GtkDataboxRuler *ruler;
     gint x;
     gint y;
@@ -333,30 +327,27 @@ gtk_databox_ruler_motion_notify (GtkWidget * widget, GdkEventMotion * event)
 
     ruler = GTK_DATABOX_RULER (widget);
 
-    if (gtk_databox_ruler_get_draw_position (ruler)){
+    if (gtk_databox_ruler_get_draw_position (ruler)) {
 
-    if (event->is_hint)
-    {
-        gdk_window_get_pointer (widget->window, &x, &y, NULL);
-    }
-    else
-    {
-        x = event->x;
-        y = event->y;
-    }
+        if (event->is_hint) {
+            gdk_window_get_pointer (widget->window, &x, &y, NULL);
+        } else {
+            x = event->x;
+            y = event->y;
+        }
 
-    if (ruler->priv->orientation == GTK_ORIENTATION_HORIZONTAL)
-        ruler->priv->position =
-            ruler->priv->lower +
-            ((ruler->priv->upper - ruler->priv->lower) * x) / widget->allocation.width;
-    else
-        ruler->priv->position =
-            ruler->priv->lower +
-            ((ruler->priv->upper - ruler->priv->lower) * y) / widget->allocation.height;
+        if (ruler->priv->orientation == GTK_ORIENTATION_HORIZONTAL)
+            ruler->priv->position =
+                ruler->priv->lower +
+                ((ruler->priv->upper - ruler->priv->lower) * x) / widget->allocation.width;
+        else
+            ruler->priv->position =
+                ruler->priv->lower +
+                ((ruler->priv->upper - ruler->priv->lower) * y) / widget->allocation.height;
 
-    g_object_notify (G_OBJECT (ruler), "position");
+        g_object_notify (G_OBJECT (ruler), "position");
 
-    /*  Make sure the ruler has been allocated already  */
+        /*  Make sure the ruler has been allocated already  */
         if (ruler->priv->backing_pixmap != NULL)
             if (ruler->priv->draw_position)
                 gtk_databox_ruler_draw_pos (ruler);
@@ -367,12 +358,10 @@ gtk_databox_ruler_motion_notify (GtkWidget * widget, GdkEventMotion * event)
 static void
 gtk_databox_ruler_set_property (GObject * object,
                                 guint prop_id,
-                                const GValue * value, GParamSpec * pspec)
-{
+                                const GValue * value, GParamSpec * pspec) {
     GtkDataboxRuler *ruler = GTK_DATABOX_RULER (object);
 
-    switch (prop_id)
-    {
+    switch (prop_id) {
     case PROP_LOWER:
         gtk_databox_ruler_set_range (ruler, g_value_get_double (value),
                                      ruler->priv->upper, ruler->priv->position);
@@ -387,7 +376,7 @@ gtk_databox_ruler_set_property (GObject * object,
                                      g_value_get_double (value));
         break;
     case PROP_DRAW_POSITION:
-            gtk_databox_ruler_set_draw_position (ruler, (gboolean) g_value_get_boolean (value));
+        gtk_databox_ruler_set_draw_position (ruler, (gboolean) g_value_get_boolean (value));
         break;
     case PROP_MAX_LENGTH:
         gtk_databox_ruler_set_max_length (ruler, g_value_get_uint (value));
@@ -431,12 +420,10 @@ gtk_databox_ruler_set_property (GObject * object,
 static void
 gtk_databox_ruler_get_property (GObject * object,
                                 guint prop_id,
-                                GValue * value, GParamSpec * pspec)
-{
+                                GValue * value, GParamSpec * pspec) {
     GtkDataboxRuler *ruler = GTK_DATABOX_RULER (object);
 
-    switch (prop_id)
-    {
+    switch (prop_id) {
     case PROP_LOWER:
         g_value_set_double (value, ruler->priv->lower);
         break;
@@ -501,23 +488,19 @@ gtk_databox_ruler_get_property (GObject * object,
  **/
 void
 gtk_databox_ruler_set_range (GtkDataboxRuler * ruler,
-                             gdouble lower, gdouble upper, gdouble position)
-{
+                             gdouble lower, gdouble upper, gdouble position) {
     g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
 
     g_object_freeze_notify (G_OBJECT (ruler));
-    if (ruler->priv->lower != lower)
-    {
+    if (ruler->priv->lower != lower) {
         ruler->priv->lower = lower;
         g_object_notify (G_OBJECT (ruler), "lower");
     }
-    if (ruler->priv->upper != upper)
-    {
+    if (ruler->priv->upper != upper) {
         ruler->priv->upper = upper;
         g_object_notify (G_OBJECT (ruler), "upper");
     }
-    if (ruler->priv->position != position)
-    {
+    if (ruler->priv->position != position) {
         ruler->priv->position = position;
         g_object_notify (G_OBJECT (ruler), "position");
     }
@@ -540,14 +523,12 @@ gtk_databox_ruler_set_range (GtkDataboxRuler * ruler,
  *
  */
 void
-gtk_databox_ruler_set_max_length (GtkDataboxRuler * ruler, guint max_length)
-{
+gtk_databox_ruler_set_max_length (GtkDataboxRuler * ruler, guint max_length) {
     g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
     g_return_if_fail (max_length < GTK_DATABOX_RULER_MAX_MAX_LENGTH + 1);
 
     g_object_freeze_notify (G_OBJECT (ruler));
-    if (ruler->priv->max_length != max_length)
-    {
+    if (ruler->priv->max_length != max_length) {
         ruler->priv->max_length = max_length;
         g_object_notify (G_OBJECT (ruler), "max-length");
     }
@@ -567,12 +548,10 @@ gtk_databox_ruler_set_max_length (GtkDataboxRuler * ruler, guint max_length)
  */
 void
 gtk_databox_ruler_set_scale_type (GtkDataboxRuler * ruler,
-                                  GtkDataboxScaleType scale_type)
-{
+                                  GtkDataboxScaleType scale_type) {
     g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
 
-    if (ruler->priv->scale_type != scale_type)
-    {
+    if (ruler->priv->scale_type != scale_type) {
         ruler->priv->scale_type = scale_type;
         /* g_object_notify (G_OBJECT (ruler), "scale-type"); */
     }
@@ -590,25 +569,20 @@ gtk_databox_ruler_set_scale_type (GtkDataboxRuler * ruler,
  **/
 void
 gtk_databox_ruler_set_orientation (GtkDataboxRuler * ruler,
-                                   GtkOrientation orientation)
-{
+                                   GtkOrientation orientation) {
     GtkWidget *widget;
     g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
 
-    if (ruler->priv->orientation != orientation)
-    {
+    if (ruler->priv->orientation != orientation) {
         ruler->priv->orientation = orientation;
         g_object_notify (G_OBJECT (ruler), "orientation");
     }
 
     widget = GTK_WIDGET (ruler);
-    if (orientation == GTK_ORIENTATION_HORIZONTAL)
-    {
+    if (orientation == GTK_ORIENTATION_HORIZONTAL) {
         widget->requisition.width = widget->style->xthickness * 2 + 1;
         widget->requisition.height = widget->style->ythickness * 2 + RULER_SIZE;
-    }
-    else
-    {
+    } else {
         widget->requisition.height = widget->style->ythickness * 2 + 1;
         if (ruler->priv->max_y_text_width==0)
             widget->requisition.width = widget->style->xthickness * 2 + RULER_SIZE;
@@ -616,7 +590,7 @@ gtk_databox_ruler_set_orientation (GtkDataboxRuler * ruler,
             widget->requisition.width = ruler->priv->max_y_text_width;
     }
 
-    if (gtk_widget_is_drawable (GTK_WIDGET (ruler))){
+    if (gtk_widget_is_drawable (GTK_WIDGET (ruler))) {
         gtk_widget_queue_resize (GTK_WIDGET (ruler));
         gtk_widget_queue_draw (GTK_WIDGET (ruler));
     }
@@ -631,8 +605,7 @@ gtk_databox_ruler_set_orientation (GtkDataboxRuler * ruler,
  * Return value: Orientation of the @ruler.
  **/
 GtkOrientation
-gtk_databox_ruler_get_orientation (GtkDataboxRuler * ruler)
-{
+gtk_databox_ruler_get_orientation (GtkDataboxRuler * ruler) {
 
     g_return_val_if_fail (GTK_DATABOX_IS_RULER (ruler), -1);
 
@@ -648,8 +621,7 @@ gtk_databox_ruler_get_orientation (GtkDataboxRuler * ruler)
  **/
 void
 gtk_databox_ruler_set_text_orientation (GtkDataboxRuler * ruler,
-                                        GtkOrientation orientation)
-{
+                                        GtkOrientation orientation) {
     GtkWidget *widget;
     g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
 
@@ -657,8 +629,7 @@ gtk_databox_ruler_set_text_orientation (GtkDataboxRuler * ruler,
     if (ruler->priv->orientation != GTK_ORIENTATION_VERTICAL)
         return;
 
-    if (ruler->priv->text_orientation != orientation)
-    {
+    if (ruler->priv->text_orientation != orientation) {
         ruler->priv->text_orientation = orientation;
         g_object_notify (G_OBJECT (ruler), "text-orientation");
     }
@@ -685,8 +656,7 @@ gtk_databox_ruler_set_text_orientation (GtkDataboxRuler * ruler,
  * Return value: Text orientation of the @ruler.
  **/
 GtkOrientation
-gtk_databox_ruler_get_text_orientation (GtkDataboxRuler * ruler)
-{
+gtk_databox_ruler_get_text_orientation (GtkDataboxRuler * ruler) {
 
     g_return_val_if_fail (GTK_DATABOX_IS_RULER (ruler), -1);
 
@@ -702,12 +672,10 @@ gtk_databox_ruler_get_text_orientation (GtkDataboxRuler * ruler)
  * If true draw arrows.
  **/
 void
-gtk_databox_ruler_set_draw_position(GtkDataboxRuler * ruler, gboolean draw)
-{
+gtk_databox_ruler_set_draw_position(GtkDataboxRuler * ruler, gboolean draw) {
     g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
 
-    if (ruler->priv->draw_position!= draw)
-    {
+    if (ruler->priv->draw_position!= draw) {
         ruler->priv->draw_position = draw;
         g_object_notify (G_OBJECT (ruler), "draw-position");
 
@@ -725,8 +693,7 @@ gtk_databox_ruler_set_draw_position(GtkDataboxRuler * ruler, gboolean draw)
  * Return value: Position drawing option of the @ruler.
  **/
 gboolean
-gtk_databox_ruler_get_draw_position(GtkDataboxRuler * ruler)
-{
+gtk_databox_ruler_get_draw_position(GtkDataboxRuler * ruler) {
 
     g_return_val_if_fail (GTK_DATABOX_IS_RULER (ruler), -1);
 
@@ -742,12 +709,10 @@ gtk_databox_ruler_get_draw_position(GtkDataboxRuler * ruler)
  * If true draw major ticks and subticks if the draw_subticks boolean is set.
  **/
 void
-gtk_databox_ruler_set_draw_ticks(GtkDataboxRuler * ruler, gboolean draw)
-{
+gtk_databox_ruler_set_draw_ticks(GtkDataboxRuler * ruler, gboolean draw) {
     g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
 
-    if (ruler->priv->draw_ticks!= draw)
-    {
+    if (ruler->priv->draw_ticks!= draw) {
         ruler->priv->draw_ticks = draw;
         g_object_notify (G_OBJECT (ruler), "draw-ticks");
 
@@ -765,8 +730,7 @@ gtk_databox_ruler_set_draw_ticks(GtkDataboxRuler * ruler, gboolean draw)
  * Return value: Tick drawing option of the @ruler.
  **/
 gboolean
-gtk_databox_ruler_get_draw_ticks(GtkDataboxRuler * ruler)
-{
+gtk_databox_ruler_get_draw_ticks(GtkDataboxRuler * ruler) {
 
     g_return_val_if_fail (GTK_DATABOX_IS_RULER (ruler), -1);
 
@@ -781,12 +745,10 @@ gtk_databox_ruler_get_draw_ticks(GtkDataboxRuler * ruler)
  * Sets the option for drawing the subticks
  **/
 void
-gtk_databox_ruler_set_draw_subticks(GtkDataboxRuler * ruler, gboolean draw)
-{
+gtk_databox_ruler_set_draw_subticks(GtkDataboxRuler * ruler, gboolean draw) {
     g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
 
-    if (ruler->priv->draw_subticks!= draw)
-    {
+    if (ruler->priv->draw_subticks!= draw) {
         ruler->priv->draw_subticks = draw;
         g_object_notify (G_OBJECT (ruler), "draw-subticks");
 
@@ -804,8 +766,7 @@ gtk_databox_ruler_set_draw_subticks(GtkDataboxRuler * ruler, gboolean draw)
  * Return value: Subtick drawing option of the @ruler.
  **/
 gboolean
-gtk_databox_ruler_get_draw_subticks(GtkDataboxRuler * ruler)
-{
+gtk_databox_ruler_get_draw_subticks(GtkDataboxRuler * ruler) {
 
     g_return_val_if_fail (GTK_DATABOX_IS_RULER (ruler), -1);
 
@@ -820,8 +781,7 @@ gtk_databox_ruler_get_draw_subticks(GtkDataboxRuler * ruler)
  * Sets the ticks for the @ruler (horizontal or vertical).
  **/
 void
-gtk_databox_ruler_set_manual_ticks (GtkDataboxRuler * ruler, gfloat *manual_ticks)
-{
+gtk_databox_ruler_set_manual_ticks (GtkDataboxRuler * ruler, gfloat *manual_ticks) {
     g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
 
     ruler->priv->manual_ticks = manual_ticks;
@@ -838,8 +798,7 @@ gtk_databox_ruler_set_manual_ticks (GtkDataboxRuler * ruler, gfloat *manual_tick
  * Return value: Pointer to the manual tick values for the @ruler.
  **/
 gfloat*
-gtk_databox_ruler_get_manual_ticks (GtkDataboxRuler * ruler)
-{
+gtk_databox_ruler_get_manual_ticks (GtkDataboxRuler * ruler) {
     g_return_val_if_fail (GTK_DATABOX_IS_RULER (ruler), NULL);
 
     return ruler->priv->manual_ticks;
@@ -853,8 +812,7 @@ gtk_databox_ruler_get_manual_ticks (GtkDataboxRuler * ruler)
  * Sets the number of manual ticks for the @ruler (horizontal or vertical).
  **/
 void
-gtk_databox_ruler_set_manual_tick_cnt (GtkDataboxRuler * ruler, guint manual_tick_cnt)
-{
+gtk_databox_ruler_set_manual_tick_cnt (GtkDataboxRuler * ruler, guint manual_tick_cnt) {
     g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
 
     ruler->priv->manual_tick_cnt = manual_tick_cnt;
@@ -871,8 +829,7 @@ gtk_databox_ruler_set_manual_tick_cnt (GtkDataboxRuler * ruler, guint manual_tic
  * Return value: The number of manual tick values for the @ruler.
  **/
 guint
-gtk_databox_ruler_get_manual_tick_cnt (GtkDataboxRuler * ruler)
-{
+gtk_databox_ruler_get_manual_tick_cnt (GtkDataboxRuler * ruler) {
     g_return_val_if_fail (GTK_DATABOX_IS_RULER (ruler), -1);
 
     return ruler->priv->manual_tick_cnt;
@@ -889,8 +846,7 @@ gtk_databox_ruler_get_manual_tick_cnt (GtkDataboxRuler * ruler)
  * Sets the tick labels of the @ruler (horizontal or vertical).
  **/
 void
-gtk_databox_ruler_set_manual_tick_labels (GtkDataboxRuler * ruler, gchar **manual_tick_labels)
-{
+gtk_databox_ruler_set_manual_tick_labels (GtkDataboxRuler * ruler, gchar **manual_tick_labels) {
     g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
 
     ruler->priv->manual_tick_labels = manual_tick_labels;
@@ -907,8 +863,7 @@ gtk_databox_ruler_set_manual_tick_labels (GtkDataboxRuler * ruler, gchar **manua
  * Return value: Pointer to the manual tick labels for the @ruler.
  **/
 gchar**
-gtk_databox_ruler_get_manual_tick_labels (GtkDataboxRuler * ruler)
-{
+gtk_databox_ruler_get_manual_tick_labels (GtkDataboxRuler * ruler) {
     g_return_val_if_fail (GTK_DATABOX_IS_RULER (ruler), NULL);
 
     return ruler->priv->manual_tick_labels;
@@ -922,12 +877,10 @@ gtk_databox_ruler_get_manual_tick_labels (GtkDataboxRuler * ruler)
  * Sets the option for drawing the ruler detail on the opposite edge
  **/
 void
-gtk_databox_ruler_set_invert_edge(GtkDataboxRuler * ruler, gboolean invert)
-{
+gtk_databox_ruler_set_invert_edge(GtkDataboxRuler * ruler, gboolean invert) {
     g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
 
-    if (ruler->priv->invert_edge!= invert)
-    {
+    if (ruler->priv->invert_edge!= invert) {
         ruler->priv->invert_edge = invert;
         g_object_notify (G_OBJECT (ruler), "invert-edge");
 
@@ -945,8 +898,7 @@ gtk_databox_ruler_set_invert_edge(GtkDataboxRuler * ruler, gboolean invert)
  * Return value: Edge inversion option of the @ruler.
  **/
 gboolean
-gtk_databox_ruler_get_invert_edge(GtkDataboxRuler * ruler)
-{
+gtk_databox_ruler_get_invert_edge(GtkDataboxRuler * ruler) {
 
     g_return_val_if_fail (GTK_DATABOX_IS_RULER (ruler), -1);
 
@@ -961,14 +913,11 @@ gtk_databox_ruler_get_invert_edge(GtkDataboxRuler * ruler)
  * Sets the meta format string for the labels of linear rulers, for example "%%+-%dg" will become "%+-#g" where # is the int variable
  **/
 void
-gtk_databox_ruler_set_linear_label_format(GtkDataboxRuler * ruler, gchar *format)
-{
+gtk_databox_ruler_set_linear_label_format(GtkDataboxRuler * ruler, gchar *format) {
     g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
 
-    if (g_strcmp0(ruler->priv->linear_format, format)!=0)
-    {
-        if (strlen(format)>FORMAT_LENGTH)
-        {
+    if (g_strcmp0(ruler->priv->linear_format, format)!=0) {
+        if (strlen(format)>FORMAT_LENGTH) {
             g_warning("maximum format length = %d chars exceeded, truncating to the maximum from %d",FORMAT_LENGTH,(int)strlen(format));
             format[FORMAT_LENGTH]='\0';
         }
@@ -990,8 +939,7 @@ gtk_databox_ruler_set_linear_label_format(GtkDataboxRuler * ruler, gchar *format
  * Return value: The string meta format the @ruler NULL on failure.
  **/
 gchar*
-gtk_databox_ruler_get_linear_label_format(GtkDataboxRuler * ruler)
-{
+gtk_databox_ruler_get_linear_label_format(GtkDataboxRuler * ruler) {
 
     g_return_val_if_fail (GTK_DATABOX_IS_RULER (ruler), NULL);
 
@@ -1006,14 +954,11 @@ gtk_databox_ruler_get_linear_label_format(GtkDataboxRuler * ruler)
  * Sets the meta format string for the labels of log scaled rulers, for example "%%-%dg" will become "%-#g" where # is the int variable
  **/
 void
-gtk_databox_ruler_set_log_label_format(GtkDataboxRuler * ruler, gchar *format)
-{
+gtk_databox_ruler_set_log_label_format(GtkDataboxRuler * ruler, gchar *format) {
     g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
 
-    if (g_strcmp0(ruler->priv->log_format, format)!=0)
-    {
-        if (strlen(format)>FORMAT_LENGTH)
-        {
+    if (g_strcmp0(ruler->priv->log_format, format)!=0) {
+        if (strlen(format)>FORMAT_LENGTH) {
             g_warning("maximum format length = %d chars exceeded, truncating to the maximum from %d",FORMAT_LENGTH,(int)strlen(format));
             format[FORMAT_LENGTH]='\0';
         }
@@ -1035,8 +980,7 @@ gtk_databox_ruler_set_log_label_format(GtkDataboxRuler * ruler, gchar *format)
  * Return value: The string meta format the @ruler, NULL on failure.
  **/
 gchar*
-gtk_databox_ruler_get_log_label_format(GtkDataboxRuler * ruler)
-{
+gtk_databox_ruler_get_log_label_format(GtkDataboxRuler * ruler) {
 
     g_return_val_if_fail (GTK_DATABOX_IS_RULER (ruler), NULL);
 
@@ -1056,8 +1000,7 @@ gtk_databox_ruler_get_log_label_format(GtkDataboxRuler * ruler)
 void
 gtk_databox_ruler_get_range (GtkDataboxRuler * ruler,
                              gdouble * lower,
-                             gdouble * upper, gdouble * position)
-{
+                             gdouble * upper, gdouble * position) {
     g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
 
     if (lower)
@@ -1079,8 +1022,7 @@ gtk_databox_ruler_get_range (GtkDataboxRuler * ruler,
  *
  */
 guint
-gtk_databox_ruler_get_max_length (GtkDataboxRuler * ruler)
-{
+gtk_databox_ruler_get_max_length (GtkDataboxRuler * ruler) {
     g_return_val_if_fail (GTK_DATABOX_IS_RULER (ruler), 0);
 
     return ruler->priv->max_length;
@@ -1096,16 +1038,14 @@ gtk_databox_ruler_get_max_length (GtkDataboxRuler * ruler)
  *
  */
 GtkDataboxScaleType
-gtk_databox_ruler_get_scale_type (GtkDataboxRuler * ruler)
-{
+gtk_databox_ruler_get_scale_type (GtkDataboxRuler * ruler) {
     g_return_val_if_fail (GTK_DATABOX_IS_RULER (ruler), 0);
 
     return ruler->priv->scale_type;
 }
 
 static void
-gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
-{
+gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler) {
     GtkWidget *widget;
     cairo_t *cr;
     gint i;
@@ -1151,8 +1091,7 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
 
     layout = gtk_widget_create_pango_layout (widget, "E+-012456789");
 
-    if ((ruler->priv->orientation == GTK_ORIENTATION_VERTICAL) && (ruler->priv->text_orientation == GTK_ORIENTATION_VERTICAL))
-    {
+    if ((ruler->priv->orientation == GTK_ORIENTATION_VERTICAL) && (ruler->priv->text_orientation == GTK_ORIENTATION_VERTICAL)) {
         /* vertical ruler with vertical text */
         context = gtk_widget_get_pango_context (widget);
         pango_context_set_base_gravity (context, PANGO_GRAVITY_WEST);
@@ -1179,25 +1118,18 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
                      xthickness,
                      height - ythickness, width - 2 * xthickness, 1);
 
-    if (ruler->priv->scale_type == GTK_DATABOX_SCALE_LINEAR)
-    {
+    if (ruler->priv->scale_type == GTK_DATABOX_SCALE_LINEAR) {
         upper = ruler->priv->upper;
         lower = ruler->priv->lower;
-    }
-    else if (ruler->priv->scale_type == GTK_DATABOX_SCALE_LOG2)
-    {
-        if (ruler->priv->upper <= 0 || ruler->priv->lower <= 0)
-        {
+    } else if (ruler->priv->scale_type == GTK_DATABOX_SCALE_LOG2) {
+        if (ruler->priv->upper <= 0 || ruler->priv->lower <= 0) {
             g_warning
             ("For logarithmic scaling, the visible limits must by larger than 0!");
         }
         upper = log2 (ruler->priv->upper);
         lower = log2 (ruler->priv->lower);
-    }
-    else
-    {
-        if (ruler->priv->upper <= 0 || ruler->priv->lower <= 0)
-        {
+    } else {
+        if (ruler->priv->upper <= 0 || ruler->priv->lower <= 0) {
             g_warning
             ("For logarithmic scaling, the visible limits must by larger than 0!");
         }
@@ -1218,12 +1150,10 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
      *
      * the ticks have to be farther apart than the length of the displayed numbers
      */
-    if (ruler->priv->scale_type == GTK_DATABOX_SCALE_LINEAR)
-    {
+    if (ruler->priv->scale_type == GTK_DATABOX_SCALE_LINEAR) {
         text_width = (ruler->priv->max_length) * digit_width + 1;
 
-        for (power = -20; power < 21; power++)
-        {
+        for (power = -20; power < 21; power++) {
             if ((digit = 1) * pow (10, power) * fabs (increment) > text_width)
                 break;
             if ((digit = 2.5) * pow (10, power) * fabs (increment) > text_width)
@@ -1233,19 +1163,14 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
         }
 
 
-        if (power == 21)
-        {
+        if (power == 21) {
             power = 20;
             digit = 5;
         }
         subd_incr = digit * pow (10, power);
-    }
-    else if (ruler->priv->scale_type == GTK_DATABOX_SCALE_LOG2)
-    {
+    } else if (ruler->priv->scale_type == GTK_DATABOX_SCALE_LOG2) {
         subd_incr = 1.;
-    }
-    else
-    {
+    } else {
         subd_incr = 1.;
     }
 
@@ -1253,30 +1178,24 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
              ? height - 1 : width - 1;
 
     if (ruler->priv->manual_ticks==NULL)
-        if (lower < upper)
-        {
+        if (lower < upper) {
             start = floor (lower / subd_incr) * subd_incr;
             end = ceil (upper / subd_incr) * subd_incr;
-        }
-        else
-        {
+        } else {
             start = floor (upper / subd_incr) * subd_incr;
             end = ceil (lower / subd_incr) * subd_incr;
         }
-    else   /* we are manually setting the tick labels and marks. */
-    {
+    else { /* we are manually setting the tick labels and marks. */
         start = 0.;
         end = (gfloat)ruler->priv->manual_tick_cnt-1;
         subd_incr=1.;
     }
 
 
-    for (cur = start; cur <= end; cur += subd_incr)
-    {
+    for (cur = start; cur <= end; cur += subd_incr) {
         if (ruler->priv->manual_ticks==NULL)
             pos = ROUND (((cur_text=cur) - lower) * increment);
-        else
-        {
+        else {
             /* manual ticks must be positioned according to the scale */
             if (ruler->priv->scale_type == GTK_DATABOX_SCALE_LINEAR)
                 cur_text=ruler->priv->manual_ticks[(int)cur];
@@ -1287,8 +1206,7 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
             pos = ROUND ((cur_text - lower) * increment);
             cur_text=ruler->priv->manual_ticks[(int)cur];
         }
-        if (ruler->priv->draw_ticks)
-        {
+        if (ruler->priv->draw_ticks) {
             if (ruler->priv->orientation == GTK_ORIENTATION_HORIZONTAL)
                 cairo_rectangle (cr, pos, height + ythickness - length, 1, length);
             else
@@ -1300,16 +1218,13 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
         /* if manual tick labels are present, display them instead of calculated labels */
         if ((ruler->priv->manual_ticks!=NULL) && (ruler->priv->manual_tick_cnt!=0) && (ruler->priv->manual_tick_labels!=NULL))
             pango_layout_set_text (layout, ruler->priv->manual_tick_labels[(int)cur], -1);
-        else
-        {
-            if ((ruler->priv->scale_type == GTK_DATABOX_SCALE_LINEAR) || (ruler->priv->manual_ticks!=NULL))
-            {
+        else {
+            if ((ruler->priv->scale_type == GTK_DATABOX_SCALE_LINEAR) || (ruler->priv->manual_ticks!=NULL)) {
                 if (ABS (cur_text) < 0.1 * subd_incr)	/* Rounding errors occur and might make "0" look funny without this check */
                     cur_text = 0;
 
                 g_snprintf (unit_str, ruler->priv->max_length + 1, format_string, cur_text);
-            }
-            else if (ruler->priv->scale_type == GTK_DATABOX_SCALE_LOG2)
+            } else if (ruler->priv->scale_type == GTK_DATABOX_SCALE_LOG2)
                 g_snprintf (unit_str, ruler->priv->max_length + 1, format_string, pow (2, cur_text));
             else
                 g_snprintf (unit_str, ruler->priv->max_length + 1, format_string, pow (10, cur_text));
@@ -1319,8 +1234,7 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
         pango_layout_get_pixel_extents (layout, NULL, &logical_rect);
 
         /* remember the pixel extents for sizing later. */
-        if ((ruler->priv->orientation == GTK_ORIENTATION_VERTICAL) & (ruler->priv->max_y_text_width<logical_rect.width))
-        {
+        if ((ruler->priv->orientation == GTK_ORIENTATION_VERTICAL) & (ruler->priv->max_y_text_width<logical_rect.width)) {
             if (ruler->priv->text_orientation ==GTK_ORIENTATION_VERTICAL)
                 ruler->priv->max_y_text_width=logical_rect.height;
             else
@@ -1328,9 +1242,7 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
             gtk_widget_set_size_request(GTK_WIDGET(ruler), ruler->priv->max_y_text_width, ruler->priv->max_x_text_height);
             /*printf("set ruler->priv->max_x_text_height=%d\n",ruler->priv->max_x_text_height);
             printf("set ruler->priv->max_y_text_width=%d\n",ruler->priv->max_y_text_width);*/
-        }
-        else if (ruler->priv->max_x_text_height<logical_rect.height)
-        {
+        } else if (ruler->priv->max_x_text_height<logical_rect.height) {
             ruler->priv->max_x_text_height=logical_rect.height;
             gtk_widget_set_size_request(GTK_WIDGET(ruler), ruler->priv->max_y_text_width, ruler->priv->max_x_text_height);
             /*printf("set ruler->priv->max_x_text_height=%d\n",ruler->priv->max_x_text_height);
@@ -1346,8 +1258,7 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
                               FALSE,
                               NULL,
                               widget, "ruler", pos + 2, ythickness - 1, layout);
-        else
-        {
+        else {
             y_loc=pos - logical_rect.width - 2; /* standard vertical text y alignment */
             if (ruler->priv->text_orientation == GTK_ORIENTATION_HORIZONTAL)
                 y_loc=pos - logical_rect.width*2/3; /* horizontal text y alignment */
@@ -1360,16 +1271,14 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
         }
 
         /* Draw sub-ticks */
-        if (ruler->priv->draw_subticks & ruler->priv->draw_ticks)
-        {
+        if (ruler->priv->draw_subticks & ruler->priv->draw_ticks) {
             if (!ruler->priv->invert_edge) /* sub-ticks on the bottom */
                 subtick_start=length / 2;
             else
                 subtick_start=length;
 
             if (ruler->priv->scale_type == GTK_DATABOX_SCALE_LINEAR)
-                for (i = 1; i < 5; ++i)
-                {
+                for (i = 1; i < 5; ++i) {
                     pos = ROUND ((cur - lower + subd_incr / 5 * i) * increment);
 
                     if (ruler->priv->orientation == GTK_ORIENTATION_HORIZONTAL)
@@ -1378,8 +1287,7 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
                         cairo_rectangle (cr, width + xthickness - subtick_start, pos, length / 2, 1);
                 }
             else  if (ruler->priv->scale_type == GTK_DATABOX_SCALE_LOG2)
-                for (i = 1; i < 8; ++i)
-                {
+                for (i = 1; i < 8; ++i) {
                     pos = ROUND ((cur - lower + log2 (i)) * increment);
 
                     if (ruler->priv->orientation == GTK_ORIENTATION_HORIZONTAL)
@@ -1388,8 +1296,7 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler)
                         cairo_rectangle (cr, width + xthickness - subtick_start, pos, length / 2, 1);
                 }
             else
-                for (i = 2; i < 10; ++i)
-                {
+                for (i = 2; i < 10; ++i) {
                     pos = ROUND ((cur - lower + log10 (i)) * increment);
 
                     if (ruler->priv->orientation == GTK_ORIENTATION_HORIZONTAL)
@@ -1408,8 +1315,7 @@ out:
 }
 
 static void
-gtk_databox_ruler_draw_pos (GtkDataboxRuler * ruler)
-{
+gtk_databox_ruler_draw_pos (GtkDataboxRuler * ruler) {
     GtkWidget *widget = GTK_WIDGET (ruler);
     gint x, y;
     gint width, height;
@@ -1419,23 +1325,19 @@ gtk_databox_ruler_draw_pos (GtkDataboxRuler * ruler)
     gdouble increment;
     cairo_t *cr;
 
-    if (gtk_widget_is_drawable (GTK_WIDGET (ruler)))
-    {
+    if (gtk_widget_is_drawable (GTK_WIDGET (ruler))) {
         xthickness = widget->style->xthickness;
         ythickness = widget->style->ythickness;
         width = widget->allocation.width - xthickness * 2;
         height = widget->allocation.height - ythickness * 2;
 
-        if (ruler->priv->orientation == GTK_ORIENTATION_HORIZONTAL)
-        {
+        if (ruler->priv->orientation == GTK_ORIENTATION_HORIZONTAL) {
             bs_width = height / 2 + 2;
             bs_width |= 1;		/* make sure it's odd */
             bs_height = bs_width / 2 + 1;
             if (ruler->priv->invert_edge)
                 bs_height=-bs_height;
-        }
-        else
-        {
+        } else {
             bs_height = width / 2 + 2;
             bs_height |= 1;	/* make sure it's odd */
             bs_width = bs_height / 2 + 1;
@@ -1459,8 +1361,7 @@ gtk_databox_ruler_draw_pos (GtkDataboxRuler * ruler)
                                ruler->priv->xsrc, ruler->priv->ysrc,
                                ruler->priv->xsrc, ruler->priv->ysrc, bs_width, bs_height);
 
-        if (ruler->priv->orientation == GTK_ORIENTATION_HORIZONTAL)
-        {
+        if (ruler->priv->orientation == GTK_ORIENTATION_HORIZONTAL) {
             increment = (gdouble) width / (ruler->priv->upper - ruler->priv->lower);
 
             x = ROUND ((ruler->priv->position - ruler->priv->lower) * increment) +
@@ -1472,9 +1373,7 @@ gtk_databox_ruler_draw_pos (GtkDataboxRuler * ruler)
             cairo_move_to (cr, x, y);
             cairo_line_to (cr, x + bs_width / 2., y + bs_height);
             cairo_line_to (cr, x + bs_width, y);
-        }
-        else
-        {
+        } else {
             increment = (gdouble) height / (ruler->priv->upper - ruler->priv->lower);
 
             x = (width + bs_width) / 2 + xthickness;
@@ -1494,8 +1393,7 @@ gtk_databox_ruler_draw_pos (GtkDataboxRuler * ruler)
         /* remember the rectangle of the arrow - so that it may be cleared on re-run */
         ruler->priv->xsrc = x;
         ruler->priv->ysrc = y;
-        if (ruler->priv->invert_edge)  /* inverted edges need clearing in the negative direction */
-        {
+        if (ruler->priv->invert_edge) { /* inverted edges need clearing in the negative direction */
             if (ruler->priv->orientation == GTK_ORIENTATION_HORIZONTAL)
                 ruler->priv->ysrc = y+bs_height; /* bs_height is negative */
             else
@@ -1506,8 +1404,7 @@ gtk_databox_ruler_draw_pos (GtkDataboxRuler * ruler)
 
 
 static void
-gtk_databox_ruler_realize (GtkWidget * widget)
-{
+gtk_databox_ruler_realize (GtkWidget * widget) {
     GtkDataboxRuler *ruler;
     GdkWindowAttr attributes;
     gint attributes_mask;
@@ -1542,8 +1439,7 @@ gtk_databox_ruler_realize (GtkWidget * widget)
 }
 
 static void
-gtk_databox_ruler_unrealize (GtkWidget * widget)
-{
+gtk_databox_ruler_unrealize (GtkWidget * widget) {
     GtkDataboxRuler *ruler = GTK_DATABOX_RULER (widget);
     gtk_widget_set_realized(widget, FALSE);
 
@@ -1558,29 +1454,26 @@ gtk_databox_ruler_unrealize (GtkWidget * widget)
 
 static void
 gtk_databox_ruler_size_allocate (GtkWidget * widget,
-                                 GtkAllocation * allocation)
-{
+                                 GtkAllocation * allocation) {
     GtkDataboxRuler *ruler = GTK_DATABOX_RULER (widget);
 
     widget->allocation = *allocation;
 
     if (gtk_widget_get_realized (widget))
         if (gtk_widget_is_drawable(widget)) {
-        gdk_window_move_resize (widget->window,
-                                allocation->x, allocation->y,
-                                allocation->width, allocation->height);
+            gdk_window_move_resize (widget->window,
+                                    allocation->x, allocation->y,
+                                    allocation->width, allocation->height);
 
-        gtk_databox_ruler_make_pixmap (ruler);
-    }
+            gtk_databox_ruler_make_pixmap (ruler);
+        }
 }
 
 static gint
-gtk_databox_ruler_expose (GtkWidget * widget, GdkEventExpose * event)
-{
+gtk_databox_ruler_expose (GtkWidget * widget, GdkEventExpose * event) {
     GtkDataboxRuler *ruler;
 
-    if (gtk_widget_is_drawable (widget))
-    {
+    if (gtk_widget_is_drawable (widget)) {
         ruler = GTK_DATABOX_RULER (widget);
 
         gtk_databox_ruler_draw_ticks (ruler);
@@ -1591,6 +1484,7 @@ gtk_databox_ruler_expose (GtkWidget * widget, GdkEventExpose * event)
                            0, 0, 0, 0,
                            widget->allocation.width, widget->allocation.height);
 
+        if (ruler->priv->draw_position)
             gtk_databox_ruler_draw_pos (ruler);
     }
 
@@ -1598,16 +1492,14 @@ gtk_databox_ruler_expose (GtkWidget * widget, GdkEventExpose * event)
 }
 
 static void
-gtk_databox_ruler_make_pixmap (GtkDataboxRuler * ruler)
-{
+gtk_databox_ruler_make_pixmap (GtkDataboxRuler * ruler) {
     GtkWidget *widget;
     gint width;
     gint height;
 
     widget = GTK_WIDGET (ruler);
 
-    if (ruler->priv->backing_pixmap)
-    {
+    if (ruler->priv->backing_pixmap) {
         gdk_pixmap_get_size (ruler->priv->backing_pixmap, &width, &height);
         if ((width == widget->allocation.width) &&
                 (height == widget->allocation.height))
