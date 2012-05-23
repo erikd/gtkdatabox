@@ -92,7 +92,7 @@ gtk_databox_regions_get_type (void)
 	 NULL,			/* value_table */
       };
       type = g_type_register_static (GTK_DATABOX_TYPE_XYYC_GRAPH,
-				     "GtkDataboxRegions", &info, 0);
+				     "GtkDataboxRegions", &info, (GTypeFlags)0);
    }
 
    return type;

@@ -33,3 +33,9 @@ examples/rulers
 config.*
 libtool
 gtkdatabox/*
+gtkdataboxvc++/ipch
+gtkdataboxvc++/gtkdataboxvc++.opensdf
+gtkdataboxvc++/Release
+gtkdataboxvc++/Debug
+
+
