@@ -4,6 +4,7 @@ autom4te.cache
 Makefile.in
 */Makefile.in
 */*/Makefile.in
+*/*/*/Makefile.in
 Makefile
 */Makefile
 */*/Makefile
@@ -37,5 +38,4 @@ gtkdataboxvc++/ipch
 gtkdataboxvc++/gtkdataboxvc++.opensdf
 gtkdataboxvc++/Release
 gtkdataboxvc++/Debug
-
-
+ltmain.sh
