@@ -203,7 +203,7 @@ gtk_databox_create_box_with_scrollbars_and_rulers_positioned (GtkWidget ** p_box
         gboolean ruler_y_left);
 
 /* Used by graph objects */
-GdkPixmap* gtk_databox_get_backing_pixmap(GtkDatabox * box);
+cairo_surface_t* gtk_databox_get_backing_surface(GtkDatabox * box);
 
 G_END_DECLS
 #endif				/* __GTK_DATABOX_H__ */

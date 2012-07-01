@@ -94,13 +94,10 @@ G_BEGIN_DECLS
       gint (*calculate_extrema) (GtkDataboxGraph * graph,
                                  gfloat * min_x, gfloat * max_x,
 				 gfloat * min_y, gfloat * max_y);
-      GdkGC* (*create_gc) (GtkDataboxGraph * graph, GtkDatabox * box);
+      cairo_t* (*create_gc) (GtkDataboxGraph * graph, GtkDatabox * box);
    };
 
    GType gtk_databox_graph_get_type (void);
-
-   GdkGC* gtk_databox_graph_get_gc (GtkDataboxGraph * graph);
-   void gtk_databox_graph_set_gc (GtkDataboxGraph * graph, GdkGC *gc);
 
    void gtk_databox_graph_set_hide (GtkDataboxGraph * graph, gboolean hide);
    gboolean gtk_databox_graph_get_hide (GtkDataboxGraph * graph);
@@ -119,7 +116,7 @@ G_BEGIN_DECLS
    void gtk_databox_graph_draw (GtkDataboxGraph * graph, GtkDatabox * box);
 
    /* This function is called by derived graph classes */
-   GdkGC* gtk_databox_graph_create_gc (GtkDataboxGraph * graph, GtkDatabox * box);
+   cairo_t* gtk_databox_graph_create_gc (GtkDataboxGraph * graph, GtkDatabox * box);
 
 G_END_DECLS
 #endif				/* __GTK_DATABOX_GRAPH_H__ */

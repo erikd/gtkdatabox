@@ -21,7 +21,7 @@
 
 static void gtk_databox_grid_real_draw (GtkDataboxGraph * grid,
 					GtkDatabox* box);
-static GdkGC* gtk_databox_grid_real_create_gc (GtkDataboxGraph * graph,
+static cairo_t* gtk_databox_grid_real_create_gc (GtkDataboxGraph * graph,
 					     GtkDatabox* box);
 
 /* IDs of properties */
@@ -115,28 +115,23 @@ gtk_databox_grid_get_property (GObject * object,
    }
 }
 
-static GdkGC*
+
+
+static cairo_t*
 gtk_databox_grid_real_create_gc (GtkDataboxGraph * graph,
 				 GtkDatabox* box)
 {
-   GdkGC *gc;
-   GdkGCValues values;
+   cairo_t *cr;
+   static const double grid_dash = 5.0;
 
    g_return_val_if_fail (GTK_DATABOX_IS_GRID (graph), NULL);
 
-   gc = GTK_DATABOX_GRAPH_CLASS (parent_class)->create_gc (graph, box);
+   cr = GTK_DATABOX_GRAPH_CLASS (parent_class)->create_gc (graph, box);
 
-   if (gc)
-   {
-      values.line_style = GDK_LINE_ON_OFF_DASH;
-      values.cap_style = GDK_CAP_BUTT;
-      values.join_style = GDK_JOIN_MITER;
-      gdk_gc_set_values (gc, &values,
-			 GDK_GC_LINE_STYLE |
-			 GDK_GC_CAP_STYLE | GDK_GC_JOIN_STYLE);
-   }
+   if (cr)
+      cairo_set_dash(cr, &grid_dash, 1, 0.0);
 
-   return gc;
+   return cr;
 }
 
 static void
@@ -280,8 +275,6 @@ gtk_databox_grid_real_draw (GtkDataboxGraph * graph,
 {
    GtkWidget *widget;
    GtkDataboxGrid *grid = GTK_DATABOX_GRID (graph);
-   GdkGC *gc;
-   GdkPixmap *pixmap;
    gint i = 0;
    gfloat x;
    gfloat y;
@@ -294,18 +287,16 @@ gtk_databox_grid_real_draw (GtkDataboxGraph * graph,
    gint16 pixel_x;
    gint16 pixel_y;
    gfloat left, right, top, bottom;
+   cairo_t *cr;
 
    g_return_if_fail (GTK_DATABOX_IS_GRID (grid));
    g_return_if_fail (GTK_IS_DATABOX (box));
 
    widget = GTK_WIDGET(box);
 
-   pixmap = gtk_databox_get_backing_pixmap (box);
    gtk_databox_get_total_limits (box, &left, &right, &top, &bottom);
 
-   if (!(gc = gtk_databox_graph_get_gc(graph)))
-      gc = gtk_databox_graph_create_gc (graph, box);
-
+   cr = gtk_databox_graph_create_gc (graph, box);
 
    width = widget->allocation.width;
    height = widget->allocation.height;
@@ -323,14 +314,16 @@ gtk_databox_grid_real_draw (GtkDataboxGraph * graph,
       {
          y = offset_y + (i + 1) * factor_y;
          pixel_y = gtk_databox_value_to_pixel_y (box, y);
-         gdk_draw_line (pixmap, gc, 0, pixel_y, width, pixel_y);
+         cairo_move_to (cr, 0.0, pixel_y + 0.5);
+         cairo_line_to (cr, width, pixel_y + 0.5);
       }
    else
       for (i = 0; i < grid->priv->hlines; i++)
       {
          y = grid->priv->hline_vals[i];
          pixel_y = gtk_databox_value_to_pixel_y (box, y);
-         gdk_draw_line (pixmap, gc, 0, pixel_y, width, pixel_y);
+         cairo_move_to (cr, 0.0, pixel_y + 0.5);
+         cairo_line_to (cr, width, pixel_y + 0.5);
       }
 
    if (grid->priv->vline_vals == NULL)
@@ -338,15 +331,19 @@ gtk_databox_grid_real_draw (GtkDataboxGraph * graph,
       {
          x = offset_x + (i + 1) * factor_x;
          pixel_x = gtk_databox_value_to_pixel_x (box, x);
-         gdk_draw_line (pixmap, gc, pixel_x, 0, pixel_x, height);
+         cairo_move_to (cr, pixel_x + 0.5, 0.0);
+         cairo_line_to (cr, pixel_x + 0.5, height);
       }
    else
       for (i = 0; i < grid->priv->vlines; i++)
       {
          x = grid->priv->vline_vals[i];
          pixel_x = gtk_databox_value_to_pixel_x (box, x);
-         gdk_draw_line (pixmap, gc, pixel_x, 0, pixel_x, height);
+         cairo_move_to (cr, pixel_x + 0.5, 0);
+         cairo_line_to (cr, pixel_x + 0.5, height);
       }
+   cairo_stroke(cr);
+   cairo_destroy(cr);
 
 
    return;

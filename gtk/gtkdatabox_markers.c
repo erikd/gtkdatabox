@@ -22,7 +22,7 @@
 
 static void gtk_databox_markers_real_draw (GtkDataboxGraph * markers,
 					  GtkDatabox* box);
-static GdkGC* gtk_databox_markers_real_create_gc (GtkDataboxGraph * graph,
+static cairo_t* gtk_databox_markers_real_create_gc (GtkDataboxGraph * graph,
 					       GtkDatabox* box);
 
 /* IDs of properties */
@@ -46,7 +46,6 @@ struct _GtkDataboxMarkersPrivate
 {
    GtkDataboxMarkersType type;
    GtkDataboxMarkersInfo *markers_info;
-   GdkGC *label_gc;
 };
 
 static gpointer parent_class = NULL;
@@ -134,40 +133,25 @@ markers_finalize (GObject * object)
    G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
-static GdkGC *
+static cairo_t *
 gtk_databox_markers_real_create_gc (GtkDataboxGraph * graph,
 				   GtkDatabox* box)
 {
    GtkDataboxMarkers *markers = GTK_DATABOX_MARKERS (graph);
-   GdkGC *gc;
-   GdkGCValues values;
+   cairo_t *cr;
+   static const double dash = 5.0f;
 
    g_return_val_if_fail (GTK_DATABOX_IS_MARKERS (graph), NULL);
 
-   gc = GTK_DATABOX_GRAPH_CLASS (parent_class)->create_gc (graph, box);
+   cr = GTK_DATABOX_GRAPH_CLASS (parent_class)->create_gc (graph, box);
 
-   if (gc)
+   if (cr)
    {
       if (markers->priv->type == GTK_DATABOX_MARKERS_DASHED_LINE)
-      {
-         values.line_style = GDK_LINE_ON_OFF_DASH;
-         values.cap_style = GDK_CAP_BUTT;
-         values.join_style = GDK_JOIN_MITER;
-         gdk_gc_set_values (gc, &values,
-			    GDK_GC_LINE_STYLE |
-			    GDK_GC_CAP_STYLE | GDK_GC_JOIN_STYLE);
-      }
-   
-      if (markers->priv->label_gc)
-         g_object_unref (markers->priv->label_gc);
-   
-      markers->priv->label_gc = gdk_gc_new (gtk_databox_get_backing_pixmap (box));
-      gdk_gc_copy (markers->priv->label_gc, gc);
-      gdk_gc_set_line_attributes (markers->priv->label_gc, 1,
-			          GDK_LINE_SOLID, GDK_CAP_ROUND, GDK_JOIN_ROUND);
+         cairo_set_dash (cr, &dash, 1, 0.0);
    }
 
-   return gc;
+   return cr;
 }
 
 static void
@@ -275,9 +259,8 @@ gtk_databox_markers_new (guint len, gfloat * X, gfloat * Y,
 }
 
 static gint
-gtk_databox_label_write_at (GdkPixmap * pixmap,
+gtk_databox_label_write_at (cairo_t *cr,
 			    PangoLayout * pl,
-			    GdkGC * gc,
 			    GdkPoint coord,
 			    GtkDataboxMarkersTextPosition position,
 			    gint distance, gboolean boxed)
@@ -351,13 +334,19 @@ gtk_databox_label_write_at (GdkPixmap * pixmap,
       vdist_box = vdist_text - offset;
    }
 
-   gdk_draw_layout (pixmap, gc,
-		    coord.x + hdist_text, coord.y + vdist_text, pl);
 
-   if (boxed)
-      gdk_draw_rectangle (pixmap, gc, FALSE,
-			  coord.x + hdist_box,
-			  coord.y + vdist_box, width + 3, height + 3);
+   cairo_move_to(cr, coord.x + hdist_text, coord.y + vdist_text);
+   pango_cairo_show_layout(cr, pl);
+
+   if (boxed) {
+      cairo_save (cr);
+      cairo_set_line_width (cr, 1.0);
+      cairo_set_dash (cr, NULL, 0, 0.0);
+      cairo_rectangle (cr, coord.x + hdist_box - 0.5,
+			  coord.y + vdist_box - 0.5, width + 3.5, height + 3.5);
+	  cairo_stroke(cr);
+	  cairo_restore(cr);
+	}
 
    return (0);
 }
@@ -369,8 +358,6 @@ gtk_databox_markers_real_draw (GtkDataboxGraph * graph,
    GtkWidget *widget;
    GtkDataboxMarkers *markers = GTK_DATABOX_MARKERS (graph);
    GdkPoint points[3];
-   GdkPixmap *pixmap;
-   GdkGC *gc;
    PangoContext *context;
    gfloat *X;
    gfloat *Y;
@@ -382,17 +369,16 @@ gtk_databox_markers_real_draw (GtkDataboxGraph * graph,
    GdkPoint coord;
    gint size;
    guint i;
+   cairo_t *cr;
 
    g_return_if_fail (GTK_DATABOX_IS_MARKERS (markers));
    g_return_if_fail (GTK_IS_DATABOX (box));
 
    widget = GTK_WIDGET(box);
 
-   pixmap = gtk_databox_get_backing_pixmap (box);
    context = gtk_widget_get_pango_context(widget);
 
-   if (!(gc = gtk_databox_graph_get_gc(graph)))
-      gc = gtk_databox_graph_create_gc (graph, box);
+   cr = gtk_databox_graph_create_gc (graph, box);
 
    len = gtk_databox_xyc_graph_get_length (GTK_DATABOX_XYC_GRAPH (graph));
    X = gtk_databox_xyc_graph_get_X (GTK_DATABOX_XYC_GRAPH (graph));
@@ -462,7 +448,11 @@ gtk_databox_markers_real_draw (GtkDataboxGraph * graph,
 	    points[2].y = y - size / 2;
 	    break;
 	 }
-	 gdk_draw_polygon (pixmap, gc, TRUE, points, 3);
+	 cairo_move_to(cr, points[0].x + 0.5, points[0].y + 0.5);
+	 cairo_line_to(cr, points[1].x + 0.5, points[1].y + 0.5);
+	 cairo_line_to(cr, points[2].x + 0.5, points[2].y + 0.5);
+	 cairo_close_path  (cr);
+	 cairo_fill(cr);
 	 break;
 	 /* End of GTK_DATABOX_MARKERS_TRIANGLE */
       case GTK_DATABOX_MARKERS_SOLID_LINE:
@@ -500,9 +490,10 @@ gtk_databox_markers_real_draw (GtkDataboxGraph * graph,
 	    points[1].y = y;
 	    break;
 	 }
+	 cairo_move_to(cr, points[0].x + 0.5, points[0].y + 0.5);
+	 cairo_line_to(cr, points[1].x + 0.5, points[1].y + 0.5);
+	 cairo_stroke(cr);
 
-	 gdk_draw_line (pixmap, gc,
-			points[0].x, points[0].y, points[1].x, points[1].y);
 	 break;
 	 /* End of GTK_DATABOX_MARKERS_LINE */
 
@@ -552,15 +543,16 @@ gtk_databox_markers_real_draw (GtkDataboxGraph * graph,
 	    }
 	 }
 
-	 gtk_databox_label_write_at (pixmap,
+	 gtk_databox_label_write_at (cr,
 				     markers->priv->markers_info[i].label,
-				     markers->priv->label_gc, coord,
+				     coord,
 				     markers->priv->markers_info[i].
 				     label_position, (size + 1) / 2 + 2,
 				     markers->priv->markers_info[i].boxed);
       }
    }
 
+   cairo_destroy(cr);
    return;
 }
 

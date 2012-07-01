@@ -132,27 +132,26 @@ static void
 gtk_databox_regions_real_draw (GtkDataboxGraph * graph,
 			    GtkDatabox* box)
 {
+   GtkWidget *widget;
    GtkDataboxRegions *regions = GTK_DATABOX_REGIONS (graph);
    GdkPoint *data1, *data2, *data3, *data4;
-   GdkGC *gc;
-   GdkPixmap *pixmap;
    guint i = 0;
    gfloat *X;
    gfloat *Y1;
    gfloat *Y2;
    guint len;
+   cairo_t *cr;
 
    g_return_if_fail (GTK_DATABOX_IS_REGIONS (regions));
    g_return_if_fail (GTK_IS_DATABOX (box));
 
-   pixmap = gtk_databox_get_backing_pixmap (box);
+   widget = GTK_WIDGET(box);
+
+   cr = gtk_databox_graph_create_gc (graph, box);
 
    if (gtk_databox_get_scale_type_y (box) == GTK_DATABOX_SCALE_LOG)
       g_warning
 	 ("gtk_databox_regions do not work well with logarithmic scale in Y axis");
-
-   if (!(gc = gtk_databox_graph_get_gc(graph)))
-      gc = gtk_databox_graph_create_gc (graph, box);
 
    len = gtk_databox_xyyc_graph_get_length (GTK_DATABOX_XYYC_GRAPH (graph));
    X = gtk_databox_xyyc_graph_get_X (GTK_DATABOX_XYYC_GRAPH (graph));
@@ -179,8 +178,12 @@ gtk_databox_regions_real_draw (GtkDataboxGraph * graph,
       data3->y = gtk_databox_value_to_pixel_y (box, *Y2);
       data4->x = gtk_databox_value_to_pixel_x (box, *X);
       data4->y = gtk_databox_value_to_pixel_y (box, *Y1);
-      gdk_draw_polygon (pixmap, gc, 1, /* 1 for a filled polygon*/
-			 regions->priv->data,4);
+      cairo_move_to(cr, data2->x, data2->y);
+      cairo_line_to(cr, data1->x, data1->y);
+      cairo_line_to(cr, data3->x, data3->y);
+      cairo_line_to(cr, data4->x, data4->y);
+      cairo_close_path  (cr);
+      cairo_fill(cr);
    }
    return;
 }

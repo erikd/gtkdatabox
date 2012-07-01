@@ -140,25 +140,21 @@ gtk_databox_offset_bars_real_draw (GtkDataboxGraph * graph,
 {
    GtkDataboxOffsetBars *bars = GTK_DATABOX_OFFSET_BARS (graph);
    GdkSegment *data;
-   GdkGC *gc;
-   GdkPixmap *pixmap;
    guint i = 0;
    gfloat *X;
    gfloat *Y1;
    gfloat *Y2;
    guint len;
+   cairo_t *cr;
 
    g_return_if_fail (GTK_DATABOX_IS_OFFSET_BARS (bars));
    g_return_if_fail (GTK_IS_DATABOX (box));
-
-   pixmap = gtk_databox_get_backing_pixmap (box);
 
    if (gtk_databox_get_scale_type_y (box) == GTK_DATABOX_SCALE_LOG)
       g_warning
 	 ("gtk_databox_offset_bars do not work well with logarithmic scale in Y axis");
 
-   if (!(gc = gtk_databox_graph_get_gc(graph)))
-      gc = gtk_databox_graph_create_gc (graph, box);
+   cr = gtk_databox_graph_create_gc (graph, box);
 
    len = gtk_databox_xyyc_graph_get_length (GTK_DATABOX_XYYC_GRAPH (graph));
    X = gtk_databox_xyyc_graph_get_X (GTK_DATABOX_XYYC_GRAPH (graph));
@@ -172,15 +168,12 @@ gtk_databox_offset_bars_real_draw (GtkDataboxGraph * graph,
       data->x1 = data->x2 = gtk_databox_value_to_pixel_x (box, *X);
       data->y1 = gtk_databox_value_to_pixel_y (box, *Y1);
       data->y2 = gtk_databox_value_to_pixel_y (box, *Y2);
-   }
 
-   /* More than 2^16 bars will cause X IO error on most XServers
-      (Hint from Paul Barton-Davis) */
-   for (i = 0; i < len; i += 65536)
-   {
-      gdk_draw_segments (pixmap, gc,
-			 bars->priv->data + i, MIN (65536, len - i));
+      cairo_move_to (cr, data->x1 + 0.5, data->y1 + 0.5);
+      cairo_line_to (cr, data->x2 + 0.5, data->y2 + 0.5);
    }
+   cairo_stroke(cr);
+   cairo_destroy(cr);
 
    return;
 }

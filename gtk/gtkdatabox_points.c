@@ -138,21 +138,17 @@ gtk_databox_points_real_draw (GtkDataboxGraph * graph,
 {
    GtkDataboxPoints *points = GTK_DATABOX_POINTS (graph);
    GdkPoint *data;
-   GdkGC *gc;
-   GdkPixmap *pixmap;
    guint i = 0;
    gfloat *X;
    gfloat *Y;
    guint len;
    gint size = 0;
+   cairo_t *cr;
 
    g_return_if_fail (GTK_DATABOX_IS_POINTS (points));
    g_return_if_fail (GTK_IS_DATABOX (box));
 
-   pixmap = gtk_databox_get_backing_pixmap (box);
-
-   if (!(gc = gtk_databox_graph_get_gc(graph)))
-      gc = gtk_databox_graph_create_gc (graph, box);
+   cr = gtk_databox_graph_create_gc (graph, box);
 
    len = gtk_databox_xyc_graph_get_length (GTK_DATABOX_XYC_GRAPH (graph));
    X = gtk_databox_xyc_graph_get_X (GTK_DATABOX_XYC_GRAPH (graph));
@@ -162,25 +158,10 @@ gtk_databox_points_real_draw (GtkDataboxGraph * graph,
 
    gtk_databox_values_to_pixels (box, len, X, Y, data);
 
-   if (size < 2)
-   {
-      /* More than 2^16 points will cause X IO error on most XServers
-         (Hint from Paul Barton-Davis) */
-      for (i = 0; i < len; i += 65536)
-      {
-	 gdk_draw_points (pixmap, gc, data + i,
-			  MIN (65536, len - i));
-      }
-   }
-   else
-   {
-      for (i = 0; i < len; i++, data++)
-      {
-	 /* Why on earth is there no gdk_draw_rectangles?? */
-	 gdk_draw_rectangle (pixmap, gc, TRUE,
-			     data->x - size / 2,
-			     data->y - size / 2, size, size);
-      }
-   }
+   for (i = 0; i < len; i++, data++)
+      cairo_rectangle(cr, data->x - size / 2, data->y - size / 2, size, size);
+
+   cairo_fill(cr);
+   cairo_destroy(cr);
    return;
 }

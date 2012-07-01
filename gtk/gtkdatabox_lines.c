@@ -139,24 +139,16 @@ gtk_databox_lines_real_draw (GtkDataboxGraph * graph,
    GtkWidget *widget;
    GtkDataboxLines *lines = GTK_DATABOX_LINES (graph);
    GdkPoint *data;
-   GdkPixmap *pixmap;
-   GtkStyle *style;
-   GdkGC *gc;
    guint i = 0;
    gfloat *X;
    gfloat *Y;
    guint len;
    gint size = 0;
+   cairo_t *cr;
 
    g_return_if_fail (GTK_DATABOX_IS_LINES (lines));
    g_return_if_fail (GTK_IS_DATABOX (box));
    widget = GTK_WIDGET(box);
-
-   pixmap = gtk_databox_get_backing_pixmap (box);
-   style = widget->style;
-
-   if (!(gc = gtk_databox_graph_get_gc(graph)))
-      gc = gtk_databox_graph_create_gc (graph, box);
 
    len = gtk_databox_xyc_graph_get_length (GTK_DATABOX_XYC_GRAPH (graph));
    X = gtk_databox_xyc_graph_get_X (GTK_DATABOX_XYC_GRAPH (graph));
@@ -166,13 +158,13 @@ gtk_databox_lines_real_draw (GtkDataboxGraph * graph,
 
    gtk_databox_values_to_pixels (box, len, X, Y, data);
 
-   /* More than 2^16 lines will cause X IO error on most XServers
-      (Hint from Paul Barton-Davis) */
-   for (i = 0; i < len; i += 65536)
-   {
-      gdk_draw_lines (pixmap, gc, data + i,
-		      MIN (65536, len - i));
-   }
+   cr = gtk_databox_graph_create_gc (graph, box);
+
+   for (i = 0; i < len; i++)
+	  cairo_line_to(cr, data[i].x + 0.5, data[i].y + 0.5);
+
+   cairo_stroke(cr);
+   cairo_destroy(cr);
 
    return;
 }

@@ -28,8 +28,6 @@ static gint gtk_databox_graph_real_calculate_extrema (GtkDataboxGraph * graph,
     gfloat * max_x,
     gfloat * min_y,
     gfloat * max_y);
-static GdkGC * gtk_databox_graph_real_create_gc (GtkDataboxGraph * graph,
-    GtkDatabox * box);
 
 /* IDs of properties */
 enum
@@ -44,7 +42,6 @@ struct _GtkDataboxGraphPrivate
   GdkColor color;
   gint size;
   gboolean hide;
-  GdkGC *gc;
 };
 
 static gpointer parent_class = NULL;
@@ -113,20 +110,6 @@ gtk_databox_graph_get_property (GObject * object,
     }
 }
 
-static void
-gtk_databox_graph_delete_gc (GtkDataboxGraph * graph)
-{
-  if (graph->priv->gc)
-    {
-      GdkColormap *colormap = NULL;
-
-      colormap = gdk_gc_get_colormap (graph->priv->gc);
-      gdk_colormap_free_colors (colormap, &graph->priv->color, 1);
-      gtk_gc_release (graph->priv->gc);
-      graph->priv->gc = NULL;
-    }
-}
-
 /**
  * gtk_databox_graph_create_gc:
  * @graph: A #GtkDataboxGraph object
@@ -138,27 +121,23 @@ gtk_databox_graph_delete_gc (GtkDataboxGraph * graph)
  *
  * Return value: The new graphics context.
  */
-GdkGC*
+cairo_t*
 gtk_databox_graph_create_gc (GtkDataboxGraph * graph,
                              GtkDatabox* box)
 {
   return GTK_DATABOX_GRAPH_GET_CLASS (graph)->create_gc (graph, box);
 }
 
-static GdkGC*
+static cairo_t *
 gtk_databox_graph_real_create_gc (GtkDataboxGraph * graph,
                                   GtkDatabox* box)
 {
   GtkWidget *widget = GTK_WIDGET(box);
-  GdkGCValues values;
-  GdkGCValuesMask valuesMask;
   GdkColormap *colormap = NULL;
   GtkStyle *style;
+  cairo_t *cr;
 
   g_return_val_if_fail (GTK_DATABOX_IS_GRAPH (graph), NULL);
-
-  if (graph->priv->gc)
-    gtk_databox_graph_delete_gc (graph);
 
   style = widget->style;
 
@@ -168,25 +147,11 @@ gtk_databox_graph_real_create_gc (GtkDataboxGraph * graph,
                         &graph->priv->color,
                         FALSE, TRUE), NULL);
 
-  valuesMask = GDK_GC_FOREGROUND | GDK_GC_BACKGROUND
-               | GDK_GC_FUNCTION
-               | GDK_GC_LINE_WIDTH | GDK_GC_LINE_STYLE
-               | GDK_GC_CAP_STYLE | GDK_GC_JOIN_STYLE;
+   cr = cairo_create (gtk_databox_get_backing_surface (box));
+   gdk_cairo_set_source_color (cr, &graph->priv->color);
+   cairo_set_line_width (cr,  (graph->priv->size > 1) ? graph->priv->size : 1);
 
-  values.foreground = graph->priv->color;
-  values.background = style->black;
-  values.function = GDK_COPY;
-  /* I am not sure, why line_width==1 is so much slower than 0, but
-   * it is (at least for my machine with gtk+-2.4) */
-  values.line_width = (graph->priv->size > 1) ? graph->priv->size : 0;
-  values.line_style = GDK_LINE_SOLID;
-  values.cap_style = GDK_CAP_BUTT;
-  values.join_style = GDK_JOIN_MITER;
-
-  graph->priv->gc = gtk_gc_get (style->depth,
-                                style->colormap, &values, valuesMask);
-
-  return graph->priv->gc;
+   return cr;
 }
 
 static void
@@ -194,7 +159,6 @@ graph_finalize (GObject * object)
 {
   GtkDataboxGraph *graph = GTK_DATABOX_GRAPH (object);
 
-  gtk_databox_graph_delete_gc (graph);
   g_free (graph->priv);
 
   /* Chain up to the parent class */
@@ -361,14 +325,6 @@ gtk_databox_graph_set_color (GtkDataboxGraph * graph, GdkColor * color)
 
   g_return_if_fail (GTK_DATABOX_IS_GRAPH (graph));
 
-  if (graph->priv->gc)
-    {
-      colormap = gdk_gc_get_colormap (graph->priv->gc);
-      gdk_colormap_free_colors (colormap, &graph->priv->color, 1);
-      gdk_colormap_alloc_color (colormap, color, FALSE, TRUE);
-      gdk_gc_set_foreground (graph->priv->gc, color);
-    }
-
   graph->priv->color = *color;
 
   g_object_notify (G_OBJECT (graph), "color");
@@ -400,17 +356,9 @@ gtk_databox_graph_get_color (GtkDataboxGraph * graph)
 void
 gtk_databox_graph_set_size (GtkDataboxGraph * graph, gint size)
 {
-  GdkGCValues values;
-
   g_return_if_fail (GTK_DATABOX_IS_GRAPH (graph));
 
   graph->priv->size = MAX (1, size);;
-
-  if (graph->priv->gc)
-    {
-      values.line_width = graph->priv->size;
-      gdk_gc_set_values (graph->priv->gc, &values, GDK_GC_LINE_WIDTH);
-    }
 
   g_object_notify (G_OBJECT (graph), "size");
 }
@@ -430,40 +378,6 @@ gtk_databox_graph_get_size (GtkDataboxGraph * graph)
   g_return_val_if_fail (GTK_DATABOX_IS_GRAPH (graph), -1);
 
   return graph->priv->size;
-}
-
-/**
- * gtk_databox_graph_set_gc:
- * @graph: A #GtkDataboxGraph object
- * @gc: Graphics contex for the graph object
- *
- * Sets the graphics context which the #GtkDataboxGraph object is supposed to be using when drawing itself.
- *
- */
-void
-gtk_databox_graph_set_gc (GtkDataboxGraph * graph, GdkGC *gc)
-{
-  g_return_if_fail (GTK_DATABOX_IS_GRAPH (graph));
-  g_return_if_fail (GDK_IS_GC (gc));
-
-  graph->priv->gc = gc;
-}
-
-/**
- * gtk_databox_graph_get_gc:
- * @graph: A #GtkDataboxGraph object
- *
- * Gets the  current graphics context of the graph.
- *
- * Return value: The current graphics context of the graph.
- *
- */
-GdkGC*
-gtk_databox_graph_get_gc (GtkDataboxGraph * graph)
-{
-  g_return_val_if_fail (GTK_DATABOX_IS_GRAPH (graph), NULL);
-
-  return graph->priv->gc;
 }
 
 /**

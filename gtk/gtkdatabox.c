@@ -55,12 +55,11 @@ static gfloat gtk_databox_get_page_size_x (GtkDatabox* box);
 static gfloat gtk_databox_get_offset_y (GtkDatabox* box);
 static gfloat gtk_databox_get_page_size_y (GtkDatabox* box);
 static void gtk_databox_calculate_visible_limits (GtkDatabox * box);
-static void gtk_databox_create_backing_pixmap (GtkDatabox * box);
+static void gtk_databox_create_backing_surface (GtkDatabox * box);
 static void gtk_databox_calculate_selection_values (GtkDatabox * box);
 static void gtk_databox_selection_cancel (GtkDatabox * box);
 static void gtk_databox_zoomed (GtkDatabox * box);
-static void gtk_databox_draw_selection (GtkDatabox * box,
-                                        GdkRectangle * pixmapCopyRect);
+static void gtk_databox_draw_selection (GtkDatabox * box, gboolean clear);
 static void gtk_databox_adjustment_value_changed (GtkDatabox * box);
 static void gtk_databox_ruler_update (GtkDatabox * box);
 
@@ -92,7 +91,9 @@ enum {
 };
 
 struct _GtkDataboxPrivate {
-    GdkPixmap *backing_pixmap;
+    cairo_surface_t *backing_surface;
+    gint old_width;
+    gint old_height;
 
     /* Total and visible limits (values, not pixels) */
     gfloat total_left;
@@ -120,7 +121,6 @@ struct _GtkDataboxPrivate {
 
     /* Other private stuff */
     GList *graphs;
-    GdkGC *select_gc;
     GdkPoint marked;
     GdkPoint select;
     GtkDataboxValueRectangle selectionValues;
@@ -390,7 +390,7 @@ gtk_databox_class_init (GtkDataboxClass * class) {
 static void
 gtk_databox_init (GtkDatabox * box) {
     box->priv = g_new0 (GtkDataboxPrivate, 1);
-    box->priv->backing_pixmap = NULL;
+    box->priv->backing_surface = NULL;
     box->priv->scale_type_x = GTK_DATABOX_SCALE_LINEAR;
     box->priv->scale_type_y = GTK_DATABOX_SCALE_LINEAR;
     box->priv->translation_factor_x = 0;
@@ -400,7 +400,6 @@ gtk_databox_init (GtkDatabox * box) {
     box->priv->ruler_x = NULL;
     box->priv->ruler_y = NULL;
     box->priv->graphs = NULL;
-    box->priv->select_gc = NULL;
     box->priv->zoom_limit = 0.01;
     box->priv->selection_active = FALSE;
     box->priv->selection_finalized = FALSE;
@@ -452,8 +451,8 @@ gtk_databox_motion_notify (GtkWidget * widget, GdkEventMotion * event) {
         y = MAX (0, MIN (height - 1, y));
 
         if (box->priv->selection_active) {
-            /* Clear current selection from backing_pixmap */
-            gtk_databox_draw_selection (box, NULL);
+            /* Clear current selection from backing_surface */
+            gtk_databox_draw_selection (box, TRUE);
         } else {
             box->priv->selection_active = TRUE;
             box->priv->marked.x = x;
@@ -478,7 +477,7 @@ gtk_databox_motion_notify (GtkWidget * widget, GdkEventMotion * event) {
         box->priv->select.y = y;
 
         /* Draw new selection */
-        gtk_databox_draw_selection (box, &rect);
+        gtk_databox_draw_selection (box, FALSE);
 
         gtk_databox_calculate_selection_values (box);
         g_signal_emit (G_OBJECT (box),
@@ -599,7 +598,7 @@ gtk_databox_realize (GtkWidget * widget) {
     widget->style = gtk_style_attach (widget->style, widget->window);
     gtk_style_set_background (widget->style, widget->window, GTK_STATE_NORMAL);
 
-    gtk_databox_create_backing_pixmap (box);
+    gtk_databox_create_backing_surface (box);
 }
 
 static void
@@ -607,11 +606,9 @@ gtk_databox_unrealize (GtkWidget * widget) {
     GtkDatabox *box = GTK_DATABOX (widget);
     gtk_widget_set_realized(widget, FALSE);
 
-    if (box->priv->backing_pixmap)
-        g_object_unref (box->priv->backing_pixmap);
-    box->priv->backing_pixmap=NULL;
-    if (box->priv->select_gc)
-        gtk_gc_release (box->priv->select_gc);
+    if (box->priv->backing_surface)
+        g_object_unref (box->priv->backing_surface);
+    box->priv->backing_surface=NULL;
     if (box->priv->adj_x)
         g_object_unref (box->priv->adj_x);
     if (box->priv->adj_y)
@@ -1017,28 +1014,39 @@ gtk_databox_calculate_translation_factors (GtkDatabox * box) {
 }
 
 static void
-gtk_databox_create_backing_pixmap(GtkDatabox * box) {
+gtk_databox_create_backing_surface(GtkDatabox * box) {
     GtkWidget *widget;
+	cairo_t *cr;
     gint width;
     gint height;
 
     widget = GTK_WIDGET (box);
-        if (box->priv->backing_pixmap) {
-            gdk_drawable_get_size (box->priv->backing_pixmap, &width, &height);
-            if ((width == widget->allocation.width) &&
-                    (height == widget->allocation.height))
-                return;
+    if (box->priv->backing_surface) {
+       width = box->priv->old_width;
+       height = box->priv->old_height;
+       if ((width == widget->allocation.width) &&
+          (height == widget->allocation.height))
+          return;
+       box->priv->old_width = widget->allocation.width;
+       box->priv->old_height = widget->allocation.height;
 
-            g_object_unref (box->priv->backing_pixmap);
-        }
+       cairo_surface_destroy (box->priv->backing_surface);
+   }
+   width = widget->allocation.width;
+   height = widget->allocation.height;
 
-    box->priv->backing_pixmap = gdk_pixmap_new (widget->window,
-                                widget->allocation.width,
-                                widget->allocation.height, -1);
+   cr = gdk_cairo_create (gtk_widget_get_window (widget));
+
+   box->priv->backing_surface = cairo_surface_create_similar(
+                                cairo_get_target (cr),
+                                CAIRO_CONTENT_COLOR,
+                                width, height);
+
+   cairo_destroy (cr);
 }
 
 /**
- * gtk_databox_get_backing_pixmap:
+ * gtk_databox_get_backing_surface:
  * @box: A #GtkDatabox widget
  *
  * This function returns the pixmap which is used by @box and its #GtkDataboxGraph objects
@@ -1048,11 +1056,11 @@ gtk_databox_create_backing_pixmap(GtkDatabox * box) {
  *
  * Return value: Backing pixmap
  */
-GdkPixmap *
-gtk_databox_get_backing_pixmap(GtkDatabox * box) {
+cairo_surface_t *
+gtk_databox_get_backing_surface(GtkDatabox * box) {
     g_return_val_if_fail (GTK_IS_DATABOX (box), NULL);
 
-    return box->priv->backing_pixmap;
+    return box->priv->backing_surface;
 }
 
 static void
@@ -1065,7 +1073,6 @@ gtk_databox_size_allocate (GtkWidget * widget, GtkAllocation * allocation) {
                                 allocation->x, allocation->y,
                                 allocation->width, allocation->height);
 
-        gtk_databox_create_backing_pixmap (box);
 
     if (box->priv->selection_active) {
         gtk_databox_selection_cancel (box);
@@ -1078,33 +1085,35 @@ static gint
 gtk_databox_expose (GtkWidget * widget, GdkEventExpose * event) {
     GtkDatabox *box = GTK_DATABOX (widget);
     GList *list;
+    cairo_t *cr;
 
-        gdk_draw_rectangle (box->priv->backing_pixmap,
-                            widget->style->bg_gc[0],
-                            TRUE, 0, 0,
-                            widget->allocation.width,
-                            widget->allocation.height);
-        list = g_list_last (box->priv->graphs);
-        while (list) {
-            if (list->data) {
-                gtk_databox_graph_draw (GTK_DATABOX_GRAPH (list->data), box);
-            } else {
-                /* Do nothing if data == NULL */
-            }
-            list = g_list_previous (list);
-        }
+   gtk_databox_create_backing_surface (box);
 
-        if (box->priv->selection_active) {
-            gtk_databox_draw_selection (box, NULL);
-        }
+    cr = cairo_create(box->priv->backing_surface);
+    gdk_cairo_set_source_color (cr, &widget->style->bg[0]);
+    cairo_paint(cr);
+    cairo_destroy(cr);
 
-        gdk_draw_drawable (widget->window,
-                           widget->style->fg_gc[gtk_widget_get_state (widget)],
-                           box->priv->backing_pixmap,
-                           event->area.x, event->area.y,
-                           event->area.x, event->area.y,
-                           event->area.width,
-                           event->area.height);
+    list = g_list_last (box->priv->graphs);
+    while (list) {
+        if (list->data)
+            gtk_databox_graph_draw (GTK_DATABOX_GRAPH (list->data), box);
+        list = g_list_previous (list);
+    }
+
+    if (box->priv->selection_active)
+        gtk_databox_draw_selection (box, TRUE);
+
+    cr = gdk_cairo_create(gtk_widget_get_window(widget));
+
+    gdk_cairo_rectangle(cr, &event->area);
+    cairo_clip(cr);
+
+    cairo_set_source_surface (cr, box->priv->backing_surface, 0, 0);
+    cairo_paint(cr);
+    gtk_databox_draw_selection (box, FALSE);
+    cairo_destroy(cr);
+
     return FALSE;
 }
 
@@ -1249,7 +1258,6 @@ gtk_databox_scroll_event (GtkWidget *widget, GdkEventScroll *event) {
 
 static void
 gtk_databox_selection_cancel (GtkDatabox * box) {
-    GdkRectangle rect;
 
     /* There is no active selection after cancellation */
     box->priv->selection_active = FALSE;
@@ -1258,12 +1266,7 @@ gtk_databox_selection_cancel (GtkDatabox * box) {
     box->priv->selection_finalized = FALSE;
 
     /* Remove selection box */
-    rect.x = MIN (box->priv->marked.x, box->priv->select.x);
-    rect.y = MIN (box->priv->marked.y, box->priv->select.y);
-    rect.width = ABS (box->priv->marked.x - box->priv->select.x) + 1;
-    rect.height = ABS (box->priv->marked.y - box->priv->select.y) + 1;
-
-    gtk_databox_draw_selection (box, &rect);
+    gtk_databox_draw_selection (box, TRUE);
 
     /* Let everyone know that the selection has been canceled */
     g_signal_emit (G_OBJECT (box),
@@ -1413,40 +1416,29 @@ gtk_databox_zoom_home (GtkDatabox * box) {
 }
 
 static void
-gtk_databox_draw_selection (GtkDatabox * box, GdkRectangle * pixmapCopyRect) {
+gtk_databox_draw_selection (GtkDatabox * box, gboolean clear) {
     GtkWidget *widget = GTK_WIDGET (box);
+	cairo_t *cr;
 
-    if (!box->priv->select_gc) {
-        GdkGCValues values;
+	cr = gdk_cairo_create (gtk_widget_get_window (widget));
+    cairo_rectangle (cr,
+                     MIN (box->priv->marked.x, box->priv->select.x) - 0.5,
+                     MIN (box->priv->marked.y, box->priv->select.y) - 0.5,
+                     ABS (box->priv->marked.x - box->priv->select.x) + 0.5,
+                     ABS (box->priv->marked.y - box->priv->select.y) + 0.5);
 
-        values.foreground = widget->style->white;
-        values.function = GDK_XOR;
-        box->priv->select_gc = gtk_gc_get (widget->style->depth,
-                                           widget->style->colormap,
-                                           &values,
-                                           GDK_GC_FUNCTION | GDK_GC_FOREGROUND);
-    }
+   if (clear) {
+      cairo_set_source_surface (cr, box->priv->backing_surface, 0, 0);
+      cairo_paint(cr);
+      cairo_set_line_width (cr, 2.0);
+    } else {
+      gdk_cairo_set_source_color (cr, &widget->style->black);
+      cairo_set_operator (cr, CAIRO_OPERATOR_XOR);
+      cairo_set_line_width (cr, 1.0);
+	}
+	cairo_stroke(cr);
 
-
-    /* Draw a selection box in XOR mode onto the buffer backing_pixmap */
-    gdk_draw_rectangle (box->priv->backing_pixmap,
-                        box->priv->select_gc,
-                        FALSE,
-                        MIN (box->priv->marked.x, box->priv->select.x),
-                        MIN (box->priv->marked.y, box->priv->select.y),
-                        ABS (box->priv->marked.x - box->priv->select.x),
-                        ABS (box->priv->marked.y - box->priv->select.y));
-
-    /* Copy a part of the backing_pixmap to the screen */
-    if (pixmapCopyRect)
-        gdk_draw_drawable (widget->window,
-                           widget->style->fg_gc[gtk_widget_get_state (widget)],
-                           box->priv->backing_pixmap,
-                           pixmapCopyRect->x,
-                           pixmapCopyRect->y,
-                           pixmapCopyRect->x,
-                           pixmapCopyRect->y,
-                           pixmapCopyRect->width, pixmapCopyRect->height);
+	cairo_destroy(cr);
 }
 
 static void
