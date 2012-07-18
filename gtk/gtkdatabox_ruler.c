@@ -80,6 +80,7 @@ enum {
     PROP_INVERT_EDGE,
     PROP_LINEAR_LABEL_FORMAT,
     PROP_LOG_LABEL_FORMAT,
+    PROP_BOX_SHADOW,
     PROP_END_OF_LIST
 };
 
@@ -127,6 +128,8 @@ struct _GtkDataboxRulerPrivate {
     guint manual_tick_cnt;
     /* we have the option of manually setting the tick labels. */
     gchar **manual_tick_labels;
+
+    GtkShadowType box_shadow; /* The type of shadow drawn on the ruler pixmap */
 };
 
 G_DEFINE_TYPE (GtkDataboxRuler, gtk_databox_ruler, GTK_TYPE_WIDGET)
@@ -276,6 +279,15 @@ static void gtk_databox_ruler_class_init (GtkDataboxRulerClass * class) {
                                              "Log Label format mark up strings: marked up formatting strings for log labels (i.e. \"%%-%dg\")",
                                              LOG_FORMAT_MARKUP,
                                              G_PARAM_READWRITE));
+    g_object_class_install_property (gobject_class,
+                                     PROP_BOX_SHADOW,
+                                     g_param_spec_uint ("box-shadow",
+                                             "Box Shadow",
+                                             "Style of the box shadow: GTK_SHADOW_NONE, GTK_SHADOW_IN, GTK_SHADOW_OUT, GTK_SHADOW_ETCHED_IN, GTK_SHADOW_ETCHED_OUT",
+                                             GTK_SHADOW_NONE,
+                                             GTK_SHADOW_ETCHED_OUT,
+                                             GTK_SHADOW_OUT,
+                                             G_PARAM_READWRITE));
 }
 
 static void
@@ -302,7 +314,8 @@ gtk_databox_ruler_init (GtkDataboxRuler * ruler) {
     ruler->priv->manual_ticks=NULL;
     ruler->priv->manual_tick_cnt=0;
     ruler->priv->manual_tick_labels=NULL;
-}
+    ruler->priv->box_shadow=GTK_SHADOW_OUT;
+    }
 
 /**
  * gtk_databox_ruler_new:
@@ -411,6 +424,9 @@ gtk_databox_ruler_set_property (GObject * object,
     case PROP_LOG_LABEL_FORMAT:
         gtk_databox_ruler_set_log_label_format (ruler, (gchar *) g_value_get_string (value));
         break;
+    case PROP_BOX_SHADOW:
+        gtk_databox_ruler_set_box_shadow (ruler, (GtkShadowType) g_value_get_uint (value));
+        break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
         break;
@@ -468,6 +484,9 @@ gtk_databox_ruler_get_property (GObject * object,
         break;
     case PROP_LOG_LABEL_FORMAT:
         g_value_set_string (value, ruler->priv->log_format);
+        break;
+    case PROP_BOX_SHADOW:
+        g_value_set_uint (value, ruler->priv->box_shadow);
         break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -906,7 +925,7 @@ gtk_databox_ruler_get_invert_edge(GtkDataboxRuler * ruler) {
 }
 
 /**
- * gtk_databox_ruler_linear_label_format:
+ * gtk_databox_ruler_set_linear_label_format:
  * @ruler: a #GtkDataboxRuler
  * @invert: How to format the labels for linear rulers
  *
@@ -947,7 +966,7 @@ gtk_databox_ruler_get_linear_label_format(GtkDataboxRuler * ruler) {
 }
 
 /**
- * gtk_databox_ruler_log_label_format:
+ * gtk_databox_ruler_set_log_label_format:
  * @ruler: a #GtkDataboxRuler
  * @invert: How to format the labels for log scaled rulers
  *
@@ -1044,6 +1063,42 @@ gtk_databox_ruler_get_scale_type (GtkDataboxRuler * ruler) {
     return ruler->priv->scale_type;
 }
 
+/**
+ * gtk_databox_ruler_set_box_shadow:
+ * @ruler: a #GtkDataboxRuler
+ * @which_shadow: How to render the box shadow on the ruler edges.
+ *
+ * Sets the shadow type when using gtk_paint_box. This will draw the desired edge shadow.
+ **/
+void
+gtk_databox_ruler_set_box_shadow(GtkDataboxRuler * ruler, GtkShadowType which_shadow) {
+    g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
+    g_return_if_fail (which_shadow>=0);
+    g_return_if_fail (which_shadow<=GTK_SHADOW_ETCHED_OUT);
+
+    if (ruler->priv->box_shadow!=which_shadow) {
+        ruler->priv->box_shadow=which_shadow;
+        if (gtk_widget_is_drawable (GTK_WIDGET (ruler)))
+            gtk_widget_queue_draw (GTK_WIDGET (ruler));
+    }
+}
+
+/**
+ * gtk_databox_ruler_get_box_shadow:
+ * @ruler: a #GtkDataboxRuler
+ *
+ * Gets the type of shadow being rendered to the @ruler (GTK_SHADOW_NONE, GTK_SHADOW_IN, GTK_SHADOW_OUT, GTK_SHADOW_ETCHED_IN, GTK_SHADOW_ETCHED_OUT).
+ *
+ * Return value: The currently used shadow type of the @ruler, -1 on failure.
+ **/
+GtkShadowType
+gtk_databox_ruler_get_box_shadow(GtkDataboxRuler * ruler) {
+
+    g_return_val_if_fail (GTK_DATABOX_IS_RULER (ruler), -1);
+
+    return ruler->priv->box_shadow;
+}
+
 static void
 gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler) {
     GtkWidget *widget;
@@ -1106,17 +1161,15 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler) {
 
     width = widget->allocation.width;
     height = widget->allocation.height;
-
     gtk_paint_box (widget->style, ruler->priv->backing_pixmap,
-                   GTK_STATE_NORMAL, GTK_SHADOW_OUT,
+                   GTK_STATE_NORMAL, ruler->priv->box_shadow,
                    NULL, widget, "ruler", 0, 0, width, height);
 
     cr = gdk_cairo_create (ruler->priv->backing_pixmap);
     gdk_cairo_set_source_color (cr, &widget->style->fg[widget->state]);
 
-    cairo_rectangle (cr,
-                     xthickness,
-                     height - ythickness, width - 2 * xthickness, 1);
+    if (ruler->priv->draw_ticks) /* only draw the bottom line IF we are drawing ticks */
+        cairo_rectangle (cr, xthickness, height - ythickness, width - 2 * xthickness, 1);
 
     if (ruler->priv->scale_type == GTK_DATABOX_SCALE_LINEAR) {
         upper = ruler->priv->upper;
@@ -1251,17 +1304,21 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler) {
 
 
 
-        if (ruler->priv->orientation == GTK_ORIENTATION_HORIZONTAL)
+        if (ruler->priv->orientation == GTK_ORIENTATION_HORIZONTAL){
+            if (!ruler->priv->draw_ticks) /* if ticks aren't present, draw a little lower */
+                pos=pos - logical_rect.width+2;
             gtk_paint_layout (widget->style,
                               ruler->priv->backing_pixmap,
                               gtk_widget_get_state (widget),
                               FALSE,
                               NULL,
                               widget, "ruler", pos + 2, ythickness - 1, layout);
-        else {
+        } else {
             y_loc=pos - logical_rect.width - 2; /* standard vertical text y alignment */
-            if (ruler->priv->text_orientation == GTK_ORIENTATION_HORIZONTAL)
+            if (ruler->priv->text_orientation == GTK_ORIENTATION_HORIZONTAL) /* if ticks are present, then draw a little higher */
                 y_loc=pos - logical_rect.width*2/3; /* horizontal text y alignment */
+            if (ruler->priv->text_orientation == GTK_ORIENTATION_HORIZONTAL & !ruler->priv->draw_ticks) /* if ticks aren't present, draw a little lower */
+                y_loc=pos - logical_rect.width/3;
             gtk_paint_layout (widget->style,
                               ruler->priv->backing_pixmap,
                               gtk_widget_get_state (widget),
