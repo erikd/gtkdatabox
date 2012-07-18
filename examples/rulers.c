@@ -94,7 +94,7 @@ create_rulers (void)
     label = gtk_label_new ("Subticks turned off on x and y,\n manual tick labels on x:");
     gtk_box_pack_start (GTK_BOX (hbox), label, TRUE, TRUE, 0);
 
-    label = gtk_label_new ("X ticks turned off,\n horizontal y axis text,\n altered y label format example:");
+    label = gtk_label_new ("X ticks turned off, no shadow\n horizontal y axis text,\n altered y label format example:");
     gtk_box_pack_start (GTK_BOX (hbox), label, TRUE, TRUE, 0);
 
     separator = gtk_hseparator_new ();
@@ -116,6 +116,7 @@ create_rulers (void)
     /* set box 1's y ruler to have horizontal text */
     GtkDataboxRuler *ruler=gtk_databox_get_ruler_y(GTK_DATABOX (box[1]));
     gtk_databox_ruler_set_text_orientation(ruler, GTK_ORIENTATION_HORIZONTAL);
+    gtk_databox_ruler_set_box_shadow(ruler, GTK_SHADOW_ETCHED_OUT);
     gtk_databox_set_ruler_y (GTK_DATABOX (box[1]), ruler);
     ruler=gtk_databox_get_ruler_x(GTK_DATABOX (box[1]));     /* set box 1's x ruler to have manual ticks */
     gtk_databox_ruler_set_manual_tick_cnt(ruler, manual_tick_cnt);
@@ -140,6 +141,8 @@ create_rulers (void)
     /* set box 3 to have no x ticks */
     ruler=gtk_databox_get_ruler_x(GTK_DATABOX (box[3]));
     gtk_databox_ruler_set_draw_ticks(ruler, FALSE);
+    /* box[3] to have different shadow on the ruler */
+    gtk_databox_ruler_set_box_shadow(ruler, GTK_SHADOW_NONE);
     gtk_databox_set_ruler_x (GTK_DATABOX (box[3]), ruler);
     ruler=gtk_databox_get_ruler_y(GTK_DATABOX (box[3]));
     gtk_databox_ruler_set_draw_subticks(ruler, FALSE);
