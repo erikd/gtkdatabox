@@ -88,7 +88,7 @@ create_rulers (void)
     label = gtk_label_new ("Rulers on the other side:");
     gtk_box_pack_start (GTK_BOX (hbox), label, TRUE, TRUE, 0);
 
-    label = gtk_label_new ("Horizontal y axis text\n manual x axis ticks example:");
+    label = gtk_label_new ("Horizontal y axis text\n manual x axis ticks example\n right aligned y text:");
     gtk_box_pack_start (GTK_BOX (hbox), label, TRUE, TRUE, 0);
 
     label = gtk_label_new ("Subticks turned off on x and y,\n manual tick labels on x:");
@@ -117,6 +117,7 @@ create_rulers (void)
     GtkDataboxRuler *ruler=gtk_databox_get_ruler_y(GTK_DATABOX (box[1]));
     gtk_databox_ruler_set_text_orientation(ruler, GTK_ORIENTATION_HORIZONTAL);
     gtk_databox_ruler_set_box_shadow(ruler, GTK_SHADOW_ETCHED_OUT);
+    gtk_databox_ruler_set_text_alignment (ruler, PANGO_ALIGN_RIGHT);
     gtk_databox_set_ruler_y (GTK_DATABOX (box[1]), ruler);
     ruler=gtk_databox_get_ruler_x(GTK_DATABOX (box[1]));     /* set box 1's x ruler to have manual ticks */
     gtk_databox_ruler_set_manual_tick_cnt(ruler, manual_tick_cnt);
