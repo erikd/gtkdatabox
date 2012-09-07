@@ -143,6 +143,9 @@ gtk_databox_ruler_get_type (void)
      void gtk_databox_ruler_set_text_alignment (GtkDataboxRuler * ruler, PangoAlignment alignment);
      PangoAlignment gtk_databox_ruler_get_text_alignment (GtkDataboxRuler * ruler);
 
+    void gtk_databox_ruler_set_text_hoffset (GtkDataboxRuler * ruler,gint offset);
+    gint gtk_databox_ruler_get_text_hoffset (GtkDataboxRuler * ruler);
+
      void gtk_databox_ruler_set_draw_ticks(GtkDataboxRuler * ruler, gboolean draw);
     gboolean gtk_databox_ruler_get_draw_ticks(GtkDataboxRuler * ruler);
 
