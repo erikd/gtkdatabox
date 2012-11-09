@@ -1,0 +1,34 @@
+GObject
+  GInitiallyUnowned
+    GtkObject
+      GtkWidget
+        GtkDatabox
+        GtkDataboxRuler
+        GtkContainer
+      GtkAdjustment
+  GtkDataboxGraph
+    GtkDataboxXYCGraph
+      GtkDataboxPoints
+      GtkDataboxLines
+      GtkDataboxBars
+      GtkDataboxMarkers
+        GtkDataboxCrossSimple
+    GtkDataboxGrid
+  GtkStyle
+  GdkDrawable
+    GdkWindow
+  GdkDragContext
+  GtkTooltip
+  GdkScreen
+GInterface
+  GTypePlugin
+  AtkImplementorIface
+  GtkBuildable
+GEnum
+  GtkDataboxScaleType
+  GdkExtensionMode
+  GtkStateType
+  GtkTextDirection
+  GtkDirectionType
+  GtkDragResult
+  GtkWidgetHelpType

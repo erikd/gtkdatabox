@@ -1,0 +1,251 @@
+<!-- ##### FUNCTION gtk_databox_bars_new ##### -->
+<para>
+
+</para>
+
+@len: 
+@X: 
+@Y: 
+@color: 
+@size: 
+@Returns: 
+
+<!-- ##### FUNCTION gtk_databox_cross_simple_new ##### -->
+<para>
+
+</para>
+
+@color: 
+@size: 
+@Returns: 
+
+<!-- ##### FUNCTION gtk_databox_graph_calculate_extrema ##### -->
+<para>
+
+</para>
+
+@graph: 
+@min_x: 
+@max_x: 
+@min_y: 
+@max_y: 
+@Returns: 
+
+<!-- ##### FUNCTION gtk_databox_graph_create_gc ##### -->
+<para>
+
+</para>
+
+@graph: 
+@box: 
+@Returns: 
+
+<!-- ##### FUNCTION gtk_databox_graph_draw ##### -->
+<para>
+
+</para>
+
+@graph: 
+@box: 
+
+<!-- ##### FUNCTION gtk_databox_graph_get_color ##### -->
+<para>
+
+</para>
+
+@graph: 
+@Returns: 
+
+<!-- ##### FUNCTION gtk_databox_graph_get_gc ##### -->
+<para>
+
+</para>
+
+@graph: 
+@Returns: 
+
+<!-- ##### FUNCTION gtk_databox_graph_get_hide ##### -->
+<para>
+
+</para>
+
+@graph: 
+@Returns: 
+
+<!-- ##### FUNCTION gtk_databox_graph_get_size ##### -->
+<para>
+
+</para>
+
+@graph: 
+@Returns: 
+
+<!-- ##### FUNCTION gtk_databox_graph_set_color ##### -->
+<para>
+
+</para>
+
+@graph: 
+@color: 
+
+<!-- ##### FUNCTION gtk_databox_graph_set_gc ##### -->
+<para>
+
+</para>
+
+@graph: 
+@gc: 
+
+<!-- ##### FUNCTION gtk_databox_graph_set_hide ##### -->
+<para>
+
+</para>
+
+@graph: 
+@hide: 
+
+<!-- ##### FUNCTION gtk_databox_graph_set_size ##### -->
+<para>
+
+</para>
+
+@graph: 
+@size: 
+
+<!-- ##### FUNCTION gtk_databox_grid_array_new ##### -->
+<para>
+
+</para>
+
+@hlines: 
+@vlines: 
+@hline_vals: 
+@vline_vals: 
+@color: 
+@size: 
+@Returns: 
+
+<!-- ##### FUNCTION gtk_databox_grid_get_hlines ##### -->
+<para>
+
+</para>
+
+@grid: 
+@Returns: 
+
+<!-- ##### FUNCTION gtk_databox_grid_get_vlines ##### -->
+<para>
+
+</para>
+
+@grid: 
+@Returns: 
+
+<!-- ##### FUNCTION gtk_databox_grid_new ##### -->
+<para>
+
+</para>
+
+@hlines: 
+@vlines: 
+@color: 
+@size: 
+@Returns: 
+
+<!-- ##### FUNCTION gtk_databox_grid_set_hlines ##### -->
+<para>
+
+</para>
+
+@grid: 
+@hlines: 
+
+<!-- ##### FUNCTION gtk_databox_grid_set_vlines ##### -->
+<para>
+
+</para>
+
+@grid: 
+@vlines: 
+
+<!-- ##### FUNCTION gtk_databox_lines_new ##### -->
+<para>
+
+</para>
+
+@len: 
+@X: 
+@Y: 
+@color: 
+@size: 
+@Returns: 
+
+<!-- ##### FUNCTION gtk_databox_markers_new ##### -->
+<para>
+
+</para>
+
+@len: 
+@X: 
+@Y: 
+@color: 
+@size: 
+@type: 
+@Returns: 
+
+<!-- ##### FUNCTION gtk_databox_markers_set_label ##### -->
+<para>
+
+</para>
+
+@markers: 
+@index: 
+@label_position: 
+@text: 
+@boxed: 
+
+<!-- ##### FUNCTION gtk_databox_markers_set_position ##### -->
+<para>
+
+</para>
+
+@markers: 
+@index: 
+@position: 
+
+<!-- ##### FUNCTION gtk_databox_points_new ##### -->
+<para>
+
+</para>
+
+@len: 
+@X: 
+@Y: 
+@color: 
+@size: 
+@Returns: 
+
+<!-- ##### FUNCTION gtk_databox_xyc_graph_get_X ##### -->
+<para>
+
+</para>
+
+@xyc_graph: 
+@Returns: 
+
+<!-- ##### FUNCTION gtk_databox_xyc_graph_get_Y ##### -->
+<para>
+
+</para>
+
+@xyc_graph: 
+@Returns: 
+
+<!-- ##### FUNCTION gtk_databox_xyc_graph_get_length ##### -->
+<para>
+
+</para>
+
+@xyc_graph: 
+@Returns: 
+

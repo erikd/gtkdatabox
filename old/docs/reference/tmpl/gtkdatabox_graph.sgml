@@ -1,0 +1,49 @@
+<!-- ##### SECTION Title ##### -->
+GtkDataboxGraph
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### SECTION Image ##### -->
+
+
+<!-- ##### STRUCT GtkDataboxGraphPrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT GtkDataboxGraph ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GtkDataboxGraph:color ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkDataboxGraph:hide ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkDataboxGraph:size ##### -->
+<para>
+
+</para>
+

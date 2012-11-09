@@ -1,0 +1,224 @@
+<?xml version="1.0"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="gtkdatabox-gtkdatabox-markers">
+<refmeta>
+<refentrytitle role="top_of_page" id="gtkdatabox-gtkdatabox-markers.top_of_page">GtkDataboxMarkers</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>
+  GTKDATABOX Library
+</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>GtkDataboxMarkers</refname>
+<refpurpose>A <link linkend="GtkDataboxGraph"><type>GtkDataboxGraph</type></link> used for displaying labeled markers for xy-values.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv id="gtkdatabox-gtkdatabox-markers.synopsis" role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+<anchor id="GtkDataboxMarkers"/>
+<synopsis>
+#include &lt;gtkdatabox_markers.h&gt;
+
+                    <link linkend="GtkDataboxMarkersPrivate">GtkDataboxMarkersPrivate</link>;
+enum                <link linkend="GtkDataboxMarkersPosition">GtkDataboxMarkersPosition</link>;
+enum                <link linkend="GtkDataboxMarkersTextPosition">GtkDataboxMarkersTextPosition</link>;
+enum                <link linkend="GtkDataboxMarkersType">GtkDataboxMarkersType</link>;
+                    <link linkend="GtkDataboxMarkers-struct">GtkDataboxMarkers</link>;
+</synopsis>
+</refsynopsisdiv>
+<refsect1 id="gtkdatabox-gtkdatabox-markers.object-hierarchy" role="object_hierarchy">
+<title role="object_hierarchy.title">Object Hierarchy</title>
+<synopsis>
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GtkDataboxGraph">GtkDataboxGraph</link>
+         +----<link linkend="GtkDataboxXYCGraph">GtkDataboxXYCGraph</link>
+               +----GtkDataboxMarkers
+                     +----<link linkend="GtkDataboxCrossSimple">GtkDataboxCrossSimple</link>
+</synopsis>
+</refsect1>
+<refsect1 id="gtkdatabox-gtkdatabox-markers.properties" role="properties">
+<title role="properties.title">Properties</title>
+<synopsis>
+  &quot;<link linkend="GtkDataboxMarkers--markers-type">markers-type</link>&quot;             <link linkend="gint"><type>gint</type></link>                  : Read / Write / Construct
+</synopsis>
+</refsect1>
+
+<refsect1 id="gtkdatabox-gtkdatabox-markers.description" role="desc">
+<title role="desc.title">Description</title>
+<para>
+<link linkend="GtkDataboxMarkers"><type>GtkDataboxMarkers</type></link> is a <link linkend="GtkDataboxGraph"><type>GtkDataboxGraph</type></link> class for displaying labeled markers (circles, triangles, lines) for xy-values.
+</para>
+</refsect1>
+<refsect1 id="gtkdatabox-gtkdatabox-markers.details" role="details">
+<title role="details.title">Details</title>
+<refsect2 id="GtkDataboxMarkersPrivate" role="struct">
+<title>GtkDataboxMarkersPrivate</title>
+<indexterm zone="GtkDataboxMarkersPrivate"><primary>GtkDataboxMarkersPrivate</primary></indexterm>
+<programlisting>typedef struct _GtkDataboxMarkersPrivate GtkDataboxMarkersPrivate;</programlisting>
+<para>
+A private data structure used by the <link linkend="GtkDataboxMarkers"><type>GtkDataboxMarkers</type></link>. It shields all internal things
+from developers who are just using the object.
+</para></refsect2>
+<refsect2 id="GtkDataboxMarkersPosition" role="enum">
+<title>enum GtkDataboxMarkersPosition</title>
+<indexterm zone="GtkDataboxMarkersPosition"><primary>GtkDataboxMarkersPosition</primary></indexterm>
+<programlisting>typedef enum {
+      GTK_DATABOX_MARKERS_C = 0,
+      GTK_DATABOX_MARKERS_N,
+      GTK_DATABOX_MARKERS_E,
+      GTK_DATABOX_MARKERS_S,
+      GTK_DATABOX_MARKERS_W
+} GtkDataboxMarkersPosition;
+</programlisting>
+<para>
+Position of a marker relative to its respective X/Y value.
+</para><variablelist role="enum">
+<varlistentry id="GTK-DATABOX-MARKERS-C:CAPS" role="constant">
+<term><literal>GTK_DATABOX_MARKERS_C</literal></term>
+<listitem><simpara>centered on data
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="GTK-DATABOX-MARKERS-N:CAPS" role="constant">
+<term><literal>GTK_DATABOX_MARKERS_N</literal></term>
+<listitem><simpara>marker is positioned north of data
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="GTK-DATABOX-MARKERS-E:CAPS" role="constant">
+<term><literal>GTK_DATABOX_MARKERS_E</literal></term>
+<listitem><simpara>marker is positioned east of data
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="GTK-DATABOX-MARKERS-S:CAPS" role="constant">
+<term><literal>GTK_DATABOX_MARKERS_S</literal></term>
+<listitem><simpara>marker is positioned south of data
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="GTK-DATABOX-MARKERS-W:CAPS" role="constant">
+<term><literal>GTK_DATABOX_MARKERS_W</literal></term>
+<listitem><simpara>marker is positioned west of data
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2 id="GtkDataboxMarkersTextPosition" role="enum">
+<title>enum GtkDataboxMarkersTextPosition</title>
+<indexterm zone="GtkDataboxMarkersTextPosition"><primary>GtkDataboxMarkersTextPosition</primary></indexterm>
+<programlisting>typedef enum {
+      GTK_DATABOX_MARKERS_TEXT_CENTER = 0,/* text centered   on marker */
+      GTK_DATABOX_MARKERS_TEXT_N,	  /* text north      of marker */
+      GTK_DATABOX_MARKERS_TEXT_NE,	  /* text north-east of marker */
+      GTK_DATABOX_MARKERS_TEXT_E,	  /* text east       of marker */
+      GTK_DATABOX_MARKERS_TEXT_SE,	  /* text south-east of marker */
+      GTK_DATABOX_MARKERS_TEXT_S,	  /* text south      of marker */
+      GTK_DATABOX_MARKERS_TEXT_SW,	  /* text south-west of marker */
+      GTK_DATABOX_MARKERS_TEXT_W,	  /* text west       of marker */
+      GTK_DATABOX_MARKERS_TEXT_NW	  /* text north-west of marker */
+} GtkDataboxMarkersTextPosition;
+</programlisting>
+<para>
+Position of a label relative to its repective marker.
+</para><variablelist role="enum">
+<varlistentry id="GTK-DATABOX-MARKERS-TEXT-CENTER:CAPS" role="constant">
+<term><literal>GTK_DATABOX_MARKERS_TEXT_CENTER</literal></term>
+<listitem><simpara>text centered   on marker
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="GTK-DATABOX-MARKERS-TEXT-N:CAPS" role="constant">
+<term><literal>GTK_DATABOX_MARKERS_TEXT_N</literal></term>
+<listitem><simpara>text north      of marker
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="GTK-DATABOX-MARKERS-TEXT-NE:CAPS" role="constant">
+<term><literal>GTK_DATABOX_MARKERS_TEXT_NE</literal></term>
+<listitem><simpara>text north-east of marker
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="GTK-DATABOX-MARKERS-TEXT-E:CAPS" role="constant">
+<term><literal>GTK_DATABOX_MARKERS_TEXT_E</literal></term>
+<listitem><simpara>text east       of marker
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="GTK-DATABOX-MARKERS-TEXT-SE:CAPS" role="constant">
+<term><literal>GTK_DATABOX_MARKERS_TEXT_SE</literal></term>
+<listitem><simpara>text south-east of marker
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="GTK-DATABOX-MARKERS-TEXT-S:CAPS" role="constant">
+<term><literal>GTK_DATABOX_MARKERS_TEXT_S</literal></term>
+<listitem><simpara>text south      of marker
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="GTK-DATABOX-MARKERS-TEXT-SW:CAPS" role="constant">
+<term><literal>GTK_DATABOX_MARKERS_TEXT_SW</literal></term>
+<listitem><simpara>text south-west of marker
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="GTK-DATABOX-MARKERS-TEXT-W:CAPS" role="constant">
+<term><literal>GTK_DATABOX_MARKERS_TEXT_W</literal></term>
+<listitem><simpara>text west       of marker
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="GTK-DATABOX-MARKERS-TEXT-NW:CAPS" role="constant">
+<term><literal>GTK_DATABOX_MARKERS_TEXT_NW</literal></term>
+<listitem><simpara>text north-west of marker
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2 id="GtkDataboxMarkersType" role="enum">
+<title>enum GtkDataboxMarkersType</title>
+<indexterm zone="GtkDataboxMarkersType"><primary>GtkDataboxMarkersType</primary></indexterm>
+<programlisting>typedef enum {
+      GTK_DATABOX_MARKERS_NONE = 0,&#160;/* No Marker (just text) */
+      GTK_DATABOX_MARKERS_TRIANGLE,&#160;/* Marker is a triangle */
+      GTK_DATABOX_MARKERS_SOLID_LINE,&#160;/* Marker is a solid line */
+      GTK_DATABOX_MARKERS_DASHED_LINE&#160;/* Marker is a dashed line */
+} GtkDataboxMarkersType;
+</programlisting>
+<para>
+Type of the marker
+</para><variablelist role="enum">
+<varlistentry id="GTK-DATABOX-MARKERS-NONE:CAPS" role="constant">
+<term><literal>GTK_DATABOX_MARKERS_NONE</literal></term>
+<listitem><simpara>No Marker (just text)
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="GTK-DATABOX-MARKERS-TRIANGLE:CAPS" role="constant">
+<term><literal>GTK_DATABOX_MARKERS_TRIANGLE</literal></term>
+<listitem><simpara>Marker is a triangle
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="GTK-DATABOX-MARKERS-SOLID-LINE:CAPS" role="constant">
+<term><literal>GTK_DATABOX_MARKERS_SOLID_LINE</literal></term>
+<listitem><simpara>Marker is a solid line
+</simpara></listitem>
+</varlistentry>
+<varlistentry id="GTK-DATABOX-MARKERS-DASHED-LINE:CAPS" role="constant">
+<term><literal>GTK_DATABOX_MARKERS_DASHED_LINE</literal></term>
+<listitem><simpara>Marker is a dashed line
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2 id="GtkDataboxMarkers-struct" role="struct">
+<title>GtkDataboxMarkers</title>
+<indexterm zone="GtkDataboxMarkers-struct"><primary>GtkDataboxMarkers</primary></indexterm>
+<programlisting>typedef struct _GtkDataboxMarkers GtkDataboxMarkers;</programlisting>
+<para>
+<link linkend="GtkDataboxMarkers"><type>GtkDataboxMarkers</type></link> is a <link linkend="GtkDataboxGraph"><type>GtkDataboxGraph</type></link> class for displaying labeled markers (circles, triangles, lines) for xy-values.
+</para><variablelist role="struct">
+</variablelist></refsect2>
+
+</refsect1>
+<refsect1 id="gtkdatabox-gtkdatabox-markers.property-details" role="property_details">
+<title role="property_details.title">Property Details</title>
+<refsect2 id="GtkDataboxMarkers--markers-type" role="property"><title>The <literal>&quot;markers-type&quot;</literal> property</title>
+<indexterm zone="GtkDataboxMarkers--markers-type"><primary>GtkDataboxMarkers:markers-type</primary></indexterm>
+<programlisting>  &quot;markers-type&quot;             <link linkend="gint"><type>gint</type></link>                  : Read / Write / Construct</programlisting>
+<para>Type of markers for this graph, e.g. triangles or lines.</para><para>Default value: 0</para>
+</refsect2>
+</refsect1>
+<refsect1 id="gtkdatabox-gtkdatabox-markers.see-also">
+<title>See Also</title>
+<link linkend="GtkDatabox"><type>GtkDatabox</type></link>, <link linkend="GtkDataboxGraph"><type>GtkDataboxGraph</type></link>, <link linkend="GtkDataboxPoints"><type>GtkDataboxPoints</type></link>, <link linkend="GtkDataboxLines"><type>GtkDataboxLines</type></link>,  <link linkend="GtkDataboxBars"><type>GtkDataboxBars</type></link>
+</refsect1>
+
+</refentry>

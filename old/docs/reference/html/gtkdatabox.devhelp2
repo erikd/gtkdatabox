@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE book PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "">
+<book xmlns="http://www.devhelp.net/book" title="GtkDatabox Reference Manual" link="index.html" author="" name="gtkdatabox" version="2" language="c">
+  <chapters>
+    <sub name="GtkDatabox" link="ch01.html">
+      <sub name="GtkDatabox" link="gtkdatabox-gtkdatabox.html"/>
+      <sub name="GtkDataboxGraph" link="gtkdatabox-gtkdatabox-graph.html"/>
+      <sub name="GtkDataboxXYCGraph" link="gtkdatabox-gtkdatabox-xyc-graph.html"/>
+      <sub name="GtkDataboxPoints" link="gtkdatabox-gtkdatabox-points.html"/>
+      <sub name="GtkDataboxLines" link="gtkdatabox-gtkdatabox-lines.html"/>
+      <sub name="GtkDataboxBars" link="gtkdatabox-gtkdatabox-bars.html"/>
+      <sub name="GtkDataboxGrid" link="gtkdatabox-gtkdatabox-grid.html"/>
+      <sub name="GtkDataboxCrossSimple" link="gtkdatabox-gtkdatabox-cross-simple.html"/>
+      <sub name="GtkDataboxRuler" link="gtkdatabox-gtkdatabox-ruler.html"/>
+      <sub name="GtkDataboxMarkers" link="gtkdatabox-gtkdatabox-markers.html"/>
+      <sub name="gtkdatabox_marshal" link="gtkdatabox-gtkdatabox-marshal.html"/>
+      <sub name="gtkdatabox_scale" link="gtkdatabox-gtkdatabox-scale.html"/>
+      <sub name="gtkdatabox_typedefs" link="gtkdatabox-gtkdatabox-typedefs.html"/>
+    </sub>
+  </chapters>
+  <functions>
+    <keyword type="struct" name="GtkDataboxPrivate" link="gtkdatabox-gtkdatabox.html#GtkDataboxPrivate"/>
+    <keyword type="struct" name="GtkDatabox" link="gtkdatabox-gtkdatabox.html#GtkDatabox-struct"/>
+    <keyword type="function" name="gtk_databox_new ()" link="gtkdatabox-gtkdatabox.html#gtk-databox-new"/>
+    <keyword type="function" name="gtk_databox_graph_add ()" link="gtkdatabox-gtkdatabox.html#gtk-databox-graph-add"/>
+    <keyword type="function" name="gtk_databox_graph_remove ()" link="gtkdatabox-gtkdatabox.html#gtk-databox-graph-remove"/>
+    <keyword type="function" name="gtk_databox_graph_remove_all ()" link="gtkdatabox-gtkdatabox.html#gtk-databox-graph-remove-all"/>
+    <keyword type="function" name="gtk_databox_auto_rescale ()" link="gtkdatabox-gtkdatabox.html#gtk-databox-auto-rescale"/>
+    <keyword type="function" name="gtk_databox_calculate_extrema ()" link="gtkdatabox-gtkdatabox.html#gtk-databox-calculate-extrema"/>
+    <keyword type="function" name="gtk_databox_set_total_limits ()" link="gtkdatabox-gtkdatabox.html#gtk-databox-set-total-limits"/>
+    <keyword type="function" name="gtk_databox_set_visible_limits ()" link="gtkdatabox-gtkdatabox.html#gtk-databox-set-visible-limits"/>
+    <keyword type="function" name="gtk_databox_get_total_limits ()" link="gtkdatabox-gtkdatabox.html#gtk-databox-get-total-limits"/>
+    <keyword type="function" name="gtk_databox_get_visible_limits ()" link="gtkdatabox-gtkdatabox.html#gtk-databox-get-visible-limits"/>
+    <keyword type="function" name="gtk_databox_set_adjustment_x ()" link="gtkdatabox-gtkdatabox.html#gtk-databox-set-adjustment-x"/>
+    <keyword type="function" name="gtk_databox_set_adjustment_y ()" link="gtkdatabox-gtkdatabox.html#gtk-databox-set-adjustment-y"/>
+    <keyword type="function" name="gtk_databox_get_adjustment_x ()" link="gtkdatabox-gtkdatabox.html#gtk-databox-get-adjustment-x"/>
+    <keyword type="function" name="gtk_databox_get_adjustment_y ()" link="gtkdatabox-gtkdatabox.html#gtk-databox-get-adjustment-y"/>
+    <keyword type="function" name="gtk_databox_set_ruler_x ()" link="gtkdatabox-gtkdatabox.html#gtk-databox-set-ruler-x"/>
+    <keyword type="function" name="gtk_databox_set_ruler_y ()" link="gtkdatabox-gtkdatabox.html#gtk-databox-set-ruler-y"/>
+    <keyword type="function" name="gtk_databox_get_ruler_x ()" link="gtkdatabox-gtkdatabox.html#gtk-databox-get-ruler-x"/>
+    <keyword type="function" name="gtk_databox_get_ruler_y ()" link="gtkdatabox-gtkdatabox.html#gtk-databox-get-ruler-y"/>
+    <keyword type="function" name="gtk_databox_set_scale_type_x ()" link="gtkdatabox-gtkdatabox.html#gtk-databox-set-scale-type-x"/>
+    <keyword type="function" name="gtk_databox_set_scale_type_y ()" link="gtkdatabox-gtkdatabox.html#gtk-databox-set-scale-type-y"/>
+    <keyword type="function" name="gtk_databox_get_scale_type_x ()" link="gtkdatabox-gtkdatabox.html#gtk-databox-get-scale-type-x"/>
+    <keyword type="function" name="gtk_databox_get_scale_type_y ()" link="gtkdatabox-gtkdatabox.html#gtk-databox-get-scale-type-y"/>
+    <keyword type="function" name="gtk_databox_set_enable_selection ()" link="gtkdatabox-gtkdatabox.html#gtk-databox-set-enable-selection"/>
+    <keyword type="function" name="gtk_databox_set_enable_zoom ()" link="gtkdatabox-gtkdatabox.html#gtk-databox-set-enable-zoom"/>
+    <keyword type="function" name="gtk_databox_get_enable_selection ()" link="gtkdatabox-gtkdatabox.html#gtk-databox-get-enable-selection"/>
+    <keyword type="function" name="gtk_databox_get_enable_zoom ()" link="gtkdatabox-gtkdatabox.html#gtk-databox-get-enable-zoom"/>
+    <keyword type="function" name="gtk_databox_zoom_to_selection ()" link="gtkdatabox-gtkdatabox.html#gtk-databox-zoom-to-selection"/>
+    <keyword type="function" name="gtk_databox_zoom_out ()" link="gtkdatabox-gtkdatabox.html#gtk-databox-zoom-out"/>
+    <keyword type="function" name="gtk_databox_zoom_home ()" link="gtkdatabox-gtkdatabox.html#gtk-databox-zoom-home"/>
+    <keyword type="function" name="gtk_databox_value_to_pixel_x ()" link="gtkdatabox-gtkdatabox.html#gtk-databox-value-to-pixel-x"/>
+    <keyword type="function" name="gtk_databox_value_to_pixel_y ()" link="gtkdatabox-gtkdatabox.html#gtk-databox-value-to-pixel-y"/>
+    <keyword type="function" name="gtk_databox_pixel_to_value_x ()" link="gtkdatabox-gtkdatabox.html#gtk-databox-pixel-to-value-x"/>
+    <keyword type="function" name="gtk_databox_pixel_to_value_y ()" link="gtkdatabox-gtkdatabox.html#gtk-databox-pixel-to-value-y"/>
+    <keyword type="function" name="gtk_databox_values_to_pixels ()" link="gtkdatabox-gtkdatabox.html#gtk-databox-values-to-pixels"/>
+    <keyword type="function" name="gtk_databox_create_box_with_scrollbars_and_rulers ()" link="gtkdatabox-gtkdatabox.html#gtk-databox-create-box-with-scrollbars-and-rulers"/>
+    <keyword type="function" name="gtk_databox_get_backing_pixmap ()" link="gtkdatabox-gtkdatabox.html#gtk-databox-get-backing-pixmap"/>
+    <keyword type="property" name="The &quot;adjustment-x&quot; property" link="gtkdatabox-gtkdatabox.html#GtkDatabox--adjustment-x"/>
+    <keyword type="property" name="The &quot;adjustment-y&quot; property" link="gtkdatabox-gtkdatabox.html#GtkDatabox--adjustment-y"/>
+    <keyword type="property" name="The &quot;box-shadow&quot; property" link="gtkdatabox-gtkdatabox.html#GtkDatabox--box-shadow"/>
+    <keyword type="property" name="The &quot;enable-selection&quot; property" link="gtkdatabox-gtkdatabox.html#GtkDatabox--enable-selection"/>
+    <keyword type="property" name="The &quot;enable-zoom&quot; property" link="gtkdatabox-gtkdatabox.html#GtkDatabox--enable-zoom"/>
+    <keyword type="property" name="The &quot;ruler-x&quot; property" link="gtkdatabox-gtkdatabox.html#GtkDatabox--ruler-x"/>
+    <keyword type="property" name="The &quot;ruler-y&quot; property" link="gtkdatabox-gtkdatabox.html#GtkDatabox--ruler-y"/>
+    <keyword type="property" name="The &quot;scale-type-x&quot; property" link="gtkdatabox-gtkdatabox.html#GtkDatabox--scale-type-x"/>
+    <keyword type="property" name="The &quot;scale-type-y&quot; property" link="gtkdatabox-gtkdatabox.html#GtkDatabox--scale-type-y"/>
+    <keyword type="signal" name="The &quot;selection-canceled&quot; signal" link="gtkdatabox-gtkdatabox.html#GtkDatabox-selection-canceled"/>
+    <keyword type="signal" name="The &quot;selection-changed&quot; signal" link="gtkdatabox-gtkdatabox.html#GtkDatabox-selection-changed"/>
+    <keyword type="signal" name="The &quot;selection-finalized&quot; signal" link="gtkdatabox-gtkdatabox.html#GtkDatabox-selection-finalized"/>
+    <keyword type="signal" name="The &quot;selection-started&quot; signal" link="gtkdatabox-gtkdatabox.html#GtkDatabox-selection-started"/>
+    <keyword type="signal" name="The &quot;zoomed&quot; signal" link="gtkdatabox-gtkdatabox.html#GtkDatabox-zoomed"/>
+    <keyword type="struct" name="GtkDataboxGraphPrivate" link="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraphPrivate"/>
+    <keyword type="struct" name="GtkDataboxGraph" link="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph-struct"/>
+    <keyword type="property" name="The &quot;color&quot; property" link="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph--color"/>
+    <keyword type="property" name="The &quot;hide&quot; property" link="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph--hide"/>
+    <keyword type="property" name="The &quot;size&quot; property" link="gtkdatabox-gtkdatabox-graph.html#GtkDataboxGraph--size"/>
+    <keyword type="struct" name="GtkDataboxXYCGraphPrivate" link="gtkdatabox-gtkdatabox-xyc-graph.html#GtkDataboxXYCGraphPrivate"/>
+    <keyword type="struct" name="GtkDataboxXYCGraph" link="gtkdatabox-gtkdatabox-xyc-graph.html#GtkDataboxXYCGraph-struct"/>
+    <keyword type="property" name="The &quot;X-Values&quot; property" link="gtkdatabox-gtkdatabox-xyc-graph.html#GtkDataboxXYCGraph--X-Values"/>
+    <keyword type="property" name="The &quot;Y-Values&quot; property" link="gtkdatabox-gtkdatabox-xyc-graph.html#GtkDataboxXYCGraph--Y-Values"/>
+    <keyword type="property" name="The &quot;length&quot; property" link="gtkdatabox-gtkdatabox-xyc-graph.html#GtkDataboxXYCGraph--length"/>
+    <keyword type="struct" name="GtkDataboxPointsPrivate" link="gtkdatabox-gtkdatabox-points.html#GtkDataboxPointsPrivate"/>
+    <keyword type="struct" name="GtkDataboxPoints" link="gtkdatabox-gtkdatabox-points.html#GtkDataboxPoints-struct"/>
+    <keyword type="struct" name="GtkDataboxLinesPrivate" link="gtkdatabox-gtkdatabox-lines.html#GtkDataboxLinesPrivate"/>
+    <keyword type="struct" name="GtkDataboxLines" link="gtkdatabox-gtkdatabox-lines.html#GtkDataboxLines-struct"/>
+    <keyword type="struct" name="GtkDataboxBarsPrivate" link="gtkdatabox-gtkdatabox-bars.html#GtkDataboxBarsPrivate"/>
+    <keyword type="struct" name="GtkDataboxBars" link="gtkdatabox-gtkdatabox-bars.html#GtkDataboxBars-struct"/>
+    <keyword type="struct" name="GtkDataboxGridPrivate" link="gtkdatabox-gtkdatabox-grid.html#GtkDataboxGridPrivate"/>
+    <keyword type="struct" name="GtkDataboxGrid" link="gtkdatabox-gtkdatabox-grid.html#GtkDataboxGrid-struct"/>
+    <keyword type="property" name="The &quot;grid-hline-vals&quot; property" link="gtkdatabox-gtkdatabox-grid.html#GtkDataboxGrid--grid-hline-vals"/>
+    <keyword type="property" name="The &quot;grid-hlines&quot; property" link="gtkdatabox-gtkdatabox-grid.html#GtkDataboxGrid--grid-hlines"/>
+    <keyword type="property" name="The &quot;grid-vline-vals&quot; property" link="gtkdatabox-gtkdatabox-grid.html#GtkDataboxGrid--grid-vline-vals"/>
+    <keyword type="property" name="The &quot;grid-vlines&quot; property" link="gtkdatabox-gtkdatabox-grid.html#GtkDataboxGrid--grid-vlines"/>
+    <keyword type="struct" name="GtkDataboxCrossSimplePrivate" link="gtkdatabox-gtkdatabox-cross-simple.html#GtkDataboxCrossSimplePrivate"/>
+    <keyword type="struct" name="GtkDataboxCrossSimple" link="gtkdatabox-gtkdatabox-cross-simple.html#GtkDataboxCrossSimple-struct"/>
+    <keyword type="macro" name="GTK_DATABOX_RULER_MAX_MAX_LENGTH" link="gtkdatabox-gtkdatabox-ruler.html#GTK-DATABOX-RULER-MAX-MAX-LENGTH:CAPS"/>
+    <keyword type="struct" name="GtkDataboxRulerPrivate" link="gtkdatabox-gtkdatabox-ruler.html#GtkDataboxRulerPrivate"/>
+    <keyword type="struct" name="struct GtkDataboxRuler" link="gtkdatabox-gtkdatabox-ruler.html#GtkDataboxRuler-struct"/>
+    <keyword type="function" name="gtk_databox_ruler_new ()" link="gtkdatabox-gtkdatabox-ruler.html#gtk-databox-ruler-new"/>
+    <keyword type="function" name="gtk_databox_ruler_set_range ()" link="gtkdatabox-gtkdatabox-ruler.html#gtk-databox-ruler-set-range"/>
+    <keyword type="function" name="gtk_databox_ruler_set_max_length ()" link="gtkdatabox-gtkdatabox-ruler.html#gtk-databox-ruler-set-max-length"/>
+    <keyword type="function" name="gtk_databox_ruler_set_scale_type ()" link="gtkdatabox-gtkdatabox-ruler.html#gtk-databox-ruler-set-scale-type"/>
+    <keyword type="function" name="gtk_databox_ruler_get_range ()" link="gtkdatabox-gtkdatabox-ruler.html#gtk-databox-ruler-get-range"/>
+    <keyword type="function" name="gtk_databox_ruler_get_max_length ()" link="gtkdatabox-gtkdatabox-ruler.html#gtk-databox-ruler-get-max-length"/>
+    <keyword type="function" name="gtk_databox_ruler_get_scale_type ()" link="gtkdatabox-gtkdatabox-ruler.html#gtk-databox-ruler-get-scale-type"/>
+    <keyword type="function" name="gtk_databox_ruler_set_orientation ()" link="gtkdatabox-gtkdatabox-ruler.html#gtk-databox-ruler-set-orientation"/>
+    <keyword type="function" name="gtk_databox_ruler_get_orientation ()" link="gtkdatabox-gtkdatabox-ruler.html#gtk-databox-ruler-get-orientation"/>
+    <keyword type="property" name="The &quot;box-shadow&quot; property" link="gtkdatabox-gtkdatabox-ruler.html#GtkDataboxRuler--box-shadow"/>
+    <keyword type="property" name="The &quot;draw-position&quot; property" link="gtkdatabox-gtkdatabox-ruler.html#GtkDataboxRuler--draw-position"/>
+    <keyword type="property" name="The &quot;draw-subticks&quot; property" link="gtkdatabox-gtkdatabox-ruler.html#GtkDataboxRuler--draw-subticks"/>
+    <keyword type="property" name="The &quot;draw-ticks&quot; property" link="gtkdatabox-gtkdatabox-ruler.html#GtkDataboxRuler--draw-ticks"/>
+    <keyword type="property" name="The &quot;invert-edge&quot; property" link="gtkdatabox-gtkdatabox-ruler.html#GtkDataboxRuler--invert-edge"/>
+    <keyword type="property" name="The &quot;linear-label-format&quot; property" link="gtkdatabox-gtkdatabox-ruler.html#GtkDataboxRuler--linear-label-format"/>
+    <keyword type="property" name="The &quot;log-label-format&quot; property" link="gtkdatabox-gtkdatabox-ruler.html#GtkDataboxRuler--log-label-format"/>
+    <keyword type="property" name="The &quot;lower&quot; property" link="gtkdatabox-gtkdatabox-ruler.html#GtkDataboxRuler--lower"/>
+    <keyword type="property" name="The &quot;manual-tick-cnt&quot; property" link="gtkdatabox-gtkdatabox-ruler.html#GtkDataboxRuler--manual-tick-cnt"/>
+    <keyword type="property" name="The &quot;manual-tick-labels&quot; property" link="gtkdatabox-gtkdatabox-ruler.html#GtkDataboxRuler--manual-tick-labels"/>
+    <keyword type="property" name="The &quot;manual-ticks&quot; property" link="gtkdatabox-gtkdatabox-ruler.html#GtkDataboxRuler--manual-ticks"/>
+    <keyword type="property" name="The &quot;max-length&quot; property" link="gtkdatabox-gtkdatabox-ruler.html#GtkDataboxRuler--max-length"/>
+    <keyword type="property" name="The &quot;orientation&quot; property" link="gtkdatabox-gtkdatabox-ruler.html#GtkDataboxRuler--orientation"/>
+    <keyword type="property" name="The &quot;position&quot; property" link="gtkdatabox-gtkdatabox-ruler.html#GtkDataboxRuler--position"/>
+    <keyword type="property" name="The &quot;text-alignment&quot; property" link="gtkdatabox-gtkdatabox-ruler.html#GtkDataboxRuler--text-alignment"/>
+    <keyword type="property" name="The &quot;text-hoffset&quot; property" link="gtkdatabox-gtkdatabox-ruler.html#GtkDataboxRuler--text-hoffset"/>
+    <keyword type="property" name="The &quot;text-orientation&quot; property" link="gtkdatabox-gtkdatabox-ruler.html#GtkDataboxRuler--text-orientation"/>
+    <keyword type="property" name="The &quot;upper&quot; property" link="gtkdatabox-gtkdatabox-ruler.html#GtkDataboxRuler--upper"/>
+    <keyword type="struct" name="GtkDataboxMarkersPrivate" link="gtkdatabox-gtkdatabox-markers.html#GtkDataboxMarkersPrivate"/>
+    <keyword type="enum" name="enum GtkDataboxMarkersPosition" link="gtkdatabox-gtkdatabox-markers.html#GtkDataboxMarkersPosition"/>
+    <keyword type="enum" name="enum GtkDataboxMarkersTextPosition" link="gtkdatabox-gtkdatabox-markers.html#GtkDataboxMarkersTextPosition"/>
+    <keyword type="enum" name="enum GtkDataboxMarkersType" link="gtkdatabox-gtkdatabox-markers.html#GtkDataboxMarkersType"/>
+    <keyword type="struct" name="GtkDataboxMarkers" link="gtkdatabox-gtkdatabox-markers.html#GtkDataboxMarkers-struct"/>
+    <keyword type="property" name="The &quot;markers-type&quot; property" link="gtkdatabox-gtkdatabox-markers.html#GtkDataboxMarkers--markers-type"/>
+    <keyword type="macro" name="gtk_databox_marshal_VOID__VOID" link="gtkdatabox-gtkdatabox-marshal.html#gtk-databox-marshal-VOID--VOID"/>
+    <keyword type="macro" name="gtk_databox_marshal_VOID__POINTER" link="gtkdatabox-gtkdatabox-marshal.html#gtk-databox-marshal-VOID--POINTER"/>
+    <keyword type="enum" name="enum GtkDataboxScaleType" link="gtkdatabox-gtkdatabox-scale.html#GtkDataboxScaleType-enum"/>
+    <keyword type="function" name="gtk_databox_scale_type_get_type ()" link="gtkdatabox-gtkdatabox-scale.html#gtk-databox-scale-type-get-type"/>
+    <keyword type="struct" name="GtkDatabox" link="gtkdatabox-gtkdatabox-typedefs.html#GtkDatabox-struct"/>
+    <keyword type="struct" name="GtkDataboxGraph" link="gtkdatabox-gtkdatabox-typedefs.html#GtkDataboxGraph-struct"/>
+    <keyword type="property" name="The &quot;adjustment-x&quot; property" link="gtkdatabox-gtkdatabox-typedefs.html#GtkDatabox--adjustment-x"/>
+    <keyword type="property" name="The &quot;adjustment-y&quot; property" link="gtkdatabox-gtkdatabox-typedefs.html#GtkDatabox--adjustment-y"/>
+    <keyword type="property" name="The &quot;box-shadow&quot; property" link="gtkdatabox-gtkdatabox-typedefs.html#GtkDatabox--box-shadow"/>
+    <keyword type="property" name="The &quot;enable-selection&quot; property" link="gtkdatabox-gtkdatabox-typedefs.html#GtkDatabox--enable-selection"/>
+    <keyword type="property" name="The &quot;enable-zoom&quot; property" link="gtkdatabox-gtkdatabox-typedefs.html#GtkDatabox--enable-zoom"/>
+    <keyword type="property" name="The &quot;ruler-x&quot; property" link="gtkdatabox-gtkdatabox-typedefs.html#GtkDatabox--ruler-x"/>
+    <keyword type="property" name="The &quot;ruler-y&quot; property" link="gtkdatabox-gtkdatabox-typedefs.html#GtkDatabox--ruler-y"/>
+    <keyword type="property" name="The &quot;scale-type-x&quot; property" link="gtkdatabox-gtkdatabox-typedefs.html#GtkDatabox--scale-type-x"/>
+    <keyword type="property" name="The &quot;scale-type-y&quot; property" link="gtkdatabox-gtkdatabox-typedefs.html#GtkDatabox--scale-type-y"/>
+    <keyword type="property" name="The &quot;color&quot; property" link="gtkdatabox-gtkdatabox-typedefs.html#GtkDataboxGraph--color"/>
+    <keyword type="property" name="The &quot;hide&quot; property" link="gtkdatabox-gtkdatabox-typedefs.html#GtkDataboxGraph--hide"/>
+    <keyword type="property" name="The &quot;size&quot; property" link="gtkdatabox-gtkdatabox-typedefs.html#GtkDataboxGraph--size"/>
+    <keyword type="signal" name="The &quot;selection-canceled&quot; signal" link="gtkdatabox-gtkdatabox-typedefs.html#GtkDatabox-selection-canceled"/>
+    <keyword type="signal" name="The &quot;selection-changed&quot; signal" link="gtkdatabox-gtkdatabox-typedefs.html#GtkDatabox-selection-changed"/>
+    <keyword type="signal" name="The &quot;selection-finalized&quot; signal" link="gtkdatabox-gtkdatabox-typedefs.html#GtkDatabox-selection-finalized"/>
+    <keyword type="signal" name="The &quot;selection-started&quot; signal" link="gtkdatabox-gtkdatabox-typedefs.html#GtkDatabox-selection-started"/>
+    <keyword type="signal" name="The &quot;zoomed&quot; signal" link="gtkdatabox-gtkdatabox-typedefs.html#GtkDatabox-zoomed"/>
+    <keyword type="constant" name="GTK_DATABOX_MARKERS_C" link="gtkdatabox-gtkdatabox-markers.html#GTK-DATABOX-MARKERS-C:CAPS"/>
+    <keyword type="constant" name="GTK_DATABOX_MARKERS_N" link="gtkdatabox-gtkdatabox-markers.html#GTK-DATABOX-MARKERS-N:CAPS"/>
+    <keyword type="constant" name="GTK_DATABOX_MARKERS_E" link="gtkdatabox-gtkdatabox-markers.html#GTK-DATABOX-MARKERS-E:CAPS"/>
+    <keyword type="constant" name="GTK_DATABOX_MARKERS_S" link="gtkdatabox-gtkdatabox-markers.html#GTK-DATABOX-MARKERS-S:CAPS"/>
+    <keyword type="constant" name="GTK_DATABOX_MARKERS_W" link="gtkdatabox-gtkdatabox-markers.html#GTK-DATABOX-MARKERS-W:CAPS"/>
+    <keyword type="constant" name="GTK_DATABOX_MARKERS_TEXT_CENTER" link="gtkdatabox-gtkdatabox-markers.html#GTK-DATABOX-MARKERS-TEXT-CENTER:CAPS"/>
+    <keyword type="constant" name="GTK_DATABOX_MARKERS_TEXT_N" link="gtkdatabox-gtkdatabox-markers.html#GTK-DATABOX-MARKERS-TEXT-N:CAPS"/>
+    <keyword type="constant" name="GTK_DATABOX_MARKERS_TEXT_NE" link="gtkdatabox-gtkdatabox-markers.html#GTK-DATABOX-MARKERS-TEXT-NE:CAPS"/>
+    <keyword type="constant" name="GTK_DATABOX_MARKERS_TEXT_E" link="gtkdatabox-gtkdatabox-markers.html#GTK-DATABOX-MARKERS-TEXT-E:CAPS"/>
+    <keyword type="constant" name="GTK_DATABOX_MARKERS_TEXT_SE" link="gtkdatabox-gtkdatabox-markers.html#GTK-DATABOX-MARKERS-TEXT-SE:CAPS"/>
+    <keyword type="constant" name="GTK_DATABOX_MARKERS_TEXT_S" link="gtkdatabox-gtkdatabox-markers.html#GTK-DATABOX-MARKERS-TEXT-S:CAPS"/>
+    <keyword type="constant" name="GTK_DATABOX_MARKERS_TEXT_SW" link="gtkdatabox-gtkdatabox-markers.html#GTK-DATABOX-MARKERS-TEXT-SW:CAPS"/>
+    <keyword type="constant" name="GTK_DATABOX_MARKERS_TEXT_W" link="gtkdatabox-gtkdatabox-markers.html#GTK-DATABOX-MARKERS-TEXT-W:CAPS"/>
+    <keyword type="constant" name="GTK_DATABOX_MARKERS_TEXT_NW" link="gtkdatabox-gtkdatabox-markers.html#GTK-DATABOX-MARKERS-TEXT-NW:CAPS"/>
+    <keyword type="constant" name="GTK_DATABOX_MARKERS_NONE" link="gtkdatabox-gtkdatabox-markers.html#GTK-DATABOX-MARKERS-NONE:CAPS"/>
+    <keyword type="constant" name="GTK_DATABOX_MARKERS_TRIANGLE" link="gtkdatabox-gtkdatabox-markers.html#GTK-DATABOX-MARKERS-TRIANGLE:CAPS"/>
+    <keyword type="constant" name="GTK_DATABOX_MARKERS_SOLID_LINE" link="gtkdatabox-gtkdatabox-markers.html#GTK-DATABOX-MARKERS-SOLID-LINE:CAPS"/>
+    <keyword type="constant" name="GTK_DATABOX_MARKERS_DASHED_LINE" link="gtkdatabox-gtkdatabox-markers.html#GTK-DATABOX-MARKERS-DASHED-LINE:CAPS"/>
+    <keyword type="constant" name="GTK_DATABOX_SCALE_LINEAR" link="gtkdatabox-gtkdatabox-scale.html#GTK-DATABOX-SCALE-LINEAR:CAPS"/>
+    <keyword type="constant" name="GTK_DATABOX_SCALE_LOG2" link="gtkdatabox-gtkdatabox-scale.html#GTK-DATABOX-SCALE-LOG2:CAPS"/>
+    <keyword type="constant" name="GTK_DATABOX_SCALE_LOG" link="gtkdatabox-gtkdatabox-scale.html#GTK-DATABOX-SCALE-LOG:CAPS"/>
+  </functions>
+</book>

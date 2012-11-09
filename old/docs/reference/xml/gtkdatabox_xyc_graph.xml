@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="gtkdatabox-gtkdatabox-xyc-graph">
+<refmeta>
+<refentrytitle role="top_of_page" id="gtkdatabox-gtkdatabox-xyc-graph.top_of_page">GtkDataboxXYCGraph</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>
+  GTKDATABOX Library
+</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>GtkDataboxXYCGraph</refname>
+<refpurpose>An abstract anchestor for all graphs which display xy-values in one color.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv id="gtkdatabox-gtkdatabox-xyc-graph.synopsis" role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+<anchor id="GtkDataboxXYCGraph"/>
+<synopsis>
+#include &lt;gtkdatabox_xyc_graph.h&gt;
+
+                    <link linkend="GtkDataboxXYCGraphPrivate">GtkDataboxXYCGraphPrivate</link>;
+                    <link linkend="GtkDataboxXYCGraph-struct">GtkDataboxXYCGraph</link>;
+</synopsis>
+</refsynopsisdiv>
+<refsect1 id="gtkdatabox-gtkdatabox-xyc-graph.object-hierarchy" role="object_hierarchy">
+<title role="object_hierarchy.title">Object Hierarchy</title>
+<synopsis>
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GtkDataboxGraph">GtkDataboxGraph</link>
+         +----GtkDataboxXYCGraph
+               +----<link linkend="GtkDataboxPoints">GtkDataboxPoints</link>
+               +----<link linkend="GtkDataboxLines">GtkDataboxLines</link>
+               +----<link linkend="GtkDataboxBars">GtkDataboxBars</link>
+               +----<link linkend="GtkDataboxMarkers">GtkDataboxMarkers</link>
+</synopsis>
+</refsect1>
+<refsect1 id="gtkdatabox-gtkdatabox-xyc-graph.properties" role="properties">
+<title role="properties.title">Properties</title>
+<synopsis>
+  &quot;<link linkend="GtkDataboxXYCGraph--X-Values">X-Values</link>&quot;                 <link linkend="gpointer"><type>gpointer</type></link>              : Read / Write / Construct Only
+  &quot;<link linkend="GtkDataboxXYCGraph--Y-Values">Y-Values</link>&quot;                 <link linkend="gpointer"><type>gpointer</type></link>              : Read / Write / Construct Only
+  &quot;<link linkend="GtkDataboxXYCGraph--length">length</link>&quot;                   <link linkend="gint"><type>gint</type></link>                  : Read / Write / Construct Only
+</synopsis>
+</refsect1>
+
+<refsect1 id="gtkdatabox-gtkdatabox-xyc-graph.description" role="desc">
+<title role="desc.title">Description</title>
+<para>
+GtkDataboxXYCGraphs are an abstract class for displaying XY-data in one color. The values for the data are represented 
+as an array of X values and a second array of Y values. In order to actually display data, you should
+use one of the derived classes.
+</para>
+</refsect1>
+<refsect1 id="gtkdatabox-gtkdatabox-xyc-graph.details" role="details">
+<title role="details.title">Details</title>
+<refsect2 id="GtkDataboxXYCGraphPrivate" role="struct">
+<title>GtkDataboxXYCGraphPrivate</title>
+<indexterm zone="GtkDataboxXYCGraphPrivate"><primary>GtkDataboxXYCGraphPrivate</primary></indexterm>
+<programlisting>typedef struct _GtkDataboxXYCGraphPrivate GtkDataboxXYCGraphPrivate;</programlisting>
+<para>
+A private data structure used by the <link linkend="GtkDataboxXYCGraph"><type>GtkDataboxXYCGraph</type></link>. It shields all internal things
+from developers who are just using the object.
+</para></refsect2>
+<refsect2 id="GtkDataboxXYCGraph-struct" role="struct">
+<title>GtkDataboxXYCGraph</title>
+<indexterm zone="GtkDataboxXYCGraph-struct"><primary>GtkDataboxXYCGraph</primary></indexterm>
+<programlisting>typedef struct _GtkDataboxXYCGraph GtkDataboxXYCGraph;</programlisting>
+<para>
+GtkDataboxXYCGraphs are an abstract class for displaying XY-data in one color. The values for the data are represented 
+as an array of X values and a second array of Y values. In order to actually display data, you should
+use one of the derived classes.
+</para></refsect2>
+
+</refsect1>
+<refsect1 id="gtkdatabox-gtkdatabox-xyc-graph.property-details" role="property_details">
+<title role="property_details.title">Property Details</title>
+<refsect2 id="GtkDataboxXYCGraph--X-Values" role="property"><title>The <literal>&quot;X-Values&quot;</literal> property</title>
+<indexterm zone="GtkDataboxXYCGraph--X-Values"><primary>GtkDataboxXYCGraph:X-Values</primary></indexterm>
+<programlisting>  &quot;X-Values&quot;                 <link linkend="gpointer"><type>gpointer</type></link>              : Read / Write / Construct Only</programlisting>
+<para>X values of data.</para></refsect2>
+<refsect2 id="GtkDataboxXYCGraph--Y-Values" role="property"><title>The <literal>&quot;Y-Values&quot;</literal> property</title>
+<indexterm zone="GtkDataboxXYCGraph--Y-Values"><primary>GtkDataboxXYCGraph:Y-Values</primary></indexterm>
+<programlisting>  &quot;Y-Values&quot;                 <link linkend="gpointer"><type>gpointer</type></link>              : Read / Write / Construct Only</programlisting>
+<para>Y values of data.</para></refsect2>
+<refsect2 id="GtkDataboxXYCGraph--length" role="property"><title>The <literal>&quot;length&quot;</literal> property</title>
+<indexterm zone="GtkDataboxXYCGraph--length"><primary>GtkDataboxXYCGraph:length</primary></indexterm>
+<programlisting>  &quot;length&quot;                   <link linkend="gint"><type>gint</type></link>                  : Read / Write / Construct Only</programlisting>
+<para>number of data points.</para><para>Default value: 0</para>
+</refsect2>
+</refsect1>
+<refsect1 id="gtkdatabox-gtkdatabox-xyc-graph.see-also">
+<title>See Also</title>
+<link linkend="GtkDatabox"><type>GtkDatabox</type></link>, <link linkend="GtkDataboxGraph"><type>GtkDataboxGraph</type></link>, <link linkend="GtkDataboxPoints"><type>GtkDataboxPoints</type></link>, <link linkend="GtkDataboxLines"><type>GtkDataboxLines</type></link>, <link linkend="GtkDataboxBars"><type>GtkDataboxBars</type></link>
+</refsect1>
+
+</refentry>

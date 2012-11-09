@@ -1,0 +1,10 @@
+GtkDataboxBarsClass
+GtkDataboxClass
+GtkDataboxCrossSimpleClass
+GtkDataboxGraphClass
+GtkDataboxGridClass
+GtkDataboxLinesClass
+GtkDataboxMarkersClass
+GtkDataboxPointsClass
+GtkDataboxRulerClass
+GtkDataboxXYCGraphClass
