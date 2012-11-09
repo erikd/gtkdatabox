@@ -15,7 +15,7 @@ http://sourceforge.net/projects/gtkdatabox/
 
 To install, please read the INSTALL file.
 
-Documentation is in the api/html directory.
+Documentation is in the api/html directory. Look in the Files->Globals->functions for a list of the functions available.
 
 Hope you enjoy using this code ...
 
