@@ -115,8 +115,6 @@ AC_OUTPUT(Makefile              \
 	gtk/Makefile            \
 	glade/Makefile		\
 	examples/Makefile       \
-	docs/Makefile       \
-	docs/reference/Makefile       \
         gtkdatabox.pc           \
         gtkdatabox.spec         \
 	)
