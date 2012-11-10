@@ -1424,16 +1424,16 @@ gtk_databox_draw_selection (GtkDatabox * box, gboolean clear) {
     cairo_rectangle (cr,
                      MIN (box->priv->marked.x, box->priv->select.x) - 0.5,
                      MIN (box->priv->marked.y, box->priv->select.y) - 0.5,
-                     ABS (box->priv->marked.x - box->priv->select.x) + 0.5,
-                     ABS (box->priv->marked.y - box->priv->select.y) + 0.5);
+                     ABS (box->priv->marked.x - box->priv->select.x) + 1.0,
+                     ABS (box->priv->marked.y - box->priv->select.y) + 1.0);
 
    if (clear) {
       cairo_set_source_surface (cr, box->priv->backing_surface, 0, 0);
       cairo_paint(cr);
       cairo_set_line_width (cr, 2.0);
     } else {
-      gdk_cairo_set_source_color (cr, &widget->style->black);
-      cairo_set_operator (cr, CAIRO_OPERATOR_XOR);
+      cairo_set_source_rgb (cr, 1.0, 1.0, 1.0);
+      cairo_set_operator (cr, CAIRO_OPERATOR_DIFFERENCE);
       cairo_set_line_width (cr, 1.0);
 	}
 	cairo_stroke(cr);
