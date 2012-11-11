@@ -25,53 +25,17 @@ G_DEFINE_TYPE(GtkDataboxRegions, gtk_databox_regions,
 static void gtk_databox_regions_real_draw (GtkDataboxGraph * regions,
 					GtkDatabox* box);
 
-/**
- * GtkDataboxRegionsPrivate
- *
- * A private data structure used by the #GtkDataboxRegions. It shields all internal things
- * from developers who are just using the object.
- *
- **/
-typedef struct _GtkDataboxRegionsPrivate GtkDataboxRegionsPrivate;
-
-struct _GtkDataboxRegionsPrivate
-{
-   GdkPoint *data;
-};
-
-static void
-regions_finalize (GObject * object)
-{
-   g_free (GTK_DATABOX_REGIONS_GET_PRIVATE(object)->data);
-
-   /* Chain up to the parent class */
-   G_OBJECT_CLASS (gtk_databox_regions_parent_class)->finalize (object);
-}
-
 static void
 gtk_databox_regions_class_init (GtkDataboxRegionsClass *klass)
 {
-   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
    GtkDataboxGraphClass *graph_class = GTK_DATABOX_GRAPH_CLASS (klass);
 
-   gobject_class->finalize = regions_finalize;
-
    graph_class->draw = gtk_databox_regions_real_draw;
-
-   g_type_class_add_private (klass, sizeof (GtkDataboxRegionsPrivate));
-}
-
-static void
-gtk_databox_regions_complete (GtkDataboxRegions * regions)
-{
-   GTK_DATABOX_REGIONS_GET_PRIVATE(regions)->data = g_new0 (GdkPoint, 4);
 }
 
 static void
 gtk_databox_regions_init (GtkDataboxRegions *regions)
 {
-   g_signal_connect (regions, "notify::length",
-		     G_CALLBACK (gtk_databox_regions_complete), NULL);
 }
 
 /**
@@ -109,8 +73,7 @@ gtk_databox_regions_real_draw (GtkDataboxGraph * graph,
 			    GtkDatabox* box)
 {
    GtkDataboxRegions *regions = GTK_DATABOX_REGIONS (graph);
-   GtkDataboxRegionsPrivate *priv = GTK_DATABOX_REGIONS_GET_PRIVATE (regions);
-   GdkPoint *data1, *data2, *data3, *data4;
+   GdkPoint data[4];
    GdkGC *gc;
    GdkPixmap *pixmap;
    guint i = 0;
@@ -136,28 +99,23 @@ gtk_databox_regions_real_draw (GtkDataboxGraph * graph,
    Y1 = gtk_databox_xyyc_graph_get_Y1 (GTK_DATABOX_XYYC_GRAPH (graph));
    Y2 = gtk_databox_xyyc_graph_get_Y2 (GTK_DATABOX_XYYC_GRAPH (graph));
 
-   data1 = priv->data+1;
-   data2 = priv->data;
-   data3 = priv->data+2;
-   data4 = priv->data+3;
-
-   data3->x = gtk_databox_value_to_pixel_x (box, *X);
-   data3->y = gtk_databox_value_to_pixel_y (box, *Y2);
-   data4->x = gtk_databox_value_to_pixel_x (box, *X);
-   data4->y = gtk_databox_value_to_pixel_y (box, *Y1);
+   data[2].x = gtk_databox_value_to_pixel_x (box, *X);
+   data[2].y = gtk_databox_value_to_pixel_y (box, *Y2);
+   data[3].x = gtk_databox_value_to_pixel_x (box, *X);
+   data[3].y = gtk_databox_value_to_pixel_y (box, *Y1);
    X++; Y1++; Y2++;
    for (i = 0; i < len-1; i++, X++, Y1++, Y2++)
    {
-      data1->x = data3->x; /* 4 points in the polygon */
-      data1->y = data3->y;
-      data2->x = data4->x;
-      data2->y = data4->y;
-      data3->x = gtk_databox_value_to_pixel_x (box, *X);
-      data3->y = gtk_databox_value_to_pixel_y (box, *Y2);
-      data4->x = gtk_databox_value_to_pixel_x (box, *X);
-      data4->y = gtk_databox_value_to_pixel_y (box, *Y1);
+      data[1].x = data[2].x; /* 4 points in the polygon */
+      data[1].y = data[2].y;
+      data[0].x = data[3].x;
+      data[0].y = data[3].y;
+      data[2].x = gtk_databox_value_to_pixel_x (box, *X);
+      data[2].y = gtk_databox_value_to_pixel_y (box, *Y2);
+      data[3].x = gtk_databox_value_to_pixel_x (box, *X);
+      data[3].y = gtk_databox_value_to_pixel_y (box, *Y1);
       gdk_draw_polygon (pixmap, gc, 1, /* 1 for a filled polygon*/
-			 priv->data,4);
+			 data, 4);
    }
    return;
 }
