@@ -26,9 +26,6 @@ static void
 cross_simple_finalize (GObject * object)
 {
    gpointer pointer;
-   GtkDataboxCrossSimple *cross_simple = GTK_DATABOX_CROSS_SIMPLE (object);
-
-   g_free (cross_simple->priv);
 
    pointer = gtk_databox_xyc_graph_get_X (GTK_DATABOX_XYC_GRAPH (object));
    if (pointer)

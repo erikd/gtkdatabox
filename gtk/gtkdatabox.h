@@ -66,18 +66,10 @@ G_BEGIN_DECLS
 #define GTK_DATABOX_GET_CLASS(obj)        (G_TYPE_INSTANCE_GET_CLASS ((obj), \
                                            GTK_TYPE_DATABOX, \
                                            GtkDataboxClass))
-
+#define GTK_DATABOX_GET_PRIVATE(obj) \
+	G_TYPE_INSTANCE_GET_PRIVATE ((obj), GTK_TYPE_DATABOX, GtkDataboxPrivate)
 
 typedef struct _GtkDataboxClass GtkDataboxClass;
-
-/**
- * GtkDataboxPrivate
- *
- * A private data structure used by the #GtkDatabox. It shields all internal things
- * from developers who are just using the widget.
- *
- **/
-typedef struct _GtkDataboxPrivate GtkDataboxPrivate;
 
 typedef struct
 {
@@ -90,7 +82,6 @@ typedef struct
 /**
  * _GtkDatabox
  * @box: The parent object
- * @priv: A private structure containing internal data.
  *
  * Implementation of #GtkDatabox.
  *
@@ -99,8 +90,6 @@ struct _GtkDatabox
 {
     /*< private >*/
     GtkWidget box;
-
-    GtkDataboxPrivate *priv;
 };
 
 struct _GtkDataboxClass

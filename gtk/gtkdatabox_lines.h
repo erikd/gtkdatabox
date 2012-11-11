@@ -47,6 +47,8 @@ G_BEGIN_DECLS
 #define GTK_DATABOX_LINES_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), \
                                            GTK_DATABOX_TYPE_LINES, \
                                            GtkDataboxLinesClass))
+#define GTK_DATABOX_LINES_GET_PRIVATE(obj) \
+	G_TYPE_INSTANCE_GET_PRIVATE ((obj), GTK_DATABOX_TYPE_LINES, GtkDataboxLinesPrivate)
 
 /**
  * GtkDataboxLines
@@ -58,22 +60,10 @@ G_BEGIN_DECLS
 
    typedef struct _GtkDataboxLinesClass GtkDataboxLinesClass;
 
-   /**
-    * GtkDataboxLinesPrivate
-    * @see_also: #GtkDatabox, #GtkDataboxGraph, #GtkDataboxPoints, #GtkDataboxBars, #GtkDataboxMarkers
-    *
-    * A private data structure used by the #GtkDataboxLines. It shields all internal things
-    * from developers who are just using the object. 
-    *
-    **/
-   typedef struct _GtkDataboxLinesPrivate GtkDataboxLinesPrivate;
-
    struct _GtkDataboxLines
    {
       /*< private >*/
       GtkDataboxXYCGraph parent;
-
-      GtkDataboxLinesPrivate *priv;
    };
 
    struct _GtkDataboxLinesClass

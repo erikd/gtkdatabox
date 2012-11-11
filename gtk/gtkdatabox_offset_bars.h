@@ -47,6 +47,8 @@ G_BEGIN_DECLS
 #define GTK_DATABOX_OFFSET_BARS_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), \
                                            GTK_DATABOX_TYPE_OFFSET_BARS, \
                                            GtkDataboxOffsetBarsClass))
+#define GTK_DATABOX_OFFSET_BARS_GET_PRIVATE(obj) \
+	G_TYPE_INSTANCE_GET_PRIVATE ((obj), GTK_DATABOX_TYPE_OFFSET_BARS, GtkDataboxOffsetBarsPrivate)
 
 /**
  * GtkDataboxOffsetBars:
@@ -59,21 +61,10 @@ G_BEGIN_DECLS
 
    typedef struct _GtkDataboxOffsetBarsClass GtkDataboxOffsetBarsClass;
 
-   /**
-    * GtkDataboxOffsetBarsPrivate
-    *
-    * A private data structure used by the #GtkDataboxOffsetBars. It shields all internal things
-    * from developers who are just using the object.
-    *
-    **/
-   typedef struct _GtkDataboxOffsetBarsPrivate GtkDataboxOffsetBarsPrivate;
-
    struct _GtkDataboxOffsetBars
    {
       /*< private >*/
       GtkDataboxXYYCGraph parent;
-
-      GtkDataboxOffsetBarsPrivate *priv;
    };
 
    struct _GtkDataboxOffsetBarsClass

@@ -47,6 +47,9 @@ G_BEGIN_DECLS
 #define GTK_DATABOX_REGIONS_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), \
                                            GTK_DATABOX_TYPE_REGIONS, \
                                            GtkDataboxRegionsClass))
+#define GTK_DATABOX_REGIONS_GET_PRIVATE(obj) \
+	G_TYPE_INSTANCE_GET_PRIVATE ((obj), GTK_DATABOX_TYPE_REGIONS, \
+	GtkDataboxRegionsPrivate)
 
 /**
  * GtkDataboxRegions:
@@ -59,21 +62,10 @@ G_BEGIN_DECLS
 
    typedef struct _GtkDataboxRegionsClass GtkDataboxRegionsClass;
 
-   /**
-    * GtkDataboxRegionsPrivate
-    *
-    * A private data structure used by the #GtkDataboxRegions. It shields all internal things
-    * from developers who are just using the object.
-    *
-    **/
-   typedef struct _GtkDataboxRegionsPrivate GtkDataboxRegionsPrivate;
-
    struct _GtkDataboxRegions
    {
       /*< private >*/
       GtkDataboxXYYCGraph parent;
-
-      GtkDataboxRegionsPrivate *priv;
    };
 
    struct _GtkDataboxRegionsClass

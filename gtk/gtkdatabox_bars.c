@@ -24,6 +24,14 @@ G_DEFINE_TYPE(GtkDataboxBars, gtk_databox_bars,
 
 static void gtk_databox_bars_real_draw (GtkDataboxGraph * bars,
 					GtkDatabox* box);
+/**
+ * GtkDataboxBarsPrivate
+ *
+ * A private data structure used by the #GtkDataboxBars. It shields all internal things
+ * from developers who are just using the object.
+ *
+ **/
+typedef struct _GtkDataboxBarsPrivate GtkDataboxBarsPrivate;
 
 struct _GtkDataboxBarsPrivate
 {
@@ -35,8 +43,7 @@ bars_finalize (GObject * object)
 {
    GtkDataboxBars *bars = GTK_DATABOX_BARS (object);
 
-   g_free (bars->priv->data);
-   g_free (bars->priv);
+   g_free (GTK_DATABOX_BARS_GET_PRIVATE(bars)->data);
 
    /* Chain up to the parent class */
    G_OBJECT_CLASS (gtk_databox_bars_parent_class)->finalize (object);
@@ -51,23 +58,22 @@ gtk_databox_bars_class_init (GtkDataboxBarsClass *klass)
    gobject_class->finalize = bars_finalize;
 
    graph_class->draw = gtk_databox_bars_real_draw;
+
+	g_type_class_add_private(klass, sizeof(GtkDataboxBarsPrivate));
 }
 
 static void
 gtk_databox_bars_complete (GtkDataboxBars * bars)
 {
-   bars->priv->data =
+   GTK_DATABOX_BARS_GET_PRIVATE(bars)->data =
       g_new0 (GdkSegment,
 	      gtk_databox_xyc_graph_get_length
 	      (GTK_DATABOX_XYC_GRAPH (bars)));
-
 }
 
 static void
 gtk_databox_bars_init (GtkDataboxBars *bars)
 {
-   bars->priv = g_new0 (GtkDataboxBarsPrivate, 1);
-
    g_signal_connect (bars, "notify::length",
 		     G_CALLBACK (gtk_databox_bars_complete), NULL);
 }
@@ -133,7 +139,7 @@ gtk_databox_bars_real_draw (GtkDataboxGraph * graph,
    Y = gtk_databox_xyc_graph_get_Y (GTK_DATABOX_XYC_GRAPH (graph));
    size = gtk_databox_graph_get_size (graph);
 
-   data = bars->priv->data;
+   data = GTK_DATABOX_BARS_GET_PRIVATE(bars)->data;
 
    zero = gtk_databox_value_to_pixel_y (box, 0);
 
@@ -149,7 +155,7 @@ gtk_databox_bars_real_draw (GtkDataboxGraph * graph,
    for (i = 0; i < len; i += 65536)
    {
       gdk_draw_segments (pixmap, gc,
-			 bars->priv->data + i, MIN (65536, len - i));
+			 GTK_DATABOX_BARS_GET_PRIVATE(bars)->data + i, MIN (65536, len - i));
    }
 
    return;

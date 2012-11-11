@@ -48,6 +48,9 @@ G_BEGIN_DECLS
 #define GTK_DATABOX_GRID_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), \
                                            GTK_DATABOX_TYPE_GRID, \
                                            GtkDataboxGridClass))
+#define GTK_DATABOX_GRID_GET_PRIVATE(obj) \
+	G_TYPE_INSTANCE_GET_PRIVATE ((obj), GTK_DATABOX_TYPE_GRID, \
+	GtkDataboxGridPrivate)
 
 /**
  * GtkDataboxGrid
@@ -61,20 +64,9 @@ G_BEGIN_DECLS
 
    typedef struct _GtkDataboxGridClass GtkDataboxGridClass;
 
-   /**
-    * GtkDataboxGridPrivate
-    *
-    * A private data structure used by the #GtkDataboxGrid. It shields all internal things
-    * from developers who are just using the object.
-    *
-    **/
-   typedef struct _GtkDataboxGridPrivate GtkDataboxGridPrivate;
-
    struct _GtkDataboxGrid
    {
       GtkDataboxGraph parent;
-
-      GtkDataboxGridPrivate *priv;
    };
 
    struct _GtkDataboxGridClass

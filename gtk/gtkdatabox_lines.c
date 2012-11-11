@@ -25,6 +25,16 @@ G_DEFINE_TYPE(GtkDataboxLines, gtk_databox_lines,
 static void gtk_databox_lines_real_draw (GtkDataboxGraph * lines,
 					 GtkDatabox* box);
 
+/**
+ * GtkDataboxLinesPrivate
+ * @see_also: #GtkDatabox, #GtkDataboxGraph, #GtkDataboxPoints, #GtkDataboxBars, #GtkDataboxMarkers
+ *
+ * A private data structure used by the #GtkDataboxLines. It shields all internal things
+ * from developers who are just using the object.
+ *
+ **/
+typedef struct _GtkDataboxLinesPrivate GtkDataboxLinesPrivate;
+
 struct _GtkDataboxLinesPrivate
 {
    GdkPoint *data;
@@ -33,10 +43,7 @@ struct _GtkDataboxLinesPrivate
 static void
 lines_finalize (GObject * object)
 {
-   GtkDataboxLines *lines = GTK_DATABOX_LINES (object);
-
-   g_free (lines->priv->data);
-   g_free (lines->priv);
+   g_free (GTK_DATABOX_LINES_GET_PRIVATE(object)->data);
 
    /* Chain up to the parent class */
    G_OBJECT_CLASS (gtk_databox_lines_parent_class)->finalize (object);
@@ -51,12 +58,14 @@ gtk_databox_lines_class_init (GtkDataboxLinesClass *klass)
    gobject_class->finalize = lines_finalize;
 
    graph_class->draw = gtk_databox_lines_real_draw;
+
+   g_type_class_add_private (klass, sizeof (GtkDataboxLinesPrivate));
 }
 
 static void
 gtk_databox_lines_complete (GtkDataboxLines * lines)
 {
-   lines->priv->data =
+   GTK_DATABOX_LINES_GET_PRIVATE(lines)->data =
       g_new0 (GdkPoint,
 	      gtk_databox_xyc_graph_get_length
 	      (GTK_DATABOX_XYC_GRAPH (lines)));
@@ -66,8 +75,6 @@ gtk_databox_lines_complete (GtkDataboxLines * lines)
 static void
 gtk_databox_lines_init (GtkDataboxLines *lines)
 {
-   lines->priv = g_new0 (GtkDataboxLinesPrivate, 1);
-
    g_signal_connect (lines, "notify::length",
 		     G_CALLBACK (gtk_databox_lines_complete), NULL);
 }
@@ -131,7 +138,7 @@ gtk_databox_lines_real_draw (GtkDataboxGraph * graph,
    X = gtk_databox_xyc_graph_get_X (GTK_DATABOX_XYC_GRAPH (graph));
    Y = gtk_databox_xyc_graph_get_Y (GTK_DATABOX_XYC_GRAPH (graph));
    size = gtk_databox_graph_get_size (graph);
-   data = lines->priv->data;
+   data = GTK_DATABOX_LINES_GET_PRIVATE(graph)->data;
 
    gtk_databox_values_to_pixels (box, len, X, Y, data);
 

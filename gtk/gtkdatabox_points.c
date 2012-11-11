@@ -25,6 +25,15 @@ G_DEFINE_TYPE(GtkDataboxPoints, gtk_databox_points,
 static void gtk_databox_points_real_draw (GtkDataboxGraph * points,
 					  GtkDatabox * box);
 
+/**
+ * GtkDataboxPointsPrivate
+ *
+ * A private data structure used by the #GtkDataboxPoints. It shields all internal things
+ * from developers who are just using the object.
+ *
+ **/
+typedef struct _GtkDataboxPointsPrivate GtkDataboxPointsPrivate;
+
 struct _GtkDataboxPointsPrivate
 {
    GdkPoint *data;
@@ -33,10 +42,7 @@ struct _GtkDataboxPointsPrivate
 static void
 points_finalize (GObject * object)
 {
-   GtkDataboxPoints *points = GTK_DATABOX_POINTS (object);
-
-   g_free (points->priv->data);
-   g_free (points->priv);
+   g_free (GTK_DATABOX_POINTS_GET_PRIVATE(object)->data);
 
    /* Chain up to the parent class */
    G_OBJECT_CLASS (gtk_databox_points_parent_class)->finalize (object);
@@ -51,12 +57,14 @@ gtk_databox_points_class_init (GtkDataboxPointsClass *klass)
    gobject_class->finalize = points_finalize;
 
    graph_class->draw = gtk_databox_points_real_draw;
+
+   g_type_class_add_private (klass, sizeof (GtkDataboxPointsPrivate));
 }
 
 static void
 gtk_databox_points_complete (GtkDataboxPoints * points)
 {
-   points->priv->data =
+   GTK_DATABOX_POINTS_GET_PRIVATE(points)->data =
       g_new0 (GdkPoint,
 	      gtk_databox_xyc_graph_get_length
 	      (GTK_DATABOX_XYC_GRAPH (points)));
@@ -66,8 +74,6 @@ gtk_databox_points_complete (GtkDataboxPoints * points)
 static void
 gtk_databox_points_init (GtkDataboxPoints *points)
 {
-   points->priv = g_new0 (GtkDataboxPointsPrivate, 1);
-
    g_signal_connect (points, "notify::length",
 		     G_CALLBACK (gtk_databox_points_complete), NULL);
 }
@@ -127,7 +133,7 @@ gtk_databox_points_real_draw (GtkDataboxGraph * graph,
    X = gtk_databox_xyc_graph_get_X (GTK_DATABOX_XYC_GRAPH (graph));
    Y = gtk_databox_xyc_graph_get_Y (GTK_DATABOX_XYC_GRAPH (graph));
    size = gtk_databox_graph_get_size (graph);
-   data = points->priv->data;
+   data = GTK_DATABOX_POINTS_GET_PRIVATE(points)->data;
 
    gtk_databox_values_to_pixels (box, len, X, Y, data);
 

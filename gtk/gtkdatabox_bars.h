@@ -47,6 +47,8 @@ G_BEGIN_DECLS
 #define GTK_DATABOX_BARS_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), \
                                            GTK_DATABOX_TYPE_BARS, \
                                            GtkDataboxBarsClass))
+#define GTK_DATABOX_BARS_GET_PRIVATE(obj) \
+	G_TYPE_INSTANCE_GET_PRIVATE ((obj), GTK_DATABOX_TYPE_BARS, GtkDataboxBarsPrivate)
 
 /**
  * GtkDataboxBars:
@@ -59,21 +61,10 @@ G_BEGIN_DECLS
 
    typedef struct _GtkDataboxBarsClass GtkDataboxBarsClass;
 
-   /**
-    * GtkDataboxBarsPrivate
-    *
-    * A private data structure used by the #GtkDataboxBars. It shields all internal things
-    * from developers who are just using the object. 
-    *
-    **/
-   typedef struct _GtkDataboxBarsPrivate GtkDataboxBarsPrivate;
-
    struct _GtkDataboxBars
    {
       /*< private >*/
       GtkDataboxXYCGraph parent;
-
-      GtkDataboxBarsPrivate *priv;
    };
 
    struct _GtkDataboxBarsClass

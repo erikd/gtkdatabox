@@ -45,6 +45,15 @@ typedef struct
 }
 GtkDataboxMarkersInfo;
 
+/**
+ * GtkDataboxMarkersPrivate:
+ *
+ * A private data structure used by the #GtkDataboxMarkers. It shields all internal things
+ * from developers who are just using the object.
+ *
+ **/
+typedef struct _GtkDataboxMarkersPrivate GtkDataboxMarkersPrivate;
+
 struct _GtkDataboxMarkersPrivate
 {
    GtkDataboxMarkersType type;
@@ -57,7 +66,7 @@ gtk_databox_markers_set_mtype (GtkDataboxMarkers * markers, gint type)
 {
    g_return_if_fail (GTK_DATABOX_IS_MARKERS (markers));
 
-   markers->priv->type = type;
+   GTK_DATABOX_MARKERS_GET_PRIVATE(markers)->type = type;
 
    g_object_notify (G_OBJECT (markers), "markers-type");
 }
@@ -88,7 +97,7 @@ gtk_databox_markers_get_mtype (GtkDataboxMarkers * markers)
 {
    g_return_val_if_fail (GTK_DATABOX_IS_MARKERS (markers), 0);
 
-   return markers->priv->type;
+   return GTK_DATABOX_MARKERS_GET_PRIVATE(markers)->type;
 }
 
 static void
@@ -116,6 +125,7 @@ static void
 markers_finalize (GObject * object)
 {
    GtkDataboxMarkers *markers = GTK_DATABOX_MARKERS (object);
+   GtkDataboxMarkersPrivate *priv = GTK_DATABOX_MARKERS_GET_PRIVATE (markers);
    int i;
    int len;
 
@@ -123,13 +133,12 @@ markers_finalize (GObject * object)
 
    for (i = 0; i < len; ++i)
    {
-      if (markers->priv->markers_info[i].label)
-	 g_object_unref (markers->priv->markers_info[i].label);
-      if (markers->priv->markers_info[i].text)
-	 g_free (markers->priv->markers_info[i].text);
+      if (priv->markers_info[i].label)
+	 g_object_unref (priv->markers_info[i].label);
+      if (priv->markers_info[i].text)
+	 g_free (priv->markers_info[i].text);
    }
-   g_free (markers->priv->markers_info);
-   g_free (markers->priv);
+   g_free (priv->markers_info);
 
    /* Chain up to the parent class */
    G_OBJECT_CLASS (gtk_databox_markers_parent_class)->finalize (object);
@@ -140,6 +149,7 @@ gtk_databox_markers_real_create_gc (GtkDataboxGraph * graph,
 				   GtkDatabox* box)
 {
    GtkDataboxMarkers *markers = GTK_DATABOX_MARKERS (graph);
+   GtkDataboxMarkersPrivate *priv = GTK_DATABOX_MARKERS_GET_PRIVATE (markers);
    GdkGC *gc;
    GdkGCValues values;
 
@@ -149,7 +159,7 @@ gtk_databox_markers_real_create_gc (GtkDataboxGraph * graph,
 
    if (gc)
    {
-      if (markers->priv->type == GTK_DATABOX_MARKERS_DASHED_LINE)
+      if (priv->type == GTK_DATABOX_MARKERS_DASHED_LINE)
       {
          values.line_style = GDK_LINE_ON_OFF_DASH;
          values.cap_style = GDK_CAP_BUTT;
@@ -159,12 +169,12 @@ gtk_databox_markers_real_create_gc (GtkDataboxGraph * graph,
 			    GDK_GC_CAP_STYLE | GDK_GC_JOIN_STYLE);
       }
    
-      if (markers->priv->label_gc)
-         g_object_unref (markers->priv->label_gc);
+      if (priv->label_gc)
+         g_object_unref (priv->label_gc);
    
-      markers->priv->label_gc = gdk_gc_new (gtk_databox_get_backing_pixmap (box));
-      gdk_gc_copy (markers->priv->label_gc, gc);
-      gdk_gc_set_line_attributes (markers->priv->label_gc, 1,
+      priv->label_gc = gdk_gc_new (gtk_databox_get_backing_pixmap (box));
+      gdk_gc_copy (priv->label_gc, gc);
+      gdk_gc_set_line_attributes (priv->label_gc, 1,
 			          GDK_LINE_SOLID, GDK_CAP_ROUND, GDK_JOIN_ROUND);
    }
 
@@ -190,12 +200,14 @@ gtk_databox_markers_class_init (GtkDataboxMarkersClass *klass)
 				    PROP_TYPE, markers_param_spec);
    graph_class->draw = gtk_databox_markers_real_draw;
    graph_class->create_gc = gtk_databox_markers_real_create_gc;
+
+   g_type_class_add_private (klass, sizeof (GtkDataboxMarkersPrivate));
 }
 
 static void
 complete (GtkDataboxMarkers * markers)
 {
-   markers->priv->markers_info =
+   GTK_DATABOX_MARKERS_GET_PRIVATE(markers)->markers_info =
       g_new0 (GtkDataboxMarkersInfo,
 	      gtk_databox_xyc_graph_get_length
 	      (GTK_DATABOX_XYC_GRAPH (markers)));
@@ -205,8 +217,6 @@ complete (GtkDataboxMarkers * markers)
 static void
 gtk_databox_markers_init (GtkDataboxMarkers *markers)
 {
-   markers->priv = g_new0 (GtkDataboxMarkersPrivate, 1);
-
    g_signal_connect (markers, "notify::length", G_CALLBACK (complete), NULL);
 }
 
@@ -337,6 +347,7 @@ gtk_databox_markers_real_draw (GtkDataboxGraph * graph,
 {
    GtkWidget *widget;
    GtkDataboxMarkers *markers = GTK_DATABOX_MARKERS (graph);
+   GtkDataboxMarkersPrivate *priv = GTK_DATABOX_MARKERS_GET_PRIVATE (markers);
    GdkPoint points[3];
    GdkPixmap *pixmap;
    GdkGC *gc;
@@ -376,10 +387,10 @@ gtk_databox_markers_real_draw (GtkDataboxGraph * graph,
       coord.x = x = gtk_databox_value_to_pixel_x (box, X[i]);
       coord.y = y = gtk_databox_value_to_pixel_y (box, Y[i]);
 
-      switch (markers->priv->type)
+      switch (priv->type)
       {
       case GTK_DATABOX_MARKERS_TRIANGLE:
-	 switch (markers->priv->markers_info[i].position)
+	 switch (priv->markers_info[i].position)
 	 {
 	 case GTK_DATABOX_MARKERS_C:
 	    y = y - size / 2;
@@ -436,7 +447,7 @@ gtk_databox_markers_real_draw (GtkDataboxGraph * graph,
 	 /* End of GTK_DATABOX_MARKERS_TRIANGLE */
       case GTK_DATABOX_MARKERS_SOLID_LINE:
       case GTK_DATABOX_MARKERS_DASHED_LINE:
-	 switch (markers->priv->markers_info[i].position)
+	 switch (priv->markers_info[i].position)
 	 {
 	 case GTK_DATABOX_MARKERS_C:
 	    points[0].x = x;
@@ -480,29 +491,29 @@ gtk_databox_markers_real_draw (GtkDataboxGraph * graph,
 	 break;
       }
 
-      if (markers->priv->markers_info[i].text)
+      if (priv->markers_info[i].text)
       {
-	 if (!markers->priv->markers_info[i].label)
+	 if (!priv->markers_info[i].label)
 	 {
-	    markers->priv->markers_info[i].label =
+	    priv->markers_info[i].label =
 	       pango_layout_new (context);
-	    pango_layout_set_text (markers->priv->markers_info[i].label,
-				   markers->priv->markers_info[i].text, -1);
+	    pango_layout_set_text (priv->markers_info[i].label,
+				   priv->markers_info[i].text, -1);
 	 }
 
-	 if (markers->priv->type == GTK_DATABOX_MARKERS_SOLID_LINE
-	     || markers->priv->type == GTK_DATABOX_MARKERS_DASHED_LINE)
+	 if (priv->type == GTK_DATABOX_MARKERS_SOLID_LINE
+	     || priv->type == GTK_DATABOX_MARKERS_DASHED_LINE)
 	 {
 	    gint width;
 	    gint height;
-	    pango_layout_get_pixel_size (markers->priv->markers_info[i].label,
+	    pango_layout_get_pixel_size (priv->markers_info[i].label,
 					 &width, &height);
 
 	    width = (width + 1) / 2 + 2;
 	    height = (height + 1) / 2 + 2;
 	    size = 0;
 
-	    switch (markers->priv->markers_info[i].position)
+	    switch (priv->markers_info[i].position)
 	    {
 	    case GTK_DATABOX_MARKERS_C:
 	       break;
@@ -522,11 +533,11 @@ gtk_databox_markers_real_draw (GtkDataboxGraph * graph,
 	 }
 
 	 gtk_databox_label_write_at (pixmap,
-				     markers->priv->markers_info[i].label,
-				     markers->priv->label_gc, coord,
-				     markers->priv->markers_info[i].
+				     priv->markers_info[i].label,
+				     priv->label_gc, coord,
+				     priv->markers_info[i].
 				     label_position, (size + 1) / 2 + 2,
-				     markers->priv->markers_info[i].boxed);
+				     priv->markers_info[i].boxed);
       }
    }
 
@@ -546,13 +557,14 @@ gtk_databox_markers_set_position (GtkDataboxMarkers * markers,
 				 guint index,
 				 GtkDataboxMarkersPosition position)
 {
+   GtkDataboxMarkersPrivate *priv = GTK_DATABOX_MARKERS_GET_PRIVATE (markers);
    guint len;
 
    g_return_if_fail (GTK_DATABOX_IS_MARKERS (markers));
    len = gtk_databox_xyc_graph_get_length (GTK_DATABOX_XYC_GRAPH (markers));
    g_return_if_fail (index < len);
 
-   markers->priv->markers_info[index].position = position;
+   priv->markers_info[index].position = position;
 }
 
 /**
@@ -571,21 +583,22 @@ gtk_databox_markers_set_label (GtkDataboxMarkers * markers,
 			      GtkDataboxMarkersTextPosition label_position,
 			      gchar * text, gboolean boxed)
 {
+   GtkDataboxMarkersPrivate *priv = GTK_DATABOX_MARKERS_GET_PRIVATE (markers);
    guint len;
 
    g_return_if_fail (GTK_DATABOX_IS_MARKERS (markers));
    len = gtk_databox_xyc_graph_get_length (GTK_DATABOX_XYC_GRAPH (markers));
    g_return_if_fail (index < len);
 
-   markers->priv->markers_info[index].label_position = label_position;
-   if (markers->priv->markers_info[index].text)
-      g_free (markers->priv->markers_info[index].text);
-   markers->priv->markers_info[index].text = g_strdup (text);
-   markers->priv->markers_info[index].boxed = boxed;
+   priv->markers_info[index].label_position = label_position;
+   if (priv->markers_info[index].text)
+      g_free (priv->markers_info[index].text);
+   priv->markers_info[index].text = g_strdup (text);
+   priv->markers_info[index].boxed = boxed;
 
-   if (markers->priv->markers_info[index].label)
+   if (priv->markers_info[index].label)
    {
-      pango_layout_set_text (markers->priv->markers_info[index].label,
-			     markers->priv->markers_info[index].text, -1);
+      pango_layout_set_text (priv->markers_info[index].label,
+			     priv->markers_info[index].text, -1);
    }
 }
