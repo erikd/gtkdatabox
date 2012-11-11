@@ -20,6 +20,9 @@
 
 #include <gtkdatabox_xyyc_graph.h>
 
+G_DEFINE_TYPE(GtkDataboxXYYCGraph, gtk_databox_xyyc_graph,
+	GTK_DATABOX_TYPE_GRAPH)
+
 static gint gtk_databox_xyyc_graph_real_calculate_extrema (GtkDataboxGraph *
 							  xyyc_graph,
 							  gfloat * min_x,
@@ -43,8 +46,6 @@ struct _GtkDataboxXYYCGraphPrivate
    gfloat *Y1;
    gfloat *Y2;
 };
-
-static gpointer parent_class = NULL;
 
 static void
 gtk_databox_xyyc_graph_set_X (GtkDataboxXYYCGraph * xyyc_graph, gfloat * X)
@@ -239,19 +240,15 @@ xyyc_graph_finalize (GObject * object)
    g_free (xyyc_graph->priv);
 
    /* Chain up to the parent class */
-   G_OBJECT_CLASS (parent_class)->finalize (object);
+   G_OBJECT_CLASS (gtk_databox_xyyc_graph_parent_class)->finalize (object);
 }
 
 static void
-gtk_databox_xyyc_graph_class_init (gpointer g_class
-				  /*, gpointer g_class_data */ )
+gtk_databox_xyyc_graph_class_init (GtkDataboxXYYCGraphClass *klass)
 {
-   GObjectClass *gobject_class = G_OBJECT_CLASS (g_class);
-   GtkDataboxGraphClass *graph_class = GTK_DATABOX_GRAPH_CLASS (g_class);
-   GtkDataboxXYYCGraphClass *klass = GTK_DATABOX_XYYC_GRAPH_CLASS (g_class);
+   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+   GtkDataboxGraphClass *graph_class = GTK_DATABOX_GRAPH_CLASS (klass);
    GParamSpec *xyyc_graph_param_spec;
-
-   parent_class = g_type_class_peek_parent (klass);
 
    gobject_class->set_property = gtk_databox_xyyc_graph_set_property;
    gobject_class->get_property = gtk_databox_xyyc_graph_get_property;
@@ -296,38 +293,9 @@ gtk_databox_xyyc_graph_class_init (gpointer g_class
 }
 
 static void
-gtk_databox_xyyc_graph_instance_init (GTypeInstance * instance
-				     /*, gpointer g_class */ )
+gtk_databox_xyyc_graph_init (GtkDataboxXYYCGraph * xyyc_graph)
 {
-   GtkDataboxXYYCGraph *xyyc_graph = GTK_DATABOX_XYYC_GRAPH (instance);
-
    xyyc_graph->priv = g_new0 (GtkDataboxXYYCGraphPrivate, 1);
-}
-
-GType
-gtk_databox_xyyc_graph_get_type (void)
-{
-   static GType type = 0;
-
-   if (type == 0)
-   {
-      static const GTypeInfo info = {
-	 sizeof (GtkDataboxXYYCGraphClass),
-	 NULL,			/* base_init */
-	 NULL,			/* base_finalize */
-	 (GClassInitFunc) gtk_databox_xyyc_graph_class_init,	/* class_init */
-	 NULL,			/* class_finalize */
-	 NULL,			/* class_data */
-	 sizeof (GtkDataboxXYYCGraph),	/* instance_size */
-	 0,			/* n_preallocs */
-	 (GInstanceInitFunc) gtk_databox_xyyc_graph_instance_init,	/* instance_init */
-	 NULL,			/* value_table */
-      };
-      type = g_type_register_static (GTK_DATABOX_TYPE_GRAPH,
-				     "GtkDataboxXYYCGraph", &info, 0);
-   }
-
-   return type;
 }
 
 static gint

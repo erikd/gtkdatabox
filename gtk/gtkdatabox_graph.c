@@ -21,6 +21,9 @@
 #include <gtk/gtkstyle.h>
 #include <gtk/gtkgc.h>
 
+G_DEFINE_TYPE(GtkDataboxGraph, gtk_databox_graph,
+	G_TYPE_OBJECT)
+
 static void gtk_databox_graph_real_draw (GtkDataboxGraph * graph,
     GtkDatabox * draw);
 static gint gtk_databox_graph_real_calculate_extrema (GtkDataboxGraph * graph,
@@ -46,8 +49,6 @@ struct _GtkDataboxGraphPrivate
   gboolean hide;
   GdkGC *gc;
 };
-
-static gpointer parent_class = NULL;
 
 static void
 gtk_databox_graph_set_property (GObject * object,
@@ -198,17 +199,14 @@ graph_finalize (GObject * object)
   g_free (graph->priv);
 
   /* Chain up to the parent class */
-  G_OBJECT_CLASS (parent_class)->finalize (object);
+  G_OBJECT_CLASS (gtk_databox_graph_parent_class)->finalize (object);
 }
 
 static void
-gtk_databox_graph_class_init (gpointer g_class /*, gpointer g_class_data */ )
+gtk_databox_graph_class_init (GtkDataboxGraphClass *klass)
 {
-  GObjectClass *gobject_class = G_OBJECT_CLASS (g_class);
-  GtkDataboxGraphClass *klass = GTK_DATABOX_GRAPH_CLASS (g_class);
+  GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
   GParamSpec *graph_param_spec;
-
-  parent_class = g_type_class_peek_parent (klass);
 
   gobject_class->set_property = gtk_databox_graph_set_property;
   gobject_class->get_property = gtk_databox_graph_get_property;
@@ -240,39 +238,9 @@ gtk_databox_graph_class_init (gpointer g_class /*, gpointer g_class_data */ )
 }
 
 static void
-gtk_databox_graph_instance_init (GTypeInstance * instance
-                                 /*, gpointer g_class */ )
+gtk_databox_graph_init (GtkDataboxGraph *graph)
 {
-  GtkDataboxGraph *graph = GTK_DATABOX_GRAPH (instance);
-
   graph->priv = g_new0 (GtkDataboxGraphPrivate, 1);
-}
-
-GType
-gtk_databox_graph_get_type (void)
-{
-  static GType type = 0;
-
-  if (type == 0)
-    {
-      static const GTypeInfo info =
-      {
-        sizeof (GtkDataboxGraphClass),
-        NULL,			/* base_init */
-        NULL,			/* base_finalize */
-        (GClassInitFunc) gtk_databox_graph_class_init,	/* class_init */
-        NULL,			/* class_finalize */
-        NULL,			/* class_data */
-        sizeof (GtkDataboxGraph),	/* instance_size */
-        0,			/* n_preallocs */
-        (GInstanceInitFunc) gtk_databox_graph_instance_init,	/* instance_init */
-        NULL,			/* value_table */
-      };
-      type = g_type_register_static (G_TYPE_OBJECT,
-                                     "GtkDataboxGraph", &info, 0);
-    }
-
-  return type;
 }
 
 /**

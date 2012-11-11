@@ -19,6 +19,9 @@
 
 #include <gtkdatabox_regions.h>
 
+G_DEFINE_TYPE(GtkDataboxRegions, gtk_databox_regions,
+	GTK_DATABOX_TYPE_XYYC_GRAPH)
+
 static void gtk_databox_regions_real_draw (GtkDataboxGraph * regions,
 					GtkDatabox* box);
 
@@ -26,8 +29,6 @@ struct _GtkDataboxRegionsPrivate
 {
    GdkPoint *data;
 };
-
-static gpointer parent_class = NULL;
 
 static void
 regions_finalize (GObject * object)
@@ -38,17 +39,14 @@ regions_finalize (GObject * object)
    g_free (regions->priv);
 
    /* Chain up to the parent class */
-   G_OBJECT_CLASS (parent_class)->finalize (object);
+   G_OBJECT_CLASS (gtk_databox_regions_parent_class)->finalize (object);
 }
 
 static void
-gtk_databox_regions_class_init (gpointer g_class /*, gpointer g_class_data */ )
+gtk_databox_regions_class_init (GtkDataboxRegionsClass *klass)
 {
-   GObjectClass *gobject_class = G_OBJECT_CLASS (g_class);
-   GtkDataboxGraphClass *graph_class = GTK_DATABOX_GRAPH_CLASS (g_class);
-   GtkDataboxRegionsClass *klass = GTK_DATABOX_REGIONS_CLASS (g_class);
-
-   parent_class = g_type_class_peek_parent (klass);
+   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+   GtkDataboxGraphClass *graph_class = GTK_DATABOX_GRAPH_CLASS (klass);
 
    gobject_class->finalize = regions_finalize;
 
@@ -62,40 +60,12 @@ gtk_databox_regions_complete (GtkDataboxRegions * regions)
 }
 
 static void
-gtk_databox_regions_instance_init (GTypeInstance * instance)
+gtk_databox_regions_init (GtkDataboxRegions *regions)
 {
-   GtkDataboxRegions *regions = GTK_DATABOX_REGIONS (instance);
-
    regions->priv = g_new0 (GtkDataboxRegionsPrivate, 1);
 
    g_signal_connect (regions, "notify::length",
 		     G_CALLBACK (gtk_databox_regions_complete), NULL);
-}
-
-GType
-gtk_databox_regions_get_type (void)
-{
-   static GType type = 0;
-
-   if (type == 0)
-   {
-      static const GTypeInfo info = {
-	 sizeof (GtkDataboxRegionsClass),
-	 NULL,			/* base_init */
-	 NULL,			/* base_finalize */
-	 (GClassInitFunc) gtk_databox_regions_class_init,	/* class_init */
-	 NULL,			/* class_finalize */
-	 NULL,			/* class_data */
-	 sizeof (GtkDataboxRegions),	/* instance_size */
-	 0,			/* n_preallocs */
-	 (GInstanceInitFunc) gtk_databox_regions_instance_init,	/* instance_init */
-	 NULL,			/* value_table */
-      };
-      type = g_type_register_static (GTK_DATABOX_TYPE_XYYC_GRAPH,
-				     "GtkDataboxRegions", &info, (GTypeFlags)0);
-   }
-
-   return type;
 }
 
 /**

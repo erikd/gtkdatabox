@@ -19,6 +19,9 @@
 
 #include <gtkdatabox_grid.h>
 
+G_DEFINE_TYPE(GtkDataboxGrid, gtk_databox_grid,
+	GTK_DATABOX_TYPE_GRAPH)
+
 static void gtk_databox_grid_real_draw (GtkDataboxGraph * grid,
 					GtkDatabox* box);
 static GdkGC* gtk_databox_grid_real_create_gc (GtkDataboxGraph * graph,
@@ -40,8 +43,6 @@ struct _GtkDataboxGridPrivate
    gfloat *hline_vals;
    gfloat *vline_vals;
 };
-
-static gpointer parent_class = NULL;
 
 static void
 gtk_databox_grid_set_property (GObject * object,
@@ -124,7 +125,7 @@ gtk_databox_grid_real_create_gc (GtkDataboxGraph * graph,
 
    g_return_val_if_fail (GTK_DATABOX_IS_GRID (graph), NULL);
 
-   gc = GTK_DATABOX_GRAPH_CLASS (parent_class)->create_gc (graph, box);
+   gc = GTK_DATABOX_GRAPH_CLASS (gtk_databox_grid_parent_class)->create_gc (graph, box);
 
    if (gc)
    {
@@ -147,18 +148,15 @@ grid_finalize (GObject * object)
    g_free (grid->priv);
 
    /* Chain up to the parent class */
-   G_OBJECT_CLASS (parent_class)->finalize (object);
+   G_OBJECT_CLASS (gtk_databox_grid_parent_class)->finalize (object);
 }
 
 static void
-gtk_databox_grid_class_init (gpointer g_class /*, gpointer g_class_data */ )
+gtk_databox_grid_class_init (GtkDataboxGridClass *klass)
 {
-   GObjectClass *gobject_class = G_OBJECT_CLASS (g_class);
-   GtkDataboxGraphClass *graph_class = GTK_DATABOX_GRAPH_CLASS (g_class);
-   GtkDataboxGridClass *klass = GTK_DATABOX_GRID_CLASS (g_class);
+   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+   GtkDataboxGraphClass *graph_class = GTK_DATABOX_GRAPH_CLASS (klass);
    GParamSpec *grid_param_spec;
-
-   parent_class = g_type_class_peek_parent (klass);
 
    gobject_class->set_property = gtk_databox_grid_set_property;
    gobject_class->get_property = gtk_databox_grid_get_property;
@@ -191,38 +189,9 @@ gtk_databox_grid_class_init (gpointer g_class /*, gpointer g_class_data */ )
 }
 
 static void
-gtk_databox_grid_instance_init (GTypeInstance * instance	/*,
-								   gpointer         g_class */ )
+gtk_databox_grid_init (GtkDataboxGrid *grid)
 {
-   GtkDataboxGrid *grid = GTK_DATABOX_GRID (instance);
-
    grid->priv = g_new0 (GtkDataboxGridPrivate, 1);
-}
-
-GType
-gtk_databox_grid_get_type (void)
-{
-   static GType type = 0;
-
-   if (type == 0)
-   {
-      static const GTypeInfo info = {
-	 sizeof (GtkDataboxGridClass),
-	 NULL,			/* base_init */
-	 NULL,			/* base_finalize */
-	 (GClassInitFunc) gtk_databox_grid_class_init,	/* class_init */
-	 NULL,			/* class_finalize */
-	 NULL,			/* class_data */
-	 sizeof (GtkDataboxGrid),	/* instance_size */
-	 0,			/* n_preallocs */
-	 (GInstanceInitFunc) gtk_databox_grid_instance_init,	/* instance_init */
-	 NULL,			/* value_table */
-      };
-      type = g_type_register_static (GTK_DATABOX_TYPE_GRAPH,
-				     "GtkDataboxGrid", &info, 0);
-   }
-
-   return type;
 }
 
 /**

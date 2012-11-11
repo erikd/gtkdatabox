@@ -19,6 +19,9 @@
 
 #include <gtkdatabox_bars.h>
 
+G_DEFINE_TYPE(GtkDataboxBars, gtk_databox_bars,
+	GTK_DATABOX_TYPE_XYC_GRAPH)
+
 static void gtk_databox_bars_real_draw (GtkDataboxGraph * bars,
 					GtkDatabox* box);
 
@@ -26,8 +29,6 @@ struct _GtkDataboxBarsPrivate
 {
    GdkSegment *data;
 };
-
-static gpointer parent_class = NULL;
 
 static void
 bars_finalize (GObject * object)
@@ -38,17 +39,14 @@ bars_finalize (GObject * object)
    g_free (bars->priv);
 
    /* Chain up to the parent class */
-   G_OBJECT_CLASS (parent_class)->finalize (object);
+   G_OBJECT_CLASS (gtk_databox_bars_parent_class)->finalize (object);
 }
 
 static void
-gtk_databox_bars_class_init (gpointer g_class /*, gpointer g_class_data */ )
+gtk_databox_bars_class_init (GtkDataboxBarsClass *klass)
 {
-   GObjectClass *gobject_class = G_OBJECT_CLASS (g_class);
-   GtkDataboxGraphClass *graph_class = GTK_DATABOX_GRAPH_CLASS (g_class);
-   GtkDataboxBarsClass *klass = GTK_DATABOX_BARS_CLASS (g_class);
-
-   parent_class = g_type_class_peek_parent (klass);
+   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+   GtkDataboxGraphClass *graph_class = GTK_DATABOX_GRAPH_CLASS (klass);
 
    gobject_class->finalize = bars_finalize;
 
@@ -66,41 +64,12 @@ gtk_databox_bars_complete (GtkDataboxBars * bars)
 }
 
 static void
-gtk_databox_bars_instance_init (GTypeInstance * instance	/*,
-								   gpointer         g_class */ )
+gtk_databox_bars_init (GtkDataboxBars *bars)
 {
-   GtkDataboxBars *bars = GTK_DATABOX_BARS (instance);
-
    bars->priv = g_new0 (GtkDataboxBarsPrivate, 1);
 
    g_signal_connect (bars, "notify::length",
 		     G_CALLBACK (gtk_databox_bars_complete), NULL);
-}
-
-GType
-gtk_databox_bars_get_type (void)
-{
-   static GType type = 0;
-
-   if (type == 0)
-   {
-      static const GTypeInfo info = {
-	 sizeof (GtkDataboxBarsClass),
-	 NULL,			/* base_init */
-	 NULL,			/* base_finalize */
-	 (GClassInitFunc) gtk_databox_bars_class_init,	/* class_init */
-	 NULL,			/* class_finalize */
-	 NULL,			/* class_data */
-	 sizeof (GtkDataboxBars),	/* instance_size */
-	 0,			/* n_preallocs */
-	 (GInstanceInitFunc) gtk_databox_bars_instance_init,	/* instance_init */
-	 NULL,			/* value_table */
-      };
-      type = g_type_register_static (GTK_DATABOX_TYPE_XYC_GRAPH,
-				     "GtkDataboxBars", &info, 0);
-   }
-
-   return type;
 }
 
 /**

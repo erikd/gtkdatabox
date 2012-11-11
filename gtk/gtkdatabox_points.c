@@ -19,6 +19,9 @@
 
 #include <gtkdatabox_points.h>
 
+G_DEFINE_TYPE(GtkDataboxPoints, gtk_databox_points,
+	GTK_DATABOX_TYPE_XYC_GRAPH)
+
 static void gtk_databox_points_real_draw (GtkDataboxGraph * points,
 					  GtkDatabox * box);
 
@@ -26,8 +29,6 @@ struct _GtkDataboxPointsPrivate
 {
    GdkPoint *data;
 };
-
-static gpointer parent_class = NULL;
 
 static void
 points_finalize (GObject * object)
@@ -38,17 +39,14 @@ points_finalize (GObject * object)
    g_free (points->priv);
 
    /* Chain up to the parent class */
-   G_OBJECT_CLASS (parent_class)->finalize (object);
+   G_OBJECT_CLASS (gtk_databox_points_parent_class)->finalize (object);
 }
 
 static void
-gtk_databox_points_class_init (gpointer g_class /*, gpointer g_class_data */ )
+gtk_databox_points_class_init (GtkDataboxPointsClass *klass)
 {
-   GObjectClass *gobject_class = G_OBJECT_CLASS (g_class);
-   GtkDataboxGraphClass *graph_class = GTK_DATABOX_GRAPH_CLASS (g_class);
-   GtkDataboxPointsClass *klass = GTK_DATABOX_POINTS_CLASS (g_class);
-
-   parent_class = g_type_class_peek_parent (klass);
+   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+   GtkDataboxGraphClass *graph_class = GTK_DATABOX_GRAPH_CLASS (klass);
 
    gobject_class->finalize = points_finalize;
 
@@ -66,41 +64,12 @@ gtk_databox_points_complete (GtkDataboxPoints * points)
 }
 
 static void
-gtk_databox_points_instance_init (GTypeInstance * instance	/*,
-								   gpointer g_class */ )
+gtk_databox_points_init (GtkDataboxPoints *points)
 {
-   GtkDataboxPoints *points = GTK_DATABOX_POINTS (instance);
-
    points->priv = g_new0 (GtkDataboxPointsPrivate, 1);
 
    g_signal_connect (points, "notify::length",
 		     G_CALLBACK (gtk_databox_points_complete), NULL);
-}
-
-GType
-gtk_databox_points_get_type (void)
-{
-   static GType type = 0;
-
-   if (type == 0)
-   {
-      static const GTypeInfo info = {
-	 sizeof (GtkDataboxPointsClass),
-	 NULL,			/* base_init */
-	 NULL,			/* base_finalize */
-	 (GClassInitFunc) gtk_databox_points_class_init,	/* class_init */
-	 NULL,			/* class_finalize */
-	 NULL,			/* class_data */
-	 sizeof (GtkDataboxPoints),	/* instance_size */
-	 0,			/* n_preallocs */
-	 (GInstanceInitFunc) gtk_databox_points_instance_init,	/* instance_init */
-	 NULL,			/* value_table */
-      };
-      type = g_type_register_static (GTK_DATABOX_TYPE_XYC_GRAPH,
-				     "GtkDataboxPoints", &info, 0);
-   }
-
-   return type;
 }
 
 /**

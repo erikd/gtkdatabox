@@ -20,6 +20,9 @@
 #include <gtkdatabox_markers.h>
 #include <pango/pango.h>
 
+G_DEFINE_TYPE(GtkDataboxMarkers, gtk_databox_markers,
+	GTK_DATABOX_TYPE_XYC_GRAPH)
+
 static void gtk_databox_markers_real_draw (GtkDataboxGraph * markers,
 					  GtkDatabox* box);
 static GdkGC* gtk_databox_markers_real_create_gc (GtkDataboxGraph * graph,
@@ -48,8 +51,6 @@ struct _GtkDataboxMarkersPrivate
    GtkDataboxMarkersInfo *markers_info;
    GdkGC *label_gc;
 };
-
-static gpointer parent_class = NULL;
 
 static void
 gtk_databox_markers_set_mtype (GtkDataboxMarkers * markers, gint type)
@@ -131,7 +132,7 @@ markers_finalize (GObject * object)
    g_free (markers->priv);
 
    /* Chain up to the parent class */
-   G_OBJECT_CLASS (parent_class)->finalize (object);
+   G_OBJECT_CLASS (gtk_databox_markers_parent_class)->finalize (object);
 }
 
 static GdkGC *
@@ -144,7 +145,7 @@ gtk_databox_markers_real_create_gc (GtkDataboxGraph * graph,
 
    g_return_val_if_fail (GTK_DATABOX_IS_MARKERS (graph), NULL);
 
-   gc = GTK_DATABOX_GRAPH_CLASS (parent_class)->create_gc (graph, box);
+   gc = GTK_DATABOX_GRAPH_CLASS (gtk_databox_markers_parent_class)->create_gc (graph, box);
 
    if (gc)
    {
@@ -171,14 +172,11 @@ gtk_databox_markers_real_create_gc (GtkDataboxGraph * graph,
 }
 
 static void
-gtk_databox_markers_class_init (gpointer g_class /*, gpointer g_class_data */ )
+gtk_databox_markers_class_init (GtkDataboxMarkersClass *klass)
 {
-   GObjectClass *gobject_class = G_OBJECT_CLASS (g_class);
-   GtkDataboxGraphClass *graph_class = GTK_DATABOX_GRAPH_CLASS (g_class);
-   GtkDataboxMarkersClass *klass = GTK_DATABOX_MARKERS_CLASS (g_class);
+   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+   GtkDataboxGraphClass *graph_class = GTK_DATABOX_GRAPH_CLASS (klass);
    GParamSpec *markers_param_spec;
-
-   parent_class = g_type_class_peek_parent (klass);
 
    gobject_class->set_property = gtk_databox_markers_set_property;
    gobject_class->get_property = gtk_databox_markers_get_property;
@@ -205,40 +203,11 @@ complete (GtkDataboxMarkers * markers)
 }
 
 static void
-gtk_databox_markers_instance_init (GTypeInstance * instance	/*,
-								   gpointer g_class */ )
+gtk_databox_markers_init (GtkDataboxMarkers *markers)
 {
-   GtkDataboxMarkers *markers = GTK_DATABOX_MARKERS (instance);
-
    markers->priv = g_new0 (GtkDataboxMarkersPrivate, 1);
 
    g_signal_connect (markers, "notify::length", G_CALLBACK (complete), NULL);
-}
-
-GType
-gtk_databox_markers_get_type (void)
-{
-   static GType type = 0;
-
-   if (type == 0)
-   {
-      static const GTypeInfo info = {
-	 sizeof (GtkDataboxMarkersClass),
-	 NULL,			/* base_init */
-	 NULL,			/* base_finalize */
-	 (GClassInitFunc) gtk_databox_markers_class_init,	/* class_init */
-	 NULL,			/* class_finalize */
-	 NULL,			/* class_data */
-	 sizeof (GtkDataboxMarkers),	/* instance_size */
-	 0,			/* n_preallocs */
-	 (GInstanceInitFunc) gtk_databox_markers_instance_init,	/* instance_init */
-	 NULL,			/* value_table */
-      };
-      type = g_type_register_static (GTK_DATABOX_TYPE_XYC_GRAPH,
-				     "GtkDataboxMarkers", &info, 0);
-   }
-
-   return type;
 }
 
 /**

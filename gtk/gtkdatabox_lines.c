@@ -19,6 +19,9 @@
 
 #include <gtkdatabox_lines.h>
 
+G_DEFINE_TYPE(GtkDataboxLines, gtk_databox_lines,
+	GTK_DATABOX_TYPE_XYC_GRAPH)
+
 static void gtk_databox_lines_real_draw (GtkDataboxGraph * lines,
 					 GtkDatabox* box);
 
@@ -26,8 +29,6 @@ struct _GtkDataboxLinesPrivate
 {
    GdkPoint *data;
 };
-
-static gpointer parent_class = NULL;
 
 static void
 lines_finalize (GObject * object)
@@ -38,17 +39,14 @@ lines_finalize (GObject * object)
    g_free (lines->priv);
 
    /* Chain up to the parent class */
-   G_OBJECT_CLASS (parent_class)->finalize (object);
+   G_OBJECT_CLASS (gtk_databox_lines_parent_class)->finalize (object);
 }
 
 static void
-gtk_databox_lines_class_init (gpointer g_class /*, gpointer g_class_data */ )
+gtk_databox_lines_class_init (GtkDataboxLinesClass *klass)
 {
-   GObjectClass *gobject_class = G_OBJECT_CLASS (g_class);
-   GtkDataboxGraphClass *graph_class = GTK_DATABOX_GRAPH_CLASS (g_class);
-   GtkDataboxLinesClass *klass = GTK_DATABOX_LINES_CLASS (g_class);
-
-   parent_class = g_type_class_peek_parent (klass);
+   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+   GtkDataboxGraphClass *graph_class = GTK_DATABOX_GRAPH_CLASS (klass);
 
    gobject_class->finalize = lines_finalize;
 
@@ -66,41 +64,12 @@ gtk_databox_lines_complete (GtkDataboxLines * lines)
 }
 
 static void
-gtk_databox_lines_instance_init (GTypeInstance * instance	/*,
-								   gpointer g_class */ )
+gtk_databox_lines_init (GtkDataboxLines *lines)
 {
-   GtkDataboxLines *lines = GTK_DATABOX_LINES (instance);
-
    lines->priv = g_new0 (GtkDataboxLinesPrivate, 1);
 
    g_signal_connect (lines, "notify::length",
 		     G_CALLBACK (gtk_databox_lines_complete), NULL);
-}
-
-GType
-gtk_databox_lines_get_type (void)
-{
-   static GType type = 0;
-
-   if (type == 0)
-   {
-      static const GTypeInfo info = {
-	 sizeof (GtkDataboxLinesClass),
-	 NULL,			/* base_init */
-	 NULL,			/* base_finalize */
-	 (GClassInitFunc) gtk_databox_lines_class_init,	/* class_init */
-	 NULL,			/* class_finalize */
-	 NULL,			/* class_data */
-	 sizeof (GtkDataboxLines),	/* instance_size */
-	 0,			/* n_preallocs */
-	 (GInstanceInitFunc) gtk_databox_lines_instance_init,	/* instance_init */
-	 NULL,			/* value_table */
-      };
-      type = g_type_register_static (GTK_DATABOX_TYPE_XYC_GRAPH,
-				     "GtkDataboxLines", &info, 0);
-   }
-
-   return type;
 }
 
 /**
