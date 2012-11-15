@@ -28,7 +28,7 @@
 
 typedef struct
 {
-   GtkColorSelectionDialog *selector;
+   GtkWidget *selector;
    GtkWidget *box;
    GtkDataboxGraph *graph;
    gint index;
@@ -36,45 +36,38 @@ typedef struct
 col_sel;
 
 static void
-get_color_cb (col_sel * sel /*, GtkWidget *widget */ )
+get_color_cb(GtkDialog *dialog, gint response_id, gpointer user_data)
 {
-   GdkColor color;
+	GdkRGBA rgba;
+	col_sel *sel = (col_sel *)user_data;
 
-   g_return_if_fail (GTK_IS_COLOR_SELECTION_DIALOG (sel->selector));
-   g_return_if_fail (GTK_IS_DATABOX (sel->box));
+	g_return_if_fail (GTK_IS_DATABOX (sel->box));
 
-   gtk_color_selection_get_current_color (GTK_COLOR_SELECTION
-					  (sel->selector->colorsel), &color);
-
-   gtk_databox_graph_set_color (sel->graph, &color);
-   gtk_widget_queue_draw (GTK_WIDGET (sel->box));
+	if (response_id == GTK_RESPONSE_OK)
+	{
+		gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(dialog), &rgba);
+		gtk_databox_graph_set_rgba (sel->graph, &rgba);
+		gtk_widget_queue_draw (GTK_WIDGET (sel->box));
+	}
+	gtk_widget_destroy(GTK_WIDGET(dialog));
 }
 
 static void
 menu_color_change_cb (col_sel * sel)
 {
-   GtkColorSelectionDialog *selector;
+   GtkWidget *selector;
    gchar title[20];
-   GdkColor *color;
+   GdkRGBA rgba;
 
    sprintf (title, "Choose color #%d", sel->index);
-   selector =
-      GTK_COLOR_SELECTION_DIALOG (gtk_color_selection_dialog_new (title));
-   gtk_widget_destroy (selector->help_button);
+   selector = gtk_color_chooser_dialog_new(title, NULL);
    sel->selector = selector;
 
-   color = gtk_databox_graph_get_color (sel->graph);
-   gtk_color_selection_set_current_color (GTK_COLOR_SELECTION
-					  (selector->colorsel), color);
-
-   g_signal_connect_object (G_OBJECT (selector->cancel_button), "clicked",
-			    G_CALLBACK (gtk_widget_destroy),
-			    G_OBJECT (selector), G_CONNECT_SWAPPED);
-   g_signal_connect_swapped (G_OBJECT
-			     (selector->ok_button),
-			     "clicked", G_CALLBACK (get_color_cb),
-			     (gpointer) sel);
-   gtk_widget_show (GTK_WIDGET (selector));
+   rgba = *gtk_databox_graph_get_rgba (sel->graph);
+   gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(sel->selector), &rgba);
+   gtk_color_chooser_set_use_alpha(GTK_COLOR_CHOOSER(sel->selector), FALSE);
+   g_signal_connect(G_OBJECT(sel->selector), "response", G_CALLBACK(get_color_cb), (gpointer)sel);
+   gtk_widget_show (GTK_WIDGET (sel->selector));
 
    return;
 }
@@ -117,8 +110,8 @@ create_colors (void)
    gfloat *X = NULL;
    gfloat *Y = NULL;
    gint i, j;
-   GdkColor color;
    GtkDataboxGraph *graph;
+   GdkColor color;
 
    window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
    gtk_widget_set_size_request (window, 500, 300);

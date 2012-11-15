@@ -41,6 +41,7 @@ struct _GtkDataboxGraphPrivate
   GdkColor color;
   gint size;
   gboolean hide;
+  GdkRGBA rgba;
 };
 
 static gpointer parent_class = NULL;
@@ -312,6 +313,9 @@ gtk_databox_graph_set_color (GtkDataboxGraph * graph, GdkColor * color)
   g_return_if_fail (GTK_DATABOX_IS_GRAPH (graph));
 
   graph->priv->color = *color;
+  graph->priv->rgba.red = color->red / 65535.0;
+  graph->priv->rgba.blue = color->blue / 65535.0;
+  graph->priv->rgba.green = color->green / 65535.0;
 
   g_object_notify (G_OBJECT (graph), "color");
 }
@@ -329,6 +333,42 @@ GdkColor *
 gtk_databox_graph_get_color (GtkDataboxGraph * graph)
 {
   return &graph->priv->color;
+}
+
+/**
+ * gtk_databox_graph_set_rgba:
+ * @graph: A #GtkDataboxGraph object
+ * @rgba: Color which is to be used by the graph object
+ *
+ * Sets the color which the #GtkDataboxGraph object is supposed to be using when drawing itself.
+ *
+ */
+void
+gtk_databox_graph_set_rgba (GtkDataboxGraph * graph, GdkRGBA * rgba)
+{
+  g_return_if_fail (GTK_DATABOX_IS_GRAPH (graph));
+
+  graph->priv->rgba = *rgba;
+  graph->priv->color.red = rgba->red * 65535.0;
+  graph->priv->color.blue = rgba->blue * 65535.0;
+  graph->priv->color.green = rgba->green * 65535.0;
+
+  g_object_notify (G_OBJECT (graph), "color");
+}
+
+/**
+ * gtk_databox_graph_get_rgba:
+ * @graph: A #GtkDataboxGraph object
+ *
+ * Gets the current color of the graph elements (e.g. points).
+ *
+ * Return value: The color of the graph (as GdkRGBA).
+ *
+ */
+GdkRGBA *
+gtk_databox_graph_get_rgba (GtkDataboxGraph * graph)
+{
+  return &graph->priv->rgba;
 }
 
 /**

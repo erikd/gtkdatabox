@@ -105,6 +105,10 @@ G_BEGIN_DECLS
 				     GdkColor * color);
    GdkColor *gtk_databox_graph_get_color (GtkDataboxGraph * graph);
 
+   void gtk_databox_graph_set_rgba (GtkDataboxGraph * graph,
+				     GdkRGBA * rgba);
+   GdkRGBA *gtk_databox_graph_get_rgba (GtkDataboxGraph * graph);
+
    void gtk_databox_graph_set_size (GtkDataboxGraph * graph, gint size);
    gint gtk_databox_graph_get_size (GtkDataboxGraph * graph);
 
