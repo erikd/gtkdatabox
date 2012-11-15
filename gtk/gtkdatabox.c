@@ -87,6 +87,7 @@ enum {
     RULER_Y,
     SCALE_TYPE_X,
     SCALE_TYPE_Y,
+    BOX_SHADOW,
     LAST_PROPERTY
 };
 
@@ -129,6 +130,8 @@ struct _GtkDataboxPrivate {
     /* flags */
     gboolean selection_active;
     gboolean selection_finalized;
+
+    GtkShadowType box_shadow; /* The type of shadow drawn on the pixmap edge */
 };
 
 /**
@@ -279,6 +282,16 @@ gtk_databox_class_init (GtkDataboxClass * class) {
                                              G_PARAM_CONSTRUCT | G_PARAM_READWRITE));
 
 
+    g_object_class_install_property (gobject_class,
+                                     BOX_SHADOW,
+                                     g_param_spec_uint ("box-shadow",
+                                             "Box Shadow",
+                                             "Style of the box shadow: GTK_SHADOW_NONE, GTK_SHADOW_IN, GTK_SHADOW_OUT, GTK_SHADOW_ETCHED_IN, GTK_SHADOW_ETCHED_OUT",
+                                             GTK_SHADOW_NONE,
+                                             GTK_SHADOW_ETCHED_OUT,
+                                             GTK_SHADOW_NONE,
+                                             G_PARAM_READWRITE));
+
     /**
      * GtkDatabox::zoomed:
      * @box: The #GtkDatabox widget which zoomed in or out.
@@ -385,6 +398,8 @@ gtk_databox_class_init (GtkDataboxClass * class) {
     class->selection_changed = NULL;
     class->selection_finalized = NULL;
     class->selection_canceled = NULL;
+
+
 }
 
 static void
@@ -403,6 +418,7 @@ gtk_databox_init (GtkDatabox * box) {
     box->priv->zoom_limit = 0.01;
     box->priv->selection_active = FALSE;
     box->priv->selection_finalized = FALSE;
+    box->priv->box_shadow=GTK_SHADOW_NONE;
 
     gtk_databox_set_adjustment_x (box, NULL);
     gtk_databox_set_adjustment_y (box, NULL);
@@ -518,6 +534,9 @@ gtk_databox_set_property (GObject * object,
     case SCALE_TYPE_Y:
         gtk_databox_set_scale_type_y (box, g_value_get_enum (value));
         break;
+    case BOX_SHADOW:
+        gtk_databox_set_box_shadow (box, (GtkShadowType) g_value_get_uint (value));
+        break;
     default:
         /* We don't have any other property... */
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -555,6 +574,9 @@ gtk_databox_get_property (GObject * object,
         break;
     case SCALE_TYPE_Y:
         g_value_set_enum (value, gtk_databox_get_scale_type_y (box));
+        break;
+    case BOX_SHADOW:
+        g_value_set_uint (value, box->priv->box_shadow);
         break;
     default:
         /* We don't have any other property... */
@@ -858,6 +880,27 @@ gtk_databox_set_scale_type_y (GtkDatabox * box,
 }
 
 /**
+ * gtk_databox_set_box_shadow:
+ * @box: a #GtkDatabox widget.
+ * @which_shadow: How to render the box shadow on the GtkDatabox edges.
+ *
+ * Sets the shadow type when using gtk_paint_box. This will draw the desired edge shadow.
+ **/
+void
+gtk_databox_set_box_shadow(GtkDatabox * box, GtkShadowType which_shadow) {
+    g_return_if_fail (GTK_IS_DATABOX (box));
+    g_return_if_fail (which_shadow>=0);
+    g_return_if_fail (which_shadow<=GTK_SHADOW_ETCHED_OUT);
+
+    if (box->priv->box_shadow!=which_shadow) {
+        box->priv->box_shadow=which_shadow;
+        if (gtk_widget_is_drawable (GTK_WIDGET (box)))
+            gtk_widget_queue_draw (GTK_WIDGET (box));
+    }
+}
+
+
+/**
  * gtk_databox_get_enable_selection
  * @box: A #GtkDatabox widget.
  *
@@ -979,6 +1022,22 @@ gtk_databox_get_scale_type_x (GtkDatabox * box) {
 GtkDataboxScaleType
 gtk_databox_get_scale_type_y (GtkDatabox * box) {
     return box->priv->scale_type_y;
+}
+
+/**
+ * gtk_databox_get_box_shadow:
+ * @box: a #GtkDatabox widget
+ *
+ * Gets the type of shadow being rendered to the @box (GTK_SHADOW_NONE, GTK_SHADOW_IN, GTK_SHADOW_OUT, GTK_SHADOW_ETCHED_IN, GTK_SHADOW_ETCHED_OUT).
+ *
+ * Return value: The currently used shadow type of the @box, -1 on failure.
+ **/
+GtkShadowType
+gtk_databox_get_box_shadow(GtkDatabox * box) {
+
+    g_return_val_if_fail (GTK_IS_DATABOX (box), -1);
+
+    return box->priv->box_shadow;
 }
 
 static void

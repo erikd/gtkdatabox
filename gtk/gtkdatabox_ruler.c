@@ -72,6 +72,7 @@ enum {
     PROP_MAX_LENGTH,
     PROP_ORIENTATION,
     PROP_TEXT_ORIENTATION,
+    PROP_TEXT_ALIGNMENT,
     PROP_DRAW_TICKS,
     PROP_DRAW_SUBTICKS,
     PROP_MANUAL_TICKS,
@@ -105,6 +106,9 @@ struct _GtkDataboxRulerPrivate {
     GtkOrientation orientation;
     /* Orientation of the tick marks on the vertical ruler */
     GtkOrientation text_orientation;
+
+    /* Whether the horizontal text on the vertical ruler is aligned left or right or center */
+    PangoAlignment text_alignment;
 
     /* The maximum height of text on the horizontal ruler */
     gint max_x_text_height;
@@ -216,6 +220,15 @@ static void gtk_databox_ruler_class_init (GtkDataboxRulerClass * class) {
                                              GTK_ORIENTATION_HORIZONTAL,
                                              GTK_ORIENTATION_VERTICAL,
                                              GTK_ORIENTATION_VERTICAL,
+                                             G_PARAM_READWRITE));
+    g_object_class_install_property (gobject_class,
+                                     PROP_TEXT_ALIGNMENT,
+                                     g_param_spec_uint ("text-alignment",
+                                             "Text Alignment",
+                                             "Alignment of the tick mark text (on the vertical ruler when using horizonal text): { PANGO_ALIGN_LEFT, PANGO_ALIGN_CENTER, PANGO_ALIGN_RIGHT}",
+                                             PANGO_ALIGN_LEFT,
+                                             PANGO_ALIGN_RIGHT,
+                                             PANGO_ALIGN_LEFT,
                                              G_PARAM_READWRITE));
     g_object_class_install_property (gobject_class,
                                      PROP_DRAW_TICKS,
@@ -400,6 +413,9 @@ gtk_databox_ruler_set_property (GObject * object,
     case PROP_TEXT_ORIENTATION:
         gtk_databox_ruler_set_text_orientation (ruler, (GtkOrientation) g_value_get_uint (value));
         break;
+    case PROP_TEXT_ALIGNMENT:
+        gtk_databox_ruler_set_text_alignment (ruler, (GtkOrientation) g_value_get_uint (value));
+        break;
     case PROP_DRAW_TICKS:
         gtk_databox_ruler_set_draw_ticks (ruler, (gboolean) g_value_get_boolean (value));
         break;
@@ -460,6 +476,9 @@ gtk_databox_ruler_get_property (GObject * object,
         break;
     case PROP_TEXT_ORIENTATION:
         g_value_set_uint (value, ruler->priv->text_orientation);
+        break;
+    case PROP_TEXT_ALIGNMENT:
+        g_value_set_uint (value, ruler->priv->text_alignment);
         break;
     case PROP_DRAW_TICKS:
         g_value_set_boolean (value, ruler->priv->draw_ticks);
@@ -680,6 +699,49 @@ gtk_databox_ruler_get_text_orientation (GtkDataboxRuler * ruler) {
     g_return_val_if_fail (GTK_DATABOX_IS_RULER (ruler), -1);
 
     return ruler->priv->text_orientation;
+}
+
+/**
+ * gtk_databox_ruler_set_text_alignment:
+ * @ruler: a #GtkDataboxRuler
+ * @alignment: new alignment of the tick label in the vertical ruler when horizontal text is set
+ *
+ * Sets the text alignment of the @ruler (vertical with horizontal text).
+ **/
+void
+gtk_databox_ruler_set_text_alignment (GtkDataboxRuler * ruler,
+                                        PangoAlignment alignment) {
+    GtkWidget *widget;
+    g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
+
+    /* check this is a vertical ruler */
+    if (ruler->priv->orientation != GTK_ORIENTATION_VERTICAL)
+        return;
+
+    if (ruler->priv->text_alignment != alignment) {
+        ruler->priv->text_alignment = alignment;
+        g_object_notify (G_OBJECT (ruler), "text-alignment");
+    }
+
+    if (gtk_widget_is_drawable (GTK_WIDGET (ruler)))
+        gtk_widget_queue_draw (GTK_WIDGET (ruler));
+}
+
+/**
+ * gtk_databox_ruler_get_text_alignment:
+ * @ruler: a #GtkDataboxRuler
+ *
+ * Gets the text alignment of the @ruler (vertical).
+ * Vertical rulers with vertical text do not use this flag
+ *
+ * Return value: Text alignment of the @ruler.
+ **/
+PangoAlignment
+gtk_databox_ruler_get_text_alignment (GtkDataboxRuler * ruler) {
+
+    g_return_val_if_fail (GTK_DATABOX_IS_RULER (ruler), -1);
+
+    return ruler->priv->text_alignment;
 }
 
 /**
@@ -1118,7 +1180,7 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler) {
     gint digit_width;
     gint text_width;
     gint pos;
-    gint y_loc;
+    gint y_loc, x_loc;
     gint subtick_start;
     gchar format_string[FORMAT_LENGTH];
     PangoMatrix matrix = PANGO_MATRIX_INIT;
@@ -1284,7 +1346,7 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler) {
 
             pango_layout_set_text (layout, unit_str, -1);
         }
-        pango_layout_get_pixel_extents (layout, NULL, &logical_rect);
+        pango_layout_get_pixel_extents (layout, &ink_rect, &logical_rect);
 
         /* remember the pixel extents for sizing later. */
         if ((ruler->priv->orientation == GTK_ORIENTATION_VERTICAL) & (ruler->priv->max_y_text_width<logical_rect.width)) {
@@ -1319,12 +1381,17 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler) {
                 y_loc=pos - logical_rect.width*2/3; /* horizontal text y alignment */
             if (ruler->priv->text_orientation == GTK_ORIENTATION_HORIZONTAL & !ruler->priv->draw_ticks) /* if ticks aren't present, draw a little lower */
                 y_loc=pos - logical_rect.width/3;
+            x_loc=xthickness-1;
+            if (ruler->priv->text_orientation == GTK_ORIENTATION_HORIZONTAL & ruler->priv->text_alignment == PANGO_ALIGN_RIGHT) /* set right adjusted text */
+                x_loc=width-ink_rect.width-2;
+            if (ruler->priv->text_orientation == GTK_ORIENTATION_HORIZONTAL & ruler->priv->text_alignment == PANGO_ALIGN_CENTER) /* set centrally adjusted text */
+                x_loc=(width-ink_rect.width)/2-2;
             gtk_paint_layout (widget->style,
                               ruler->priv->backing_pixmap,
                               gtk_widget_get_state (widget),
                               FALSE,
                               NULL,
-                              widget, "ruler", xthickness - 1, y_loc, layout);
+                              widget, "ruler", x_loc, y_loc, layout);
         }
 
         /* Draw sub-ticks */
