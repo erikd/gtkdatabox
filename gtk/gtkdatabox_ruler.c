@@ -73,6 +73,7 @@ enum {
     PROP_ORIENTATION,
     PROP_TEXT_ORIENTATION,
     PROP_TEXT_ALIGNMENT,
+    PROP_TEXT_HOFFSET,
     PROP_DRAW_TICKS,
     PROP_DRAW_SUBTICKS,
     PROP_MANUAL_TICKS,
@@ -109,6 +110,8 @@ struct _GtkDataboxRulerPrivate {
 
     /* Whether the horizontal text on the vertical ruler is aligned left or right or center */
     PangoAlignment text_alignment;
+    /* horizontal tick offset (shift ticks left or right) */
+    gint text_hoffset;
 
     /* The maximum height of text on the horizontal ruler */
     gint max_x_text_height;
@@ -231,6 +234,15 @@ static void gtk_databox_ruler_class_init (GtkDataboxRulerClass * class) {
                                              PANGO_ALIGN_LEFT,
                                              G_PARAM_READWRITE));
     g_object_class_install_property (gobject_class,
+                                     PROP_TEXT_HOFFSET,
+                                     g_param_spec_uint ("text-hoffset",
+                                             "Text Horizonal offset",
+                                             "Move the tick mark text left or right : pixels",
+                                             0,
+                                             20,
+                                             0,
+                                             G_PARAM_READWRITE));
+    g_object_class_install_property (gobject_class,
                                      PROP_DRAW_TICKS,
                                      g_param_spec_uint ("draw-ticks",
                                              "Draw Ticks",
@@ -317,6 +329,7 @@ gtk_databox_ruler_init (GtkDataboxRuler * ruler) {
     ruler->priv->scale_type = GTK_DATABOX_SCALE_LINEAR;
     ruler->priv->orientation = GTK_ORIENTATION_HORIZONTAL;
     ruler->priv->text_orientation = GTK_ORIENTATION_VERTICAL;
+    ruler->priv->text_hoffset=0;
     ruler->priv->max_x_text_height = 0;
     ruler->priv->max_y_text_width = 0;
     ruler->priv->draw_ticks = TRUE;
@@ -416,6 +429,9 @@ gtk_databox_ruler_set_property (GObject * object,
     case PROP_TEXT_ALIGNMENT:
         gtk_databox_ruler_set_text_alignment (ruler, (GtkOrientation) g_value_get_uint (value));
         break;
+    case PROP_TEXT_HOFFSET:
+        gtk_databox_ruler_set_text_hoffset (ruler, (GtkOrientation) g_value_get_uint (value));
+        break;
     case PROP_DRAW_TICKS:
         gtk_databox_ruler_set_draw_ticks (ruler, (gboolean) g_value_get_boolean (value));
         break;
@@ -479,6 +495,9 @@ gtk_databox_ruler_get_property (GObject * object,
         break;
     case PROP_TEXT_ALIGNMENT:
         g_value_set_uint (value, ruler->priv->text_alignment);
+        break;
+    case PROP_TEXT_HOFFSET:
+        g_value_set_uint (value, ruler->priv->text_hoffset);
         break;
     case PROP_DRAW_TICKS:
         g_value_set_boolean (value, ruler->priv->draw_ticks);
@@ -742,6 +761,44 @@ gtk_databox_ruler_get_text_alignment (GtkDataboxRuler * ruler) {
     g_return_val_if_fail (GTK_DATABOX_IS_RULER (ruler), -1);
 
     return ruler->priv->text_alignment;
+}
+
+/**
+ * gtk_databox_ruler_set_text_hoffset:
+ * @ruler: a #GtkDataboxRuler
+ * @offset: new x offset of the tick label in the ruler
+ *
+ * Sets the text x (horizontal) offset of the @ruler.
+ **/
+void
+gtk_databox_ruler_set_text_hoffset (GtkDataboxRuler * ruler,
+                                        gint offset) {
+    GtkWidget *widget;
+    g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
+
+    if (ruler->priv->text_hoffset != offset) {
+        ruler->priv->text_hoffset = offset;
+        g_object_notify (G_OBJECT (ruler), "text-hoffset");
+    }
+
+    if (gtk_widget_is_drawable (GTK_WIDGET (ruler)))
+        gtk_widget_queue_draw (GTK_WIDGET (ruler));
+}
+
+/**
+ * gtk_databox_ruler_get_text_hoffset:
+ * @ruler: a #GtkDataboxRuler
+ *
+ * Gets the text x (horizontal) offset of the @ruler.
+ *
+ * Return value: Text horizontal (x) offset of the @ruler.
+ **/
+gint
+gtk_databox_ruler_get_text_hoffset (GtkDataboxRuler * ruler) {
+
+    g_return_val_if_fail (GTK_DATABOX_IS_RULER (ruler), -1);
+
+    return ruler->priv->text_hoffset;
 }
 
 /**
@@ -1368,7 +1425,7 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler) {
 
         if (ruler->priv->orientation == GTK_ORIENTATION_HORIZONTAL){
             if (!ruler->priv->draw_ticks) /* if ticks aren't present, draw a little lower */
-                pos=pos - logical_rect.width+2;
+                pos=pos - logical_rect.width+2+ruler->priv->text_hoffset;
             gtk_paint_layout (widget->style,
                               ruler->priv->backing_pixmap,
                               gtk_widget_get_state (widget),
@@ -1381,11 +1438,11 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler) {
                 y_loc=pos - logical_rect.width*2/3; /* horizontal text y alignment */
             if (ruler->priv->text_orientation == GTK_ORIENTATION_HORIZONTAL & !ruler->priv->draw_ticks) /* if ticks aren't present, draw a little lower */
                 y_loc=pos - logical_rect.width/3;
-            x_loc=xthickness-1;
+            x_loc=xthickness-1+ruler->priv->text_hoffset;
             if (ruler->priv->text_orientation == GTK_ORIENTATION_HORIZONTAL & ruler->priv->text_alignment == PANGO_ALIGN_RIGHT) /* set right adjusted text */
-                x_loc=width-ink_rect.width-2;
+                x_loc=width-ink_rect.width-2+ruler->priv->text_hoffset; /* shift 2 pixels left to give a better aesthetic */
             if (ruler->priv->text_orientation == GTK_ORIENTATION_HORIZONTAL & ruler->priv->text_alignment == PANGO_ALIGN_CENTER) /* set centrally adjusted text */
-                x_loc=(width-ink_rect.width)/2-2;
+                x_loc=(width-ink_rect.width)/2-2+ruler->priv->text_hoffset;
             gtk_paint_layout (widget->style,
                               ruler->priv->backing_pixmap,
                               gtk_widget_get_state (widget),
