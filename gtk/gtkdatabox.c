@@ -417,11 +417,11 @@ gtk_databox_init (GtkDatabox * box) {
     box->priv->selection_finalized = FALSE;
     box->priv->box_shadow=GTK_SHADOW_NONE;
 
-    gtk_databox_set_total_limits(box, -1., 1., 1., -1.);
-	box->priv->total_left = -1.0;
-	box->priv->total_right = 1.0;
-	box->priv->total_top = 1.0;
-	box->priv->total_bottom = -1.0;
+    /* gtk_databox_set_total_limits(box, -1., 1., 1., -1.); */
+	box->priv->visible_left = box->priv->total_left = -1.0;
+	box->priv->visible_right = box->priv->total_right = 1.0;
+	box->priv->visible_top = box->priv->total_top = 1.0;
+	box->priv->visible_bottom = box->priv->total_bottom = -1.0;
     gtk_databox_set_adjustment_x (box, NULL);
     gtk_databox_set_adjustment_y (box, NULL);
 }
