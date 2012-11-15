@@ -1113,8 +1113,9 @@ gtk_databox_create_backing_surface(GtkDatabox * box) {
           return;
        cairo_surface_destroy (box->priv->backing_surface);
    }
-   width = widget->allocation.width;
-   height = widget->allocation.height;
+
+   box->priv->old_width = width;
+   box->priv->old_height = height;
 
    cr = gdk_cairo_create (gtk_widget_get_window (widget));
 
