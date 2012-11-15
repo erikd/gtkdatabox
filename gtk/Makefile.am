@@ -63,4 +63,4 @@ AM_CFLAGS			=\
 			-DGDK_PIXBUF_DISABLE_DEPRECATED\
 			-DGTK_DISABLE_DEPRECATED\
 			-DGTK_MULTIHEAD_SAFE=1\
-			`pkg-config gtk+-2.0 --cflags`
+			`pkg-config gtk+-3.0 --cflags`

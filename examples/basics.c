@@ -62,20 +62,20 @@ create_basics (void)
    window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
    gtk_widget_set_size_request (window, 500, 500);
 
-   g_signal_connect (GTK_OBJECT (window), "destroy",
+   g_signal_connect (G_OBJECT (window), "destroy",
 		     G_CALLBACK (gtk_main_quit), NULL);
 
    gtk_window_set_title (GTK_WINDOW (window), "GtkDatabox: Basics");
    gtk_container_set_border_width (GTK_CONTAINER (window), 0);
 
-   vbox = gtk_vbox_new (FALSE, 0);
+   vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
    gtk_container_add (GTK_CONTAINER (window), vbox);
 
    label =
       gtk_label_new
       ("\nThe code for this example demonstrates\n the simplet way to use a GtkDatabox widget.\n\nUsage:\nDraw a selection with the left button pressed,\nThan click into the selection.\nUse the right mouse button to zoom out.\nShift+ right mouse button zooms to default.\n\nMouse scroll-wheel: \n*Holding Ctrl+ scrollwheel zooms in/out. \nScroll-wheel moves up/down. \n*Holding Alt+ scroll-wheel moves left/right in the plot.");
    gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 0);
-   separator = gtk_hseparator_new ();
+   separator = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
    gtk_box_pack_start (GTK_BOX (vbox), separator, FALSE, FALSE, 0);
 
    /* -----------------------------------------------------------------
@@ -106,19 +106,19 @@ create_basics (void)
     * -----------------------------------------------------------------
     */
 
-   separator = gtk_hseparator_new ();
+   separator = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
    gtk_box_pack_start (GTK_BOX (vbox), separator, FALSE, TRUE, 0);
 
    close_button = gtk_button_new_with_label ("close");
-   g_signal_connect_swapped (GTK_OBJECT (close_button), "clicked",
-			     G_CALLBACK (gtk_main_quit), GTK_OBJECT (box));
+   g_signal_connect_swapped (G_OBJECT (close_button), "clicked",
+			     G_CALLBACK (gtk_main_quit), G_OBJECT (box));
    gtk_box_pack_start (GTK_BOX (vbox), close_button, FALSE, FALSE, 0);
-   gtk_widget_set_can_default(close_button, GTK_CAN_DEFAULT);
+   gtk_widget_set_can_default(close_button, TRUE);
    gtk_widget_grab_default (close_button);
    gtk_widget_grab_focus (close_button);
 
    gtk_widget_show_all (window);
-   gdk_window_set_cursor (box->window, gdk_cursor_new (GDK_CROSS));
+   gdk_window_set_cursor (gtk_widget_get_window(box), gdk_cursor_new (GDK_CROSS));
 }
 
 gint

@@ -19,11 +19,8 @@
 
 #include <gtkdatabox.h>
 #include <gtkdatabox_marshal.h>
-#include <gtk/gtkhscrollbar.h>
-#include <gtk/gtkvscrollbar.h>
 #include <gtkdatabox_ruler.h>
-#include <gtk/gtktable.h>
-#include <gtk/gtkgc.h>
+#include <gtk/gtk.h>
 #include <math.h>
 
 
@@ -39,8 +36,8 @@ static void gtk_databox_realize (GtkWidget * widget);
 static void gtk_databox_unrealize (GtkWidget * widget);
 static void gtk_databox_size_allocate (GtkWidget * widget,
                                        GtkAllocation * allocation);
-static gint gtk_databox_expose (GtkWidget * widget,
-                                GdkEventExpose * event);
+static gint gtk_databox_draw (GtkWidget * widget,
+                                cairo_t * cr);
 static void gtk_databox_set_property (GObject * object,
                                       guint prop_id,
                                       const GValue * value,
@@ -158,7 +155,7 @@ gtk_databox_class_init (GtkDataboxClass * class) {
     widget_class->realize = gtk_databox_realize;
     widget_class->unrealize = gtk_databox_unrealize;
     widget_class->size_allocate = gtk_databox_size_allocate;
-    widget_class->expose_event = gtk_databox_expose;
+    widget_class->draw = gtk_databox_draw;
     widget_class->motion_notify_event = gtk_databox_motion_notify;
     widget_class->button_press_event = gtk_databox_button_press;
     widget_class->button_release_event = gtk_databox_button_release;
@@ -420,9 +417,13 @@ gtk_databox_init (GtkDatabox * box) {
     box->priv->selection_finalized = FALSE;
     box->priv->box_shadow=GTK_SHADOW_NONE;
 
-    gtk_databox_set_adjustment_x (box, NULL);
-    gtk_databox_set_adjustment_y (box, NULL);
-    gtk_databox_set_total_limits(box, -1., 1., 1., -1.);
+    /*gtk_databox_set_adjustment_x (box, NULL); */
+    /*gtk_databox_set_adjustment_y (box, NULL); */
+    /*gtk_databox_set_total_limits(box, -1., 1., 1., -1.); */
+	box->priv->total_left = -1.0;
+	box->priv->total_right = 1.0;
+	box->priv->total_top = 1.0;
+	box->priv->total_bottom = -1.0;
 }
 
 /**
@@ -448,7 +449,7 @@ gtk_databox_motion_notify (GtkWidget * widget, GdkEventMotion * event) {
     box = GTK_DATABOX (widget);
 
     if (event->is_hint) {
-        gdk_window_get_pointer (widget->window, &x, &y, &state);
+        gdk_window_get_device_position (gtk_widget_get_window(widget), event->device, &x, &y, &state);
     } else {
         state = event->state;
         x = event->x;
@@ -461,8 +462,8 @@ gtk_databox_motion_notify (GtkWidget * widget, GdkEventMotion * event) {
         gint width;
         gint height;
 
-        width = gdk_window_get_width(widget->window);
-        height = gdk_window_get_height(widget->window);
+        width = gdk_window_get_width(gtk_widget_get_window(widget));
+        height = gdk_window_get_height(gtk_widget_get_window(widget));
         x = MAX (0, MIN (width - 1, x));
         y = MAX (0, MIN (height - 1, y));
 
@@ -591,34 +592,35 @@ gtk_databox_realize (GtkWidget * widget) {
     GtkDatabox *box;
     GdkWindowAttr attributes;
     gint attributes_mask;
-
+	GtkAllocation allocation;
+	GtkStyleContext *stylecontext;
 
     box = GTK_DATABOX (widget);
-    gtk_widget_set_realized(widget, GTK_REALIZED);
+    gtk_widget_set_realized(widget, TRUE);
+	gtk_widget_get_allocation(widget, &allocation);
 
     attributes.window_type = GDK_WINDOW_CHILD;
-    attributes.x = widget->allocation.x;
-    attributes.y = widget->allocation.y;
-    attributes.width = widget->allocation.width;
-    attributes.height = widget->allocation.height;
+    attributes.x = allocation.x;
+    attributes.y = allocation.y;
+    attributes.width = allocation.width;
+    attributes.height = allocation.height;
     attributes.wclass = GDK_INPUT_OUTPUT;
     attributes.visual = gtk_widget_get_visual (widget);
-    attributes.colormap = gtk_widget_get_colormap (widget);
     attributes.event_mask = gtk_widget_get_events (widget);
     attributes.event_mask |= (GDK_EXPOSURE_MASK |
                               GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK |
                               GDK_POINTER_MOTION_MASK |
                               GDK_POINTER_MOTION_HINT_MASK);
 
-    attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL | GDK_WA_COLORMAP;
+    attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL;
 
-    widget->window =
+    gtk_widget_set_window(widget,
         gdk_window_new (gtk_widget_get_parent_window (widget), &attributes,
-                        attributes_mask);
-    gdk_window_set_user_data (widget->window, box);
+                        attributes_mask));
+    gdk_window_set_user_data (gtk_widget_get_window(widget), box);
 
-    widget->style = gtk_style_attach (widget->style, widget->window);
-    gtk_style_set_background (widget->style, widget->window, GTK_STATE_NORMAL);
+	stylecontext = gtk_widget_get_style_context(widget);
+	gtk_style_context_set_background(stylecontext, gtk_widget_get_window(widget));
 
     gtk_databox_create_backing_surface (box);
 }
@@ -693,10 +695,16 @@ gtk_databox_set_enable_zoom (GtkDatabox * box, gboolean enable) {
  */
 void
 gtk_databox_set_adjustment_x (GtkDatabox * box, GtkAdjustment * adj) {
-    if (!adj)
-        adj = GTK_ADJUSTMENT(gtk_adjustment_new (0, 0, 0, 0, 0, 0));
+	gdouble page_size_x;
 
     g_return_if_fail (GTK_IS_DATABOX (box));
+
+    if (!adj)
+	{
+        /* adj = GTK_ADJUSTMENT(gtk_adjustment_new (0, 0, 0, 0, 0, 0)); */
+		return;
+	}
+
     g_return_if_fail (GTK_IS_ADJUSTMENT (adj));
 
     if (box->priv->adj_x) {
@@ -710,14 +718,21 @@ gtk_databox_set_adjustment_x (GtkDatabox * box, GtkAdjustment * adj) {
     g_object_ref (box->priv->adj_x);
 
     /* We always scroll from 0 to 1.0 */
-    box->priv->adj_x->lower = 0;
-    box->priv->adj_x->value = gtk_databox_get_offset_x (box);
-    box->priv->adj_x->upper = 1.0;
-    box->priv->adj_x->page_size = gtk_databox_get_page_size_x (box);
-    box->priv->adj_x->step_increment = box->priv->adj_x->page_size / 20;
-    box->priv->adj_x->page_increment = box->priv->adj_x->page_size * 0.9;
-
-    gtk_adjustment_changed (box->priv->adj_x);
+	if (box->priv->total_left != box->priv->total_right)
+	{
+		page_size_x = gtk_databox_get_page_size_x(box);
+		gtk_adjustment_configure(box->priv->adj_x,
+			gtk_databox_get_offset_x (box), /* value */
+			0.0, /* lower */
+			1.0, /* upper */
+			page_size_x / 20, /* step_increment */
+			page_size_x * 0.9, /* page_increment */
+			page_size_x); /* page_size */
+	}
+	else
+	{
+		g_warning("page_size_x = NaN\n");
+	}
 
     g_signal_connect_swapped (G_OBJECT (box->priv->adj_x), "value_changed",
                               G_CALLBACK
@@ -737,11 +752,18 @@ gtk_databox_set_adjustment_x (GtkDatabox * box, GtkAdjustment * adj) {
  */
 void
 gtk_databox_set_adjustment_y (GtkDatabox * box, GtkAdjustment * adj) {
-    if (!adj)
-        adj = GTK_ADJUSTMENT(gtk_adjustment_new (0, 0, 0, 0, 0, 0));
+	gdouble page_size_y;
 
     g_return_if_fail (GTK_IS_DATABOX (box));
+
+    if (!adj)
+	{
+        /* adj = GTK_ADJUSTMENT(gtk_adjustment_new (0, 0, 0, 0, 0, 0)); */
+		return;
+	}
+
     g_return_if_fail (GTK_IS_ADJUSTMENT (adj));
+    g_return_if_fail (box->priv->adj_y == NULL);
 
     if (box->priv->adj_y) {
         /* @@@ Do we need to disconnect from the signals here? */
@@ -754,14 +776,21 @@ gtk_databox_set_adjustment_y (GtkDatabox * box, GtkAdjustment * adj) {
     g_object_ref (box->priv->adj_y);
 
     /* We always scroll from 0 to 1.0 */
-    box->priv->adj_y->lower = 0;
-    box->priv->adj_y->value = gtk_databox_get_offset_y (box);
-    box->priv->adj_y->upper = 1.0;
-    box->priv->adj_y->page_size = gtk_databox_get_page_size_y (box);
-    box->priv->adj_y->step_increment = box->priv->adj_y->page_size / 20;
-    box->priv->adj_y->page_increment = box->priv->adj_y->page_size * 0.9;
-
-    gtk_adjustment_changed (box->priv->adj_y);
+	if (box->priv->total_top != box->priv->total_bottom)
+	{
+		page_size_y = gtk_databox_get_page_size_y(box);
+		gtk_adjustment_configure(box->priv->adj_y,
+			gtk_databox_get_offset_y (box), /* value */
+			0.0, /* lower */
+			1.0, /* upper */
+			page_size_y / 20, /* step_increment */
+			page_size_y * 0.9, /* page_increment */
+			page_size_y); /* page_size */
+	}
+	else
+	{
+		g_warning("page_size_y = NaN\n");
+	}
 
     g_signal_connect_swapped (G_OBJECT (box->priv->adj_y), "value_changed",
                               G_CALLBACK
@@ -1044,31 +1073,33 @@ static void
 gtk_databox_calculate_translation_factors (GtkDatabox * box) {
     /* @@@ Check for all external functions, if type checks are implemented! */
     GtkWidget *widget = GTK_WIDGET(box);
+	GtkAllocation allocation;
 
+	gtk_widget_get_allocation(widget, &allocation);
     if (box->priv->scale_type_x == GTK_DATABOX_SCALE_LINEAR)
         box->priv->translation_factor_x =
-            widget->allocation.width / (box->priv->visible_right -
+            allocation.width / (box->priv->visible_right -
                                         box->priv->visible_left);
     else if (box->priv->scale_type_x == GTK_DATABOX_SCALE_LOG2)
         box->priv->translation_factor_x =
-            widget->allocation.width / log2 (box->priv->visible_right /
+            allocation.width / log2 (box->priv->visible_right /
                                              box->priv->visible_left);
     else
         box->priv->translation_factor_x =
-            widget->allocation.width / log10 (box->priv->visible_right /
+            allocation.width / log10 (box->priv->visible_right /
                                               box->priv->visible_left);
 
     if (box->priv->scale_type_y == GTK_DATABOX_SCALE_LINEAR)
         box->priv->translation_factor_y =
-            widget->allocation.height / (box->priv->visible_bottom -
+            allocation.height / (box->priv->visible_bottom -
                                          box->priv->visible_top);
     else if (box->priv->scale_type_y == GTK_DATABOX_SCALE_LOG2)
         box->priv->translation_factor_y =
-            widget->allocation.height / log2 (box->priv->visible_bottom /
+            allocation.height / log2 (box->priv->visible_bottom /
                                               box->priv->visible_top);
     else
         box->priv->translation_factor_y =
-            widget->allocation.height / log10 (box->priv->visible_bottom /
+            allocation.height / log10 (box->priv->visible_bottom /
                                                box->priv->visible_top);
 }
 
@@ -1078,17 +1109,16 @@ gtk_databox_create_backing_surface(GtkDatabox * box) {
 	cairo_t *cr;
     gint width;
     gint height;
+    GtkAllocation allocation;
 
     widget = GTK_WIDGET (box);
+    gtk_widget_get_allocation(widget, &allocation);
+    width = allocation.width;
+    height = allocation.height;
     if (box->priv->backing_surface) {
-       width = box->priv->old_width;
-       height = box->priv->old_height;
-       if ((width == widget->allocation.width) &&
-          (height == widget->allocation.height))
+       if ((width == box->priv->old_width) &&
+          (height == box->priv->old_height))
           return;
-       box->priv->old_width = widget->allocation.width;
-       box->priv->old_height = widget->allocation.height;
-
        cairo_surface_destroy (box->priv->backing_surface);
    }
    width = widget->allocation.width;
@@ -1108,12 +1138,12 @@ gtk_databox_create_backing_surface(GtkDatabox * box) {
  * gtk_databox_get_backing_surface:
  * @box: A #GtkDatabox widget
  *
- * This function returns the pixmap which is used by @box and its #GtkDataboxGraph objects
+ * This function returns the surface which is used by @box and its #GtkDataboxGraph objects
  * for drawing operations before copying the result to the screen.
  *
  * The function is typically called by the #GtkDataboxGraph objects.
  *
- * Return value: Backing pixmap
+ * Return value: Backing surface
  */
 cairo_surface_t *
 gtk_databox_get_backing_surface(GtkDatabox * box) {
@@ -1126,12 +1156,14 @@ static void
 gtk_databox_size_allocate (GtkWidget * widget, GtkAllocation * allocation) {
     GtkDatabox *box = GTK_DATABOX (widget);
 
-    widget->allocation = *allocation;
+    gtk_widget_set_allocation(widget, allocation);
 
-        gdk_window_move_resize (widget->window,
+	if (gtk_widget_get_window(widget))	/* don't move_resize an unrealized window */
+	{
+		gdk_window_move_resize (gtk_widget_get_window(widget),
                                 allocation->x, allocation->y,
                                 allocation->width, allocation->height);
-
+	}
 
     if (box->priv->selection_active) {
         gtk_databox_selection_cancel (box);
@@ -1141,17 +1173,20 @@ gtk_databox_size_allocate (GtkWidget * widget, GtkAllocation * allocation) {
 }
 
 static gint
-gtk_databox_expose (GtkWidget * widget, GdkEventExpose * event) {
+gtk_databox_draw (GtkWidget * widget, cairo_t * cr) {
     GtkDatabox *box = GTK_DATABOX (widget);
     GList *list;
-    cairo_t *cr;
+    cairo_t *cr2;
+    GtkStyleContext *stylecontext = gtk_widget_get_style_context(widget);
+    GdkRGBA bg_color;
 
-   gtk_databox_create_backing_surface (box);
+    gtk_databox_create_backing_surface (box);
 
-    cr = cairo_create(box->priv->backing_surface);
-    gdk_cairo_set_source_color (cr, &widget->style->bg[0]);
-    cairo_paint(cr);
-    cairo_destroy(cr);
+    cr2 = cairo_create(box->priv->backing_surface);
+    gtk_style_context_get_background_color(stylecontext, GTK_STATE_FLAG_NORMAL, &bg_color);
+    gdk_cairo_set_source_rgba (cr2, &bg_color);
+    cairo_paint(cr2);
+    cairo_destroy(cr2);
 
     list = g_list_last (box->priv->graphs);
     while (list) {
@@ -1163,15 +1198,9 @@ gtk_databox_expose (GtkWidget * widget, GdkEventExpose * event) {
     if (box->priv->selection_active)
         gtk_databox_draw_selection (box, TRUE);
 
-    cr = gdk_cairo_create(gtk_widget_get_window(widget));
-
-    gdk_cairo_rectangle(cr, &event->area);
-    cairo_clip(cr);
-
     cairo_set_source_surface (cr, box->priv->backing_surface, 0, 0);
     cairo_paint(cr);
     gtk_databox_draw_selection (box, FALSE);
-    cairo_destroy(cr);
 
     return FALSE;
 }
@@ -1249,8 +1278,8 @@ gtk_databox_scroll_event (GtkWidget *widget, GdkEventScroll *event) {
         if (event->direction == GDK_SCROLL_DOWN) {
             gtk_databox_zoom_out(box);
         } else if (event->direction == GDK_SCROLL_UP &&
-                   box->priv->adj_x->page_size / 2 >= box->priv->zoom_limit &&
-                   box->priv->adj_y->page_size / 2 >= box->priv->zoom_limit) {
+                   (gtk_adjustment_get_page_size(box->priv->adj_x) / 2) >= box->priv->zoom_limit &&
+                   (gtk_adjustment_get_page_size(box->priv->adj_y) / 2) >= box->priv->zoom_limit) {
             gdouble       x_val, y_val;
             gdouble       x_proportion, y_proportion;
 
@@ -1273,20 +1302,24 @@ gtk_databox_scroll_event (GtkWidget *widget, GdkEventScroll *event) {
                                log(box->priv->total_bottom / box->priv->total_top);
             }
 
-            box->priv->adj_x->page_size = box->priv->adj_x->page_size/2;
-            box->priv->adj_x->value = (x_proportion +
-                                       box->priv->adj_x->value) / 2;
+			g_object_freeze_notify(G_OBJECT(box->priv->adj_x));
+            gtk_adjustment_set_page_size(box->priv->adj_x, gtk_adjustment_get_page_size(box->priv->adj_x) / 2);
+            gtk_adjustment_set_value(box->priv->adj_x, (x_proportion +
+                                       gtk_adjustment_get_value(box->priv->adj_x)) / 2);
+			g_object_thaw_notify(G_OBJECT(box->priv->adj_x));
 
-            box->priv->adj_y->page_size = box->priv->adj_y->page_size/2;
-            box->priv->adj_y->value = (y_proportion +
-                                       box->priv->adj_y->value) / 2;
+			g_object_freeze_notify(G_OBJECT(box->priv->adj_y));
+            gtk_adjustment_set_page_size(box->priv->adj_y, gtk_adjustment_get_page_size(box->priv->adj_y) / 2);
+            gtk_adjustment_set_value(box->priv->adj_y, (y_proportion +
+                                       gtk_adjustment_get_value(box->priv->adj_y)) / 2);
+			g_object_thaw_notify(G_OBJECT(box->priv->adj_y));
 
             gtk_databox_calculate_visible_limits(box);
             gtk_databox_zoomed (box);
         }
     } else {
         GtkAdjustment *adj;
-        gdouble delta, new_value;
+        gdouble delta = 0.0, new_value;
 
         if ((event->direction == GDK_SCROLL_UP ||
                 event->direction == GDK_SCROLL_DOWN) &&
@@ -1299,16 +1332,16 @@ gtk_databox_scroll_event (GtkWidget *widget, GdkEventScroll *event) {
         switch (event->direction) {
         case GDK_SCROLL_UP:
         case GDK_SCROLL_LEFT:
-            delta = - adj->step_increment;
+            delta = 0 - gtk_adjustment_get_step_increment(adj);
             break;
         case GDK_SCROLL_DOWN:
         case GDK_SCROLL_RIGHT:
-            delta = adj->step_increment;
+            delta = gtk_adjustment_get_step_increment(adj);
             break;
         }
 
-        new_value = CLAMP (adj->value + delta, adj->lower,
-                           adj->upper - adj->page_size);
+        new_value = CLAMP (gtk_adjustment_get_value(adj) + delta, gtk_adjustment_get_lower(adj),
+                           gtk_adjustment_get_upper(adj) - gtk_adjustment_get_page_size(adj));
         gtk_adjustment_set_value(adj, new_value);
     }
 
@@ -1366,53 +1399,67 @@ gtk_databox_zoomed (GtkDatabox * box) {
 void
 gtk_databox_zoom_to_selection (GtkDatabox * box) {
     GtkWidget *widget;
+	GtkAllocation allocation;
+	gdouble temp_value, temp_page_size;
 
     g_return_if_fail(GTK_IS_DATABOX(box));
 
     widget = GTK_WIDGET (box);
+	gtk_widget_get_allocation(widget, &allocation);
 
     if (!box->priv->enable_zoom) {
         gtk_databox_selection_cancel (box);
         return;
     }
 
-    box->priv->adj_x->value += (gfloat) (MIN (box->priv->marked.x,
-                                         box->priv->select.x))
-                               * box->priv->adj_x->page_size
-                               / widget->allocation.width;
-    box->priv->adj_y->value += (gfloat) (MIN (box->priv->marked.y,
-                                         box->priv->select.y))
-                               * box->priv->adj_y->page_size
-                               / widget->allocation.height;
+	g_object_freeze_notify(G_OBJECT(box->priv->adj_x));
+	g_object_freeze_notify(G_OBJECT(box->priv->adj_y));
+	temp_value = gtk_adjustment_get_value(box->priv->adj_x);
+    temp_value += (gdouble) (MIN (box->priv->marked.x, box->priv->select.x))
+                               * gtk_adjustment_get_page_size(box->priv->adj_x)
+                               / allocation.width;
+	gtk_adjustment_set_value(box->priv->adj_x, temp_value);
 
-    box->priv->adj_x->page_size *=
-        (gfloat) (ABS (box->priv->marked.x - box->priv->select.x) + 1)
-        / widget->allocation.width;
+	temp_value = gtk_adjustment_get_value(box->priv->adj_y);
+    temp_value += (gdouble) (MIN (box->priv->marked.y, box->priv->select.y))
+                               * gtk_adjustment_get_page_size(box->priv->adj_y)
+                               / allocation.height;
+	gtk_adjustment_set_value(box->priv->adj_y, temp_value);
 
-    box->priv->adj_y->page_size *=
+	temp_page_size = gtk_adjustment_get_page_size(box->priv->adj_x);
+    temp_page_size *=
+        (gdouble) (ABS (box->priv->marked.x - box->priv->select.x) + 1)
+        / allocation.width;
+	gtk_adjustment_set_page_size(box->priv->adj_x, temp_page_size);
+
+	temp_page_size = gtk_adjustment_get_page_size(box->priv->adj_y);
+    temp_page_size *=
         (gfloat) (ABS (box->priv->marked.y - box->priv->select.y) + 1)
-        / widget->allocation.height;
+        / allocation.height;
+	gtk_adjustment_set_page_size(box->priv->adj_y, temp_page_size);
 
     /* If we zoom too far into the data, we will get funny results, because
      * of overflow effects. Therefore zooming is limited to box->zoom_limit.
      */
-    if (box->priv->adj_x->page_size < box->priv->zoom_limit) {
-        box->priv->adj_x->value = (gfloat) MAX (0,
-                                                box->priv->adj_x->value
-                                                - (box->priv->zoom_limit -
-                                                        box->priv->adj_x->page_size) /
-                                                2.0);
-        box->priv->adj_x->page_size = box->priv->zoom_limit;
+    if (gtk_adjustment_get_page_size(box->priv->adj_x) < box->priv->zoom_limit) {
+        temp_value = (gfloat) MAX (0, gtk_adjustment_get_value(box->priv->adj_x)
+							- (box->priv->zoom_limit -
+							gtk_adjustment_get_page_size(box->priv->adj_x)) /
+							2.0);
+		gtk_adjustment_set_value(box->priv->adj_x, temp_value);
+		gtk_adjustment_set_page_size(box->priv->adj_x, box->priv->zoom_limit);
     }
 
-    if (box->priv->adj_y->page_size < box->priv->zoom_limit) {
-        box->priv->adj_y->value = (gfloat) MAX (0,
-                                                box->priv->adj_y->value
-                                                - (box->priv->zoom_limit -
-                                                        box->priv->adj_y->page_size) /
-                                                2.0);
-        box->priv->adj_y->page_size = box->priv->zoom_limit;
+    if (gtk_adjustment_get_page_size(box->priv->adj_y) < box->priv->zoom_limit) {
+        temp_value = (gfloat) MAX (0, gtk_adjustment_get_value(box->priv->adj_y)
+							- (box->priv->zoom_limit -
+							gtk_adjustment_get_page_size(box->priv->adj_y)) /
+							2.0);
+		gtk_adjustment_set_value(box->priv->adj_y, temp_value);
+		gtk_adjustment_set_page_size(box->priv->adj_y, box->priv->zoom_limit);
     }
+	g_object_thaw_notify(G_OBJECT(box->priv->adj_y));
+	g_object_thaw_notify(G_OBJECT(box->priv->adj_x));
 
     gtk_databox_calculate_visible_limits(box);
     gtk_databox_zoomed (box);
@@ -1436,18 +1483,22 @@ gtk_databox_zoom_out (GtkDatabox * box) {
         return;
     }
 
-    box->priv->adj_x->page_size = MIN (1.0, box->priv->adj_x->page_size * 2);
-    box->priv->adj_y->page_size = MIN (1.0, box->priv->adj_y->page_size * 2);
-    box->priv->adj_x->value =
-        (box->priv->adj_x->page_size == 1.0)
+	g_object_freeze_notify(G_OBJECT(box->priv->adj_x));
+	g_object_freeze_notify(G_OBJECT(box->priv->adj_y));
+    gtk_adjustment_set_page_size(box->priv->adj_x, MIN (1.0, gtk_adjustment_get_page_size(box->priv->adj_x) * 2));
+    gtk_adjustment_set_page_size(box->priv->adj_y, MIN (1.0, gtk_adjustment_get_page_size(box->priv->adj_y) * 2));
+    gtk_adjustment_set_value(box->priv->adj_x,
+        (gtk_adjustment_get_page_size(box->priv->adj_x) == 1.0)
         ? 0
-        : MAX (0, MIN (box->priv->adj_x->value - box->priv->adj_x->page_size / 4,
-                       1.0 - box->priv->adj_x->page_size));
-    box->priv->adj_y->value =
-        (box->priv->adj_y->page_size == 1.0)
+        : MAX (0, MIN (gtk_adjustment_get_value(box->priv->adj_x) - gtk_adjustment_get_page_size(box->priv->adj_x) / 4,
+                       1.0 - gtk_adjustment_get_page_size(box->priv->adj_x))));
+    gtk_adjustment_set_value(box->priv->adj_y,
+        (gtk_adjustment_get_page_size(box->priv->adj_y) == 1.0)
         ? 0
-        : MAX (0, MIN (box->priv->adj_y->value - box->priv->adj_y->page_size / 4,
-                       1.0 - box->priv->adj_y->page_size));
+        : MAX (0, MIN (gtk_adjustment_get_value(box->priv->adj_y) - gtk_adjustment_get_page_size(box->priv->adj_y) / 4,
+                       1.0 - gtk_adjustment_get_page_size(box->priv->adj_y))));
+	g_object_thaw_notify(G_OBJECT(box->priv->adj_y));
+	g_object_thaw_notify(G_OBJECT(box->priv->adj_x));
 
     gtk_databox_calculate_visible_limits(box);
     gtk_databox_zoomed (box);
@@ -1773,10 +1824,16 @@ gtk_databox_set_visible_limits (GtkDatabox * box,
 
     gtk_databox_calculate_translation_factors (box);
 
-    box->priv->adj_x->value = gtk_databox_get_offset_x (box);
-    box->priv->adj_x->page_size = gtk_databox_get_page_size_x (box);
-    box->priv->adj_y->value = gtk_databox_get_offset_y (box);
-    box->priv->adj_y->page_size = gtk_databox_get_page_size_y (box);
+	g_object_freeze_notify(G_OBJECT(box->priv->adj_x));
+	g_object_freeze_notify(G_OBJECT(box->priv->adj_y));
+
+    gtk_adjustment_set_value(box->priv->adj_x, gtk_databox_get_offset_x (box));
+    gtk_adjustment_set_page_size(box->priv->adj_x, gtk_databox_get_page_size_x (box));
+    gtk_adjustment_set_value(box->priv->adj_y, gtk_databox_get_offset_y (box));
+    gtk_adjustment_set_page_size(box->priv->adj_y, gtk_databox_get_page_size_y (box));
+
+	g_object_thaw_notify(G_OBJECT(box->priv->adj_y));
+	g_object_thaw_notify(G_OBJECT(box->priv->adj_x));
 
     /* Update rulers */
     gtk_databox_ruler_update(box);
@@ -1802,40 +1859,40 @@ gtk_databox_calculate_visible_limits (GtkDatabox * box) {
         box->priv->visible_left =
             box->priv->total_left
             + (box->priv->total_right - box->priv->total_left)
-            * box->priv->adj_x->value;
+            * gtk_adjustment_get_value(box->priv->adj_x);
         box->priv->visible_right =
             box->priv->total_left
             + (box->priv->total_right - box->priv->total_left)
-            * (box->priv->adj_x->value + box->priv->adj_x->page_size);
+            * (gtk_adjustment_get_value(box->priv->adj_x) + gtk_adjustment_get_page_size(box->priv->adj_x));
     } else {
         box->priv->visible_left =
             box->priv->total_left
             * pow (box->priv->total_right / box->priv->total_left,
-                   box->priv->adj_x->value);
+                   gtk_adjustment_get_value(box->priv->adj_x));
         box->priv->visible_right =
             box->priv->total_left
             * pow (box->priv->total_right / box->priv->total_left,
-                   box->priv->adj_x->value + box->priv->adj_x->page_size);
+                   gtk_adjustment_get_value(box->priv->adj_x) + gtk_adjustment_get_page_size(box->priv->adj_x));
     }
 
     if (box->priv->scale_type_y == GTK_DATABOX_SCALE_LINEAR) {
         box->priv->visible_top =
             box->priv->total_top
             + (box->priv->total_bottom - box->priv->total_top)
-            * box->priv->adj_y->value;
+            * gtk_adjustment_get_value(box->priv->adj_y);
         box->priv->visible_bottom =
             box->priv->total_top
             + (box->priv->total_bottom - box->priv->total_top)
-            * (box->priv->adj_y->value + box->priv->adj_y->page_size);
+            * (gtk_adjustment_get_value(box->priv->adj_y) + gtk_adjustment_get_page_size(box->priv->adj_y));
     } else {
         box->priv->visible_top =
             box->priv->total_top
             * pow (box->priv->total_bottom / box->priv->total_top,
-                   box->priv->adj_y->value),
+                   gtk_adjustment_get_value(box->priv->adj_y)),
             box->priv->visible_bottom =
                 box->priv->total_top
                 * pow (box->priv->total_bottom / box->priv->total_top,
-                       box->priv->adj_y->value + box->priv->adj_y->page_size);
+                       gtk_adjustment_get_value(box->priv->adj_y) + gtk_adjustment_get_page_size(box->priv->adj_y));
     }
 
     /* Adjustments are the basis for the calculations in this function
@@ -2199,7 +2256,6 @@ gtk_databox_create_box_with_scrollbars_and_rulers_positioned (GtkWidget ** p_box
     GtkDatabox *box;
     GtkWidget *scrollbar;
     GtkWidget *ruler;
-
     gint left_col, right_col, top_row, bot_row;
 
     *p_table = gtk_table_new (3, 3, FALSE);
@@ -2216,7 +2272,7 @@ gtk_databox_create_box_with_scrollbars_and_rulers_positioned (GtkWidget ** p_box
                       GTK_FILL | GTK_EXPAND | GTK_SHRINK, 0, 0);
 
     if (scrollbar_x) {
-        scrollbar = gtk_hscrollbar_new (NULL);
+        scrollbar = gtk_scrollbar_new (GTK_ORIENTATION_HORIZONTAL, NULL);
         gtk_databox_set_adjustment_x (box,
                                       gtk_range_get_adjustment (GTK_RANGE
                                               (scrollbar)));
@@ -2236,7 +2292,7 @@ gtk_databox_create_box_with_scrollbars_and_rulers_positioned (GtkWidget ** p_box
     }
 
     if (scrollbar_y) {
-        scrollbar = gtk_vscrollbar_new (NULL);
+        scrollbar = gtk_scrollbar_new (GTK_ORIENTATION_VERTICAL, NULL);
         gtk_databox_set_adjustment_y (box,
                                       gtk_range_get_adjustment (GTK_RANGE
                                               (scrollbar)));
@@ -2251,6 +2307,7 @@ gtk_databox_create_box_with_scrollbars_and_rulers_positioned (GtkWidget ** p_box
             top_row=1;
             bot_row=2;
         }
+		printf("%s: %d %d %d %d\n", __FUNCTION__, left_col, right_col, top_row, bot_row);
         gtk_table_attach (table, scrollbar, left_col, right_col, top_row, bot_row,
                           GTK_FILL, GTK_FILL | GTK_EXPAND | GTK_SHRINK, 0, 0);
     }

@@ -370,11 +370,13 @@ gtk_databox_markers_real_draw (GtkDataboxGraph * graph,
    gint size;
    guint i;
    cairo_t *cr;
+   GtkAllocation allocation;
 
    g_return_if_fail (GTK_DATABOX_IS_MARKERS (markers));
    g_return_if_fail (GTK_IS_DATABOX (box));
 
    widget = GTK_WIDGET(box);
+   gtk_widget_get_allocation(widget, &allocation);
 
    context = gtk_widget_get_pango_context(widget);
 
@@ -385,132 +387,143 @@ gtk_databox_markers_real_draw (GtkDataboxGraph * graph,
    Y = gtk_databox_xyc_graph_get_Y (GTK_DATABOX_XYC_GRAPH (graph));
    size = gtk_databox_graph_get_size (graph);
 
-   widget_width = widget->allocation.width;
-   widget_height = widget->allocation.height;
+   widget_width = allocation.width;
+   widget_height = allocation.height;
 
-   for (i = 0; i < len; ++i)
-   {
-      coord.x = x = gtk_databox_value_to_pixel_x (box, X[i]);
-      coord.y = y = gtk_databox_value_to_pixel_y (box, Y[i]);
+	for (i = 0; i < len; ++i)
+	{
+		coord.x = x = gtk_databox_value_to_pixel_x (box, X[i]);
+		coord.y = y = gtk_databox_value_to_pixel_y (box, Y[i]);
 
-      switch (markers->priv->type)
-      {
-      case GTK_DATABOX_MARKERS_TRIANGLE:
-	 switch (markers->priv->markers_info[i].position)
-	 {
-	 case GTK_DATABOX_MARKERS_C:
-	    y = y - size / 2;
-	    points[0].x = x;
-	    points[0].y = y;
-	    points[1].x = x - size / 2;
-	    points[1].y = y + size;
-	    points[2].x = x + size / 2;
-	    points[2].y = y + size;
-	    break;
-	 case GTK_DATABOX_MARKERS_N:
-	    coord.y = y - 2 - size / 2;
-	    y = y - 2;
-	    points[0].x = x;
-	    points[0].y = y;
-	    points[1].x = x - size / 2;
-	    points[1].y = y - size;
-	    points[2].x = x + size / 2;
-	    points[2].y = y - size;
-	    break;
-	 case GTK_DATABOX_MARKERS_E:
-	    coord.x = x + 2 + size / 2;
-	    x = x + 2;
-	    points[0].x = x;
-	    points[0].y = y;
-	    points[1].x = x + size;
-	    points[1].y = y + size / 2;
-	    points[2].x = x + size;
-	    points[2].y = y - size / 2;
-	    break;
-	 case GTK_DATABOX_MARKERS_S:
-	    coord.y = y + 2 + size / 2;
-	    y = y + 2;
-	    points[0].x = x;
-	    points[0].y = y;
-	    points[1].x = x - size / 2;
-	    points[1].y = y + size;
-	    points[2].x = x + size / 2;
-	    points[2].y = y + size;
-	    break;
-	 case GTK_DATABOX_MARKERS_W:
-	    coord.x = x - 2 - size / 2;
-	    x = x - 2;
-	    points[0].x = x;
-	    points[0].y = y;
-	    points[1].x = x - size;
-	    points[1].y = y + size / 2;
-	    points[2].x = x - size;
-	    points[2].y = y - size / 2;
-	    break;
-	 }
-	 cairo_move_to(cr, points[0].x + 0.5, points[0].y + 0.5);
-	 cairo_line_to(cr, points[1].x + 0.5, points[1].y + 0.5);
-	 cairo_line_to(cr, points[2].x + 0.5, points[2].y + 0.5);
-	 cairo_close_path  (cr);
-	 cairo_fill(cr);
-	 break;
-	 /* End of GTK_DATABOX_MARKERS_TRIANGLE */
-      case GTK_DATABOX_MARKERS_SOLID_LINE:
-      case GTK_DATABOX_MARKERS_DASHED_LINE:
-	 switch (markers->priv->markers_info[i].position)
-	 {
-	 case GTK_DATABOX_MARKERS_C:
-	    points[0].x = x;
-	    points[0].y = 0;
-	    points[1].x = x;
-	    points[1].y = widget_height;
-	    break;
-	 case GTK_DATABOX_MARKERS_N:
-	    points[0].x = x;
-	    points[0].y = 0;
-	    points[1].x = x;
-	    points[1].y = widget_height;
-	    break;
-	 case GTK_DATABOX_MARKERS_E:
-	    points[0].x = 0;
-	    points[0].y = y;
-	    points[1].x = widget_width;
-	    points[1].y = y;
-	    break;
-	 case GTK_DATABOX_MARKERS_S:
-	    points[0].x = x;
-	    points[0].y = 0;
-	    points[1].x = x;
-	    points[1].y = widget_height;
-	    break;
-	 case GTK_DATABOX_MARKERS_W:
-	    points[0].x = 0;
-	    points[0].y = y;
-	    points[1].x = widget_width;
-	    points[1].y = y;
-	    break;
-	 }
-	 cairo_move_to(cr, points[0].x + 0.5, points[0].y + 0.5);
-	 cairo_line_to(cr, points[1].x + 0.5, points[1].y + 0.5);
-	 cairo_stroke(cr);
+		switch (markers->priv->type)
+		{
+			case GTK_DATABOX_MARKERS_TRIANGLE:
+				switch (markers->priv->markers_info[i].position)
+				{
+					case GTK_DATABOX_MARKERS_C:
+						y = y - size / 2;
+						points[0].x = x;
+						points[0].y = y;
+						points[1].x = x - size / 2;
+						points[1].y = y + size;
+						points[2].x = x + size / 2;
+						points[2].y = y + size;
+						break;
 
-	 break;
-	 /* End of GTK_DATABOX_MARKERS_LINE */
+					case GTK_DATABOX_MARKERS_N:
+						coord.y = y - 2 - size / 2;
+						y = y - 2;
+						points[0].x = x;
+						points[0].y = y;
+						points[1].x = x - size / 2;
+						points[1].y = y - size;
+						points[2].x = x + size / 2;
+						points[2].y = y - size;
+						break;
 
-      case GTK_DATABOX_MARKERS_NONE:
-      default:
-	 break;
-      }
+					case GTK_DATABOX_MARKERS_E:
+						coord.x = x + 2 + size / 2;
+						x = x + 2;
+						points[0].x = x;
+						points[0].y = y;
+						points[1].x = x + size;
+						points[1].y = y + size / 2;
+						points[2].x = x + size;
+						points[2].y = y - size / 2;
+						break;
+
+					case GTK_DATABOX_MARKERS_S:
+						coord.y = y + 2 + size / 2;
+						y = y + 2;
+						points[0].x = x;
+						points[0].y = y;
+						points[1].x = x - size / 2;
+						points[1].y = y + size;
+						points[2].x = x + size / 2;
+						points[2].y = y + size;
+						break;
+
+					case GTK_DATABOX_MARKERS_W:
+					default:
+						coord.x = x - 2 - size / 2;
+						x = x - 2;
+						points[0].x = x;
+						points[0].y = y;
+						points[1].x = x - size;
+						points[1].y = y + size / 2;
+						points[2].x = x - size;
+						points[2].y = y - size / 2;
+						break;
+				}
+				cairo_move_to(cr, points[0].x + 0.5, points[0].y + 0.5);
+				cairo_line_to(cr, points[1].x + 0.5, points[1].y + 0.5);
+				cairo_line_to(cr, points[2].x + 0.5, points[2].y + 0.5);
+				cairo_close_path  (cr);
+				cairo_fill(cr);
+				break;
+				/* End of GTK_DATABOX_MARKERS_TRIANGLE */
+
+				case GTK_DATABOX_MARKERS_SOLID_LINE:
+				case GTK_DATABOX_MARKERS_DASHED_LINE:
+				switch (markers->priv->markers_info[i].position)
+				{
+					case GTK_DATABOX_MARKERS_C:
+						points[0].x = x;
+						points[0].y = 0;
+						points[1].x = x;
+						points[1].y = widget_height;
+						break;
+
+					case GTK_DATABOX_MARKERS_N:
+						points[0].x = x;
+						points[0].y = 0;
+						points[1].x = x;
+						points[1].y = widget_height;
+						break;
+
+					case GTK_DATABOX_MARKERS_E:
+						points[0].x = 0;
+						points[0].y = y;
+						points[1].x = widget_width;
+						points[1].y = y;
+						break;
+
+					case GTK_DATABOX_MARKERS_S:
+						points[0].x = x;
+						points[0].y = 0;
+						points[1].x = x;
+						points[1].y = widget_height;
+						break;
+
+					case GTK_DATABOX_MARKERS_W:
+					default:
+						points[0].x = 0;
+						points[0].y = y;
+						points[1].x = widget_width;
+						points[1].y = y;
+						break;
+				}
+				cairo_move_to(cr, points[0].x + 0.5, points[0].y + 0.5);
+				cairo_line_to(cr, points[1].x + 0.5, points[1].y + 0.5);
+				cairo_stroke(cr);
+
+				break;
+				/* End of GTK_DATABOX_MARKERS_LINE */
+
+				case GTK_DATABOX_MARKERS_NONE:
+				default:
+					break;
+		}
 
       if (markers->priv->markers_info[i].text)
       {
-	 if (!markers->priv->markers_info[i].label)
-	 {
-	    markers->priv->markers_info[i].label =
-	       pango_layout_new (context);
-	    pango_layout_set_text (markers->priv->markers_info[i].label,
-				   markers->priv->markers_info[i].text, -1);
-	 }
+		if (!markers->priv->markers_info[i].label)
+		{
+			markers->priv->markers_info[i].label =
+			pango_layout_new (context);
+			pango_layout_set_text (markers->priv->markers_info[i].label,
+			markers->priv->markers_info[i].text, -1);
+		}
 
 	 if (markers->priv->type == GTK_DATABOX_MARKERS_SOLID_LINE
 	     || markers->priv->type == GTK_DATABOX_MARKERS_DASHED_LINE)

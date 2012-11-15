@@ -288,18 +288,20 @@ gtk_databox_grid_real_draw (GtkDataboxGraph * graph,
    gint16 pixel_y;
    gfloat left, right, top, bottom;
    cairo_t *cr;
+   GtkAllocation allocation;
 
    g_return_if_fail (GTK_DATABOX_IS_GRID (grid));
    g_return_if_fail (GTK_IS_DATABOX (box));
 
    widget = GTK_WIDGET(box);
+   gtk_widget_get_allocation(widget, &allocation);
 
    gtk_databox_get_total_limits (box, &left, &right, &top, &bottom);
 
    cr = gtk_databox_graph_create_gc (graph, box);
 
-   width = widget->allocation.width;
-   height = widget->allocation.height;
+   width = allocation.width;
+   height = allocation.height;
 
    offset_x = left;
    factor_x =

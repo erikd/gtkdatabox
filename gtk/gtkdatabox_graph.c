@@ -18,8 +18,7 @@
  */
 
 #include <gtkdatabox_graph.h>
-#include <gtk/gtkstyle.h>
-#include <gtk/gtkgc.h>
+#include <gtk/gtk.h>
 
 static void gtk_databox_graph_real_draw (GtkDataboxGraph * graph,
     GtkDatabox * draw);
@@ -132,20 +131,9 @@ static cairo_t *
 gtk_databox_graph_real_create_gc (GtkDataboxGraph * graph,
                                   GtkDatabox* box)
 {
-  GtkWidget *widget = GTK_WIDGET(box);
-  GdkColormap *colormap = NULL;
-  GtkStyle *style;
   cairo_t *cr;
 
   g_return_val_if_fail (GTK_DATABOX_IS_GRAPH (graph), NULL);
-
-  style = widget->style;
-
-  colormap = style->colormap;
-  g_return_val_if_fail (colormap, NULL);
-  g_return_val_if_fail (gdk_colormap_alloc_color (colormap,
-                        &graph->priv->color,
-                        FALSE, TRUE), NULL);
 
    cr = cairo_create (gtk_databox_get_backing_surface (box));
    gdk_cairo_set_source_color (cr, &graph->priv->color);
@@ -321,8 +309,6 @@ gtk_databox_graph_real_calculate_extrema (GtkDataboxGraph * graph,
 void
 gtk_databox_graph_set_color (GtkDataboxGraph * graph, GdkColor * color)
 {
-  GdkColormap *colormap = NULL;
-
   g_return_if_fail (GTK_DATABOX_IS_GRAPH (graph));
 
   graph->priv->color = *color;
