@@ -86,13 +86,13 @@ AC_ARG_ENABLE(glade,
 AC_MSG_CHECKING([whether to build glade-3 support module])
 if test x"$ac_cv_enable_glade" = xyes; then
 	AC_MSG_RESULT(yes)
-	PKG_CHECK_MODULES(GLADE3, gladeui-1.0 >= 3.4.0,
+	PKG_CHECK_MODULES(GLADE3, gladeui-2.0 >= 3.4.0,
 			ac_cv_enable_glade=yes, ac_cv_enable_glade=no)
 	if test x"$ac_cv_enable_glade" = xyes; then
 		AC_DEFINE(USE_GLADE, 1, Define if you want glade interface builder support)
-		glade_moduledir=`pkg-config gladeui-1.0 --variable=moduledir`
+		glade_moduledir=`pkg-config gladeui-2.0 --variable=moduledir`
 		AC_DEFINE_UNQUOTED(GLADE_MODULEDIR, [$glade_moduledir], [Glade-3 module directory])
-		glade_catalogdir=`pkg-config gladeui-1.0 --variable=catalogdir`
+		glade_catalogdir=`pkg-config gladeui-2.0 --variable=catalogdir`
 		AC_DEFINE_UNQUOTED(GLADE_CATALOGDIR, [$glade_catalogdir], [Glade-3 catalog directory])
 	else
 		AC_MSG_RESULT(not found)

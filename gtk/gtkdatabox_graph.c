@@ -33,7 +33,8 @@ enum
 {
   GRAPH_COLOR = 1,
   GRAPH_SIZE,
-  GRAPH_HIDE
+  GRAPH_HIDE,
+  GRAPH_RGBA
 };
 
 struct _GtkDataboxGraphPrivate
@@ -72,6 +73,13 @@ gtk_databox_graph_set_property (GObject * object,
       gtk_databox_graph_set_hide (graph, g_value_get_boolean (value));
     }
     break;
+    case GRAPH_RGBA:
+    {
+      gtk_databox_graph_set_rgba (graph,
+                                   (GdkRGBA *)
+                                   g_value_get_pointer (value));
+    }
+    break;
     default:
       /* We don't have any other property... */
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -101,6 +109,11 @@ gtk_databox_graph_get_property (GObject * object,
     case GRAPH_HIDE:
     {
       g_value_set_boolean (value, gtk_databox_graph_get_hide (graph));
+    }
+    break;
+    case GRAPH_RGBA:
+    {
+      g_value_set_pointer (value, gtk_databox_graph_get_rgba (graph));
     }
     break;
     default:
@@ -316,6 +329,7 @@ gtk_databox_graph_set_color (GtkDataboxGraph * graph, GdkColor * color)
   graph->priv->rgba.red = color->red / 65535.0;
   graph->priv->rgba.blue = color->blue / 65535.0;
   graph->priv->rgba.green = color->green / 65535.0;
+  graph->priv->rgba.alpha = 1.0;
 
   g_object_notify (G_OBJECT (graph), "color");
 }

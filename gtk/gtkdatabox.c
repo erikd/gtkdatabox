@@ -417,7 +417,7 @@ gtk_databox_init (GtkDatabox * box) {
     box->priv->selection_finalized = FALSE;
     box->priv->box_shadow=GTK_SHADOW_NONE;
 
-    /*gtk_databox_set_total_limits(box, -1., 1., 1., -1.); */
+    gtk_databox_set_total_limits(box, -1., 1., 1., -1.);
 	box->priv->total_left = -1.0;
 	box->priv->total_right = 1.0;
 	box->priv->total_top = 1.0;
@@ -1070,28 +1070,28 @@ gtk_databox_calculate_translation_factors (GtkDatabox * box) {
 	gtk_widget_get_allocation(widget, &allocation);
     if (box->priv->scale_type_x == GTK_DATABOX_SCALE_LINEAR)
         box->priv->translation_factor_x =
-            allocation.width / (box->priv->visible_right -
+            (gfloat)allocation.width / (box->priv->visible_right -
                                         box->priv->visible_left);
     else if (box->priv->scale_type_x == GTK_DATABOX_SCALE_LOG2)
         box->priv->translation_factor_x =
-            allocation.width / log2 (box->priv->visible_right /
+            (gfloat)allocation.width / log2 (box->priv->visible_right /
                                              box->priv->visible_left);
     else
         box->priv->translation_factor_x =
-            allocation.width / log10 (box->priv->visible_right /
+            (gfloat)allocation.width / log10 (box->priv->visible_right /
                                               box->priv->visible_left);
 
     if (box->priv->scale_type_y == GTK_DATABOX_SCALE_LINEAR)
         box->priv->translation_factor_y =
-            allocation.height / (box->priv->visible_bottom -
+            (gfloat)allocation.height / (box->priv->visible_bottom -
                                          box->priv->visible_top);
     else if (box->priv->scale_type_y == GTK_DATABOX_SCALE_LOG2)
         box->priv->translation_factor_y =
-            allocation.height / log2 (box->priv->visible_bottom /
+            (gfloat)allocation.height / log2 (box->priv->visible_bottom /
                                               box->priv->visible_top);
     else
         box->priv->translation_factor_y =
-            allocation.height / log10 (box->priv->visible_bottom /
+            (gfloat)allocation.height / log10 (box->priv->visible_bottom /
                                                box->priv->visible_top);
 }
 
@@ -2051,10 +2051,12 @@ void
 gtk_databox_values_to_pixels (GtkDatabox * box, guint len,
                               const gfloat * values_x,
                               const gfloat * values_y,
-                              GdkPoint * pixels) {
+                              GdkPoint * pixels)
+{
     guint i;
 
-    for (i = 0; i < len; ++i, ++values_x, ++values_y, ++pixels) {
+    for (i = 0; i < len; ++i, ++values_x, ++values_y, ++pixels)
+    {
         if (box->priv->scale_type_x == GTK_DATABOX_SCALE_LINEAR)
             pixels->x =
                 (*values_x -

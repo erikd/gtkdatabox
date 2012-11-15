@@ -156,7 +156,8 @@ gtk_databox_lines_real_draw (GtkDataboxGraph * graph,
 
    cr = gtk_databox_graph_create_gc (graph, box);
 
-   for (i = 0; i < len; i++)
+   cairo_move_to(cr, data[0].x + 0.5, data[0].y + 0.5);
+   for (i = 1; i < len; i++)
 	  cairo_line_to(cr, data[i].x + 0.5, data[i].y + 0.5);
 
    cairo_stroke(cr);
