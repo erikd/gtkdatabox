@@ -60,31 +60,31 @@ key_press_cb (GtkDatabox * box,
 
    switch (event->keyval)
    {
-   case GDK_KP_Right:
+   case GDK_KEY_KP_Right:
       if (markIndex < POINTS - 1)
       {
 	 markIndex++;
 	 shift_markers (box, markers);
       }
       break;
-   case GDK_KP_Left:
+   case GDK_KEY_KP_Left:
       if (markIndex > 0)
       {
 	 markIndex--;
 	 shift_markers (box, markers);
       }
       break;
-   case GDK_c:;
+   case GDK_KEY_c:;
       break;
-   case GDK_n:
+   case GDK_KEY_n:
       break;
-   case GDK_p:
+   case GDK_KEY_p:
       g_printerr ("p");
       break;
-   case GDK_h:
+   case GDK_KEY_h:
       gtk_databox_zoom_home (box);
       break;
-   case GDK_o:
+   case GDK_KEY_o:
       gtk_databox_zoom_out (box);
       break;
    default:
@@ -114,27 +114,27 @@ create_basics (void)
    window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
    gtk_widget_set_size_request (window, 400, 400);
 
-   g_signal_connect (GTK_OBJECT (window), "destroy",
+   g_signal_connect (G_OBJECT (window), "destroy",
 		     G_CALLBACK (gtk_main_quit), NULL);
 
    gtk_window_set_title (GTK_WINDOW (window), "GtkDatabox: Key Controls");
    gtk_container_set_border_width (GTK_CONTAINER (window), 0);
 
-   box1 = gtk_vbox_new (FALSE, 0);
+   box1 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
    gtk_container_add (GTK_CONTAINER (window), box1);
 
    label =
       gtk_label_new
       ("As long as the GtkDatabox has the focus,\nthe following keys will work in this example:\nKeypad-Right: Move markers to next data point\nKeypad-Left: Move markers to previous data point\no: zoom out (only useful if you zoomed in previously)\nh: zoom_home (only useful if you zoomed in previously)");
    gtk_box_pack_start (GTK_BOX (box1), label, FALSE, FALSE, 0);
-   separator = gtk_hseparator_new ();
+   separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
    gtk_box_pack_start (GTK_BOX (box1), separator, FALSE, FALSE, 0);
 
    gtk_databox_create_box_with_scrollbars_and_rulers (&box, &table,
 						      TRUE, TRUE, TRUE, TRUE);
    gtk_widget_add_events (box, GDK_KEY_PRESS_MASK);
-   gtk_widget_set_can_focus(box, GTK_CAN_FOCUS);
-   gtk_widget_set_can_default(box, GTK_CAN_DEFAULT);
+   gtk_widget_set_can_focus(box, TRUE);
+   gtk_widget_set_can_default(box, TRUE);
 
    gtk_box_pack_start (GTK_BOX (box1), table, TRUE, TRUE, 0);
 
@@ -175,7 +175,7 @@ create_basics (void)
    shift_markers (GTK_DATABOX (box), GTK_DATABOX_MARKERS (graph));
    gtk_databox_graph_add (GTK_DATABOX (box), graph);
 
-   g_signal_connect (GTK_OBJECT (box), "key_press_event",
+   g_signal_connect (G_OBJECT (box), "key_press_event",
 		     G_CALLBACK (key_press_cb), graph);
 
    gtk_databox_auto_rescale (GTK_DATABOX (box), 0.05);
@@ -186,21 +186,21 @@ create_basics (void)
    markX[1] = right;
    markY[1] = top;
 
-   separator = gtk_hseparator_new ();
+   separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
    gtk_box_pack_start (GTK_BOX (box1), separator, FALSE, TRUE, 0);
 
-   box2 = gtk_vbox_new (FALSE, 10);
+   box2 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 10);
    gtk_container_set_border_width (GTK_CONTAINER (box2), 10);
    gtk_box_pack_end (GTK_BOX (box1), box2, FALSE, TRUE, 0);
    close_button = gtk_button_new_with_label ("close");
-   g_signal_connect_swapped (GTK_OBJECT (close_button), "clicked",
-			     G_CALLBACK (gtk_main_quit), GTK_OBJECT (box));
+   g_signal_connect_swapped (G_OBJECT (close_button), "clicked",
+			     G_CALLBACK (gtk_main_quit), G_OBJECT (box));
    gtk_box_pack_start (GTK_BOX (box2), close_button, TRUE, TRUE, 0);
    gtk_widget_grab_default (box);
    gtk_widget_grab_focus (box);
 
    gtk_widget_show_all (window);
-   gdk_window_set_cursor (box->window, gdk_cursor_new (GDK_CROSS));
+   gdk_window_set_cursor (gtk_widget_get_window(box), gdk_cursor_new (GDK_CROSS));
 }
 
 gint

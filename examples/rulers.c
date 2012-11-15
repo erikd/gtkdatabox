@@ -54,6 +54,7 @@ create_rulers (void)
     gfloat *Y;
     GdkColor color;
     gint i;
+    GtkDataboxRuler *ruler;
 
     guint manual_tick_cnt=4;
     gfloat manual_ticks[]={100., 300., 500., 700.};
@@ -66,23 +67,23 @@ create_rulers (void)
     window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
     gtk_widget_set_size_request (window, 1000, 500);
 
-    g_signal_connect (GTK_OBJECT (window), "destroy",
+    g_signal_connect (G_OBJECT (window), "destroy",
                       G_CALLBACK (gtk_main_quit), NULL);
 
     gtk_window_set_title (GTK_WINDOW (window),
                           "GtkDatabox: Ruler option example plots");
     gtk_container_set_border_width (GTK_CONTAINER (window), 0);
 
-    vbox = gtk_vbox_new (FALSE, 0);
+    vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
     gtk_container_add (GTK_CONTAINER (window), vbox);
 
     label = gtk_label_new
             ("demonstrates diferent ruler settings\n");
     gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 0);
-    separator = gtk_hseparator_new ();
+    separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
     gtk_box_pack_start (GTK_BOX (vbox), separator, FALSE, FALSE, 0);
 
-    hbox = gtk_hbox_new (FALSE, 0);
+    hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 
     label = gtk_label_new ("Rulers on the other side:");
@@ -97,16 +98,16 @@ create_rulers (void)
     label = gtk_label_new ("X ticks turned off, no shadow\n horizontal y axis text,\n altered y label format example:");
     gtk_box_pack_start (GTK_BOX (hbox), label, TRUE, TRUE, 0);
 
-    separator = gtk_hseparator_new ();
+    separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
     gtk_box_pack_start (GTK_BOX (vbox), separator, FALSE, FALSE, 0);
 
     /* Create the databoxes */
-    hbox = gtk_hbox_new (FALSE, 0);
+    hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_box_pack_start (GTK_BOX (vbox), hbox, TRUE, TRUE, 0);
 
     for (i = 0; i < NO_BOXES; ++i)
     {
-        if (i==0 | i==NO_BOXES-1) /* the first is normal but with the rulers on opposite sides to the default */
+        if ((i==0) || (i==NO_BOXES-1)) /* the first is normal but with the rulers on opposite sides to the default */
             gtk_databox_create_box_with_scrollbars_and_rulers_positioned (&box[i], &table,TRUE, TRUE, TRUE,TRUE,FALSE,FALSE);
         else
             gtk_databox_create_box_with_scrollbars_and_rulers (&box[i], &table,TRUE, TRUE, TRUE,TRUE);
@@ -114,7 +115,7 @@ create_rulers (void)
     }
 
     /* set box 1's y ruler to have horizontal text */
-    GtkDataboxRuler *ruler=gtk_databox_get_ruler_y(GTK_DATABOX (box[1]));
+    ruler=gtk_databox_get_ruler_y(GTK_DATABOX (box[1]));
     gtk_databox_ruler_set_text_orientation(ruler, GTK_ORIENTATION_HORIZONTAL);
     gtk_databox_ruler_set_box_shadow(ruler, GTK_SHADOW_ETCHED_OUT);
     gtk_databox_ruler_set_text_alignment (ruler, PANGO_ALIGN_RIGHT);
@@ -247,19 +248,19 @@ create_rulers (void)
     gtk_databox_set_scale_type_y (GTK_DATABOX (box[2]), GTK_DATABOX_SCALE_LOG);
     gtk_databox_set_scale_type_x (GTK_DATABOX (box[3]), GTK_DATABOX_SCALE_LOG2);
 
-    separator = gtk_hseparator_new ();
+    separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
     gtk_box_pack_start (GTK_BOX (vbox), separator, FALSE, TRUE, 0);
 
     close_button = gtk_button_new_with_label ("close");
-    g_signal_connect (GTK_OBJECT (close_button), "clicked",
+    g_signal_connect (G_OBJECT (close_button), "clicked",
                       G_CALLBACK (gtk_main_quit), NULL);
     gtk_box_pack_start (GTK_BOX (vbox), close_button, FALSE, FALSE, 0);
-    gtk_widget_set_can_default(close_button, GTK_CAN_DEFAULT);
+    gtk_widget_set_can_default(close_button, TRUE);
     gtk_widget_grab_default (close_button);
     gtk_widget_grab_focus (close_button);
 
     gtk_widget_show_all (window);
-    gdk_window_set_cursor (box[0]->window, gdk_cursor_new (GDK_CROSS));
+    gdk_window_set_cursor (gtk_widget_get_window(box[0]), gdk_cursor_new (GDK_CROSS));
 
 }
 

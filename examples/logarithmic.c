@@ -58,23 +58,23 @@ create_logarithmic (void)
    window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
    gtk_widget_set_size_request (window, 1000, 500);
 
-   g_signal_connect (GTK_OBJECT (window), "destroy",
+   g_signal_connect (G_OBJECT (window), "destroy",
 		     G_CALLBACK (gtk_main_quit), NULL);
 
    gtk_window_set_title (GTK_WINDOW (window),
 			 "GtkDatabox: Logarithmic Plots");
    gtk_container_set_border_width (GTK_CONTAINER (window), 0);
 
-   vbox = gtk_vbox_new (FALSE, 0);
+   vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
    gtk_container_add (GTK_CONTAINER (window), vbox);
 
    label = gtk_label_new
       ("The following types of curves are shown (with some adjustments to make them fit nicely into the window):\n Green: sin^2, Red: exp, Magenta: 1/x, Yellow: x^2\n(100K Points per each curve in each graph)\n");
    gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 0);
-   separator = gtk_hseparator_new ();
+   separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
    gtk_box_pack_start (GTK_BOX (vbox), separator, FALSE, FALSE, 0);
 
-   hbox = gtk_hbox_new (FALSE, 0);
+   hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
    gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 
    label = gtk_label_new ("Linear Plot:");
@@ -89,11 +89,11 @@ create_logarithmic (void)
    label = gtk_label_new ("Log base 2 Plot:");
    gtk_box_pack_start (GTK_BOX (hbox), label, TRUE, TRUE, 0);
 
-   separator = gtk_hseparator_new ();
+   separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
    gtk_box_pack_start (GTK_BOX (vbox), separator, FALSE, FALSE, 0);
 
    /* Create the databoxes */
-   hbox = gtk_hbox_new (FALSE, 0);
+   hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
    gtk_box_pack_start (GTK_BOX (vbox), hbox, TRUE, TRUE, 0);
 
    for (i = 0; i < NO_BOXES; ++i)
@@ -200,19 +200,20 @@ create_logarithmic (void)
    gtk_databox_set_scale_type_y (GTK_DATABOX (box[2]), GTK_DATABOX_SCALE_LOG);
    gtk_databox_set_scale_type_x (GTK_DATABOX (box[3]), GTK_DATABOX_SCALE_LOG2);
 
-   separator = gtk_hseparator_new ();
+   separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
    gtk_box_pack_start (GTK_BOX (vbox), separator, FALSE, TRUE, 0);
 
    close_button = gtk_button_new_with_label ("close");
-   g_signal_connect (GTK_OBJECT (close_button), "clicked",
+   g_signal_connect (G_OBJECT (close_button), "clicked",
 		     G_CALLBACK (gtk_main_quit), NULL);
    gtk_box_pack_start (GTK_BOX (vbox), close_button, FALSE, FALSE, 0);
-   gtk_widget_set_can_default(close_button, GTK_CAN_DEFAULT);
+   gtk_widget_set_can_default(close_button, TRUE);
    gtk_widget_grab_default (close_button);
    gtk_widget_grab_focus (close_button);
 
    gtk_widget_show_all (window);
-   gdk_window_set_cursor (box[0]->window, gdk_cursor_new (GDK_CROSS));
+   for (i = 0; i < NO_BOXES; ++i)
+	   gdk_window_set_cursor (gtk_widget_get_window(box[i]), gdk_cursor_new (GDK_CROSS));
 }
 
 gint
