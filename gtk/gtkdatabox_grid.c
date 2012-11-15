@@ -440,12 +440,12 @@ gtk_databox_grid_set_hline_vals (GtkDataboxGrid * grid, gfloat *hline_vals)
  *
  * Gets the pointer to the horizontal line values for the @grid.
  *
- * Return value: Pointer to the horizontal line values for the @grid.
+ * Return value: Pointer to the horizontal line values for the @grid. (or NULL if error)
  **/
 gfloat*
 gtk_databox_grid_get_hline_vals (GtkDataboxGrid * grid)
 {
-   g_return_val_if_fail (GTK_DATABOX_IS_GRID (grid), -1);
+   g_return_val_if_fail (GTK_DATABOX_IS_GRID (grid), NULL);
 
    return grid->priv->hline_vals;
 }
@@ -473,12 +473,12 @@ gtk_databox_grid_set_vline_vals (GtkDataboxGrid * grid, gfloat *vline_vals)
  *
  * Gets the pointer to the vertical line values for the @grid.
  *
- * Return value: Pointer to the vertical line values for the @grid.
+ * Return value: Pointer to the vertical line values for the @grid. (or NULL if error)
  **/
 gfloat*
 gtk_databox_grid_get_vline_vals (GtkDataboxGrid * grid)
 {
-   g_return_val_if_fail (GTK_DATABOX_IS_GRID (grid), -1);
+   g_return_val_if_fail (GTK_DATABOX_IS_GRID (grid), NULL);
 
    return grid->priv->vline_vals;
 }

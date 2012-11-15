@@ -132,7 +132,6 @@ static void
 gtk_databox_regions_real_draw (GtkDataboxGraph * graph,
 			    GtkDatabox* box)
 {
-   GtkWidget *widget;
    GtkDataboxRegions *regions = GTK_DATABOX_REGIONS (graph);
    GdkPoint *data1, *data2, *data3, *data4;
    guint i = 0;
@@ -144,8 +143,6 @@ gtk_databox_regions_real_draw (GtkDataboxGraph * graph,
 
    g_return_if_fail (GTK_DATABOX_IS_REGIONS (regions));
    g_return_if_fail (GTK_IS_DATABOX (box));
-
-   widget = GTK_WIDGET(box);
 
    cr = gtk_databox_graph_create_gc (graph, box);
 

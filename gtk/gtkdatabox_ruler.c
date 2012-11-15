@@ -675,7 +675,6 @@ static void gtk_databox_ruler_get_preferred_width (GtkWidget *widget, gint *mini
     GtkDataboxRuler *ruler;
 	GtkOrientation orientation;
     gint xthickness = 1; /* widget->style->xthickness */
-    gint ythickness = 1; /* widget->style->ythickness */
 	gint width;
 
     ruler = GTK_DATABOX_RULER (widget);
@@ -698,14 +697,11 @@ static void gtk_databox_ruler_get_preferred_height (GtkWidget *widget, gint *min
 {
     GtkDataboxRuler *ruler;
 	GtkOrientation orientation;
-    gint xthickness;
-    gint ythickness;
+    gint ythickness = 1; /* widget->style->ythickness */
 	gint height;
 
     ruler = GTK_DATABOX_RULER (widget);
 	orientation = ruler->priv->orientation;
-    xthickness = 1; /* widget->style->xthickness; */
-    ythickness = 1; /* widget->style->ythickness; */
 
     if (orientation == GTK_ORIENTATION_HORIZONTAL) {
         height = ythickness * 2 + RULER_SIZE;
@@ -1263,7 +1259,6 @@ gtk_databox_ruler_get_scale_type (GtkDataboxRuler * ruler) {
 void
 gtk_databox_ruler_set_box_shadow(GtkDataboxRuler * ruler, GtkShadowType which_shadow) {
     g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
-    g_return_if_fail (which_shadow>=0);
     g_return_if_fail (which_shadow<=GTK_SHADOW_ETCHED_OUT);
 
     if (ruler->priv->box_shadow!=which_shadow) {

@@ -918,7 +918,6 @@ gtk_databox_set_scale_type_y (GtkDatabox * box,
 void
 gtk_databox_set_box_shadow(GtkDatabox * box, GtkShadowType which_shadow) {
     g_return_if_fail (GTK_IS_DATABOX (box));
-    g_return_if_fail (which_shadow>=0);
     g_return_if_fail (which_shadow<=GTK_SHADOW_ETCHED_OUT);
 
     if (box->priv->box_shadow!=which_shadow) {

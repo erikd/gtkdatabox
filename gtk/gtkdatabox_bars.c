@@ -150,7 +150,6 @@ gtk_databox_bars_real_draw (GtkDataboxGraph * graph,
    gfloat *X;
    gfloat *Y;
    guint len;
-   gint size = 0;
    gint16 zero = 0;
    cairo_t *cr;
 
@@ -166,7 +165,6 @@ gtk_databox_bars_real_draw (GtkDataboxGraph * graph,
    len = gtk_databox_xyc_graph_get_length (GTK_DATABOX_XYC_GRAPH (graph));
    X = gtk_databox_xyc_graph_get_X (GTK_DATABOX_XYC_GRAPH (graph));
    Y = gtk_databox_xyc_graph_get_Y (GTK_DATABOX_XYC_GRAPH (graph));
-   size = gtk_databox_graph_get_size (graph);
 
    data = bars->priv->data;
 
