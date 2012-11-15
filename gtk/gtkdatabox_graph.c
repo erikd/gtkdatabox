@@ -196,7 +196,7 @@ gtk_databox_graph_class_init (gpointer g_class /*, gpointer g_class_data */ )
                      G_PARAM_READWRITE);
 
   g_object_class_install_property (gobject_class,
-                                   GRAPH_SIZE, graph_param_spec);
+                                   GRAPH_HIDE, graph_param_spec);
 
   klass->draw = gtk_databox_graph_real_draw;
   klass->calculate_extrema = gtk_databox_graph_real_calculate_extrema;
