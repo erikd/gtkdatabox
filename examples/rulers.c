@@ -1,6 +1,6 @@
 /* $Id: logarithmic.c 4 2008-06-22 09:19:11Z rbock $ */
 /* GtkDatabox - An extension to the gtk+ library
- * Copyright (C) 1998 - 2008  Dr. Roland Bock
+ * Copyright (C) 2011 - 2012  Dr. Matt Flax <flatmax@>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -106,7 +106,7 @@ create_rulers (void)
 
     for (i = 0; i < NO_BOXES; ++i)
     {
-        if (i==0) /* the first is normal but with the rulers on opposite sides to the default */
+        if (i==0 | i==NO_BOXES-1) /* the first is normal but with the rulers on opposite sides to the default */
             gtk_databox_create_box_with_scrollbars_and_rulers_positioned (&box[i], &table,TRUE, TRUE, TRUE,TRUE,FALSE,FALSE);
         else
             gtk_databox_create_box_with_scrollbars_and_rulers (&box[i], &table,TRUE, TRUE, TRUE,TRUE);
