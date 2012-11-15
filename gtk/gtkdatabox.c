@@ -417,13 +417,13 @@ gtk_databox_init (GtkDatabox * box) {
     box->priv->selection_finalized = FALSE;
     box->priv->box_shadow=GTK_SHADOW_NONE;
 
-    /*gtk_databox_set_adjustment_x (box, NULL); */
-    /*gtk_databox_set_adjustment_y (box, NULL); */
     /*gtk_databox_set_total_limits(box, -1., 1., 1., -1.); */
 	box->priv->total_left = -1.0;
 	box->priv->total_right = 1.0;
 	box->priv->total_top = 1.0;
 	box->priv->total_bottom = -1.0;
+    gtk_databox_set_adjustment_x (box, NULL);
+    gtk_databox_set_adjustment_y (box, NULL);
 }
 
 /**
@@ -631,12 +631,14 @@ gtk_databox_unrealize (GtkWidget * widget) {
     gtk_widget_set_realized(widget, FALSE);
 
     if (box->priv->backing_surface)
-        g_object_unref (box->priv->backing_surface);
+		cairo_surface_destroy (box->priv->backing_surface);
     box->priv->backing_surface=NULL;
     if (box->priv->adj_x)
         g_object_unref (box->priv->adj_x);
+    box->priv->adj_x=NULL;
     if (box->priv->adj_y)
         g_object_unref (box->priv->adj_y);
+    box->priv->adj_y=NULL;
 
     g_list_free (box->priv->graphs);
     box->priv->graphs=NULL;
@@ -701,11 +703,8 @@ gtk_databox_set_adjustment_x (GtkDatabox * box, GtkAdjustment * adj) {
 
     if (!adj)
 	{
-        /* adj = GTK_ADJUSTMENT(gtk_adjustment_new (0, 0, 0, 0, 0, 0)); */
-		return;
+        adj = GTK_ADJUSTMENT(gtk_adjustment_new (0, 0, 0, 0, 0, 0));
 	}
-
-    g_return_if_fail (GTK_IS_ADJUSTMENT (adj));
 
     if (box->priv->adj_x) {
         /* @@@ Do we need to disconnect from the signals here? */
@@ -721,18 +720,17 @@ gtk_databox_set_adjustment_x (GtkDatabox * box, GtkAdjustment * adj) {
 	if (box->priv->total_left != box->priv->total_right)
 	{
 		page_size_x = gtk_databox_get_page_size_x(box);
-		gtk_adjustment_configure(box->priv->adj_x,
-			gtk_databox_get_offset_x (box), /* value */
-			0.0, /* lower */
-			1.0, /* upper */
-			page_size_x / 20, /* step_increment */
-			page_size_x * 0.9, /* page_increment */
-			page_size_x); /* page_size */
+	} else {
+		page_size_x = 1.0;
 	}
-	else
-	{
-		g_warning("page_size_x = NaN\n");
-	}
+
+	gtk_adjustment_configure(box->priv->adj_x,
+		gtk_databox_get_offset_x (box), /* value */
+		0.0, /* lower */
+		1.0, /* upper */
+		page_size_x / 20, /* step_increment */
+		page_size_x * 0.9, /* page_increment */
+		page_size_x); /* page_size */
 
     g_signal_connect_swapped (G_OBJECT (box->priv->adj_x), "value_changed",
                               G_CALLBACK
@@ -758,12 +756,8 @@ gtk_databox_set_adjustment_y (GtkDatabox * box, GtkAdjustment * adj) {
 
     if (!adj)
 	{
-        /* adj = GTK_ADJUSTMENT(gtk_adjustment_new (0, 0, 0, 0, 0, 0)); */
-		return;
+        adj = GTK_ADJUSTMENT(gtk_adjustment_new (0, 0, 0, 0, 0, 0));
 	}
-
-    g_return_if_fail (GTK_IS_ADJUSTMENT (adj));
-    g_return_if_fail (box->priv->adj_y == NULL);
 
     if (box->priv->adj_y) {
         /* @@@ Do we need to disconnect from the signals here? */
@@ -779,18 +773,17 @@ gtk_databox_set_adjustment_y (GtkDatabox * box, GtkAdjustment * adj) {
 	if (box->priv->total_top != box->priv->total_bottom)
 	{
 		page_size_y = gtk_databox_get_page_size_y(box);
-		gtk_adjustment_configure(box->priv->adj_y,
-			gtk_databox_get_offset_y (box), /* value */
-			0.0, /* lower */
-			1.0, /* upper */
-			page_size_y / 20, /* step_increment */
-			page_size_y * 0.9, /* page_increment */
-			page_size_y); /* page_size */
+	} else {
+		page_size_y = 1.0;
 	}
-	else
-	{
-		g_warning("page_size_y = NaN\n");
-	}
+
+	gtk_adjustment_configure(box->priv->adj_y,
+		gtk_databox_get_offset_y (box), /* value */
+		0.0, /* lower */
+		1.0, /* upper */
+		page_size_y / 20, /* step_increment */
+		page_size_y * 0.9, /* page_increment */
+		page_size_y); /* page_size */
 
     g_signal_connect_swapped (G_OBJECT (box->priv->adj_y), "value_changed",
                               G_CALLBACK
@@ -2306,7 +2299,6 @@ gtk_databox_create_box_with_scrollbars_and_rulers_positioned (GtkWidget ** p_box
             top_row=1;
             bot_row=2;
         }
-		printf("%s: %d %d %d %d\n", __FUNCTION__, left_col, right_col, top_row, bot_row);
         gtk_table_attach (table, scrollbar, left_col, right_col, top_row, bot_row,
                           GTK_FILL, GTK_FILL | GTK_EXPAND | GTK_SHRINK, 0, 0);
     }

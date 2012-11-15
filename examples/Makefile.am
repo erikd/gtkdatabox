@@ -57,7 +57,7 @@ AM_CFLAGS			=\
 			-DGDK_PIXBUF_DISABLE_DEPRECATED\
 			-DGTK_DISABLE_DEPRECATED\
 			@LIBGLADE_CFLAGS@ \
-			`pkg-config gtk+-2.0 --cflags`
+			`pkg-config gtk+-3.0 --cflags`
 
 
 LDADD 			= $(top_builddir)/gtk/libgtkdatabox.la\
@@ -72,3 +72,9 @@ basics_libglade_LDADD	= $(top_builddir)/gtk/libgtkdatabox.la \
 else
 basics_libglade_LDADD = $(LDADD)
 endif
+
+basics : basics.o
+	gcc -o basics basics.o ../gtk/.libs/libgtkdatabox.a `pkg-config --libs gtk+-3.0` -lm
+
+basics2 : basics2.o
+	gcc -o basics2 basics2.o ../gtk/.libs/libgtkdatabox.a `pkg-config --libs gtk+-3.0` -lm

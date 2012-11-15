@@ -1486,13 +1486,9 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler) {
             else
                 ruler->priv->max_y_text_width=logical_rect.width;
             gtk_widget_set_size_request(GTK_WIDGET(ruler), ruler->priv->max_y_text_width, ruler->priv->max_x_text_height);
-            /*printf("set ruler->priv->max_x_text_height=%d\n",ruler->priv->max_x_text_height);
-            printf("set ruler->priv->max_y_text_width=%d\n",ruler->priv->max_y_text_width);*/
         } else if (ruler->priv->max_x_text_height<logical_rect.height) {
             ruler->priv->max_x_text_height=logical_rect.height;
             gtk_widget_set_size_request(GTK_WIDGET(ruler), ruler->priv->max_y_text_width, ruler->priv->max_x_text_height);
-            /*printf("set ruler->priv->max_x_text_height=%d\n",ruler->priv->max_x_text_height);
-            printf("set ruler->priv->max_y_text_width=%d\n",ruler->priv->max_y_text_width);*/
         }
 
 
@@ -1696,7 +1692,7 @@ gtk_databox_ruler_unrealize (GtkWidget * widget) {
     gtk_widget_set_realized(widget, FALSE);
 
     if (ruler->priv->backing_surface)
-        g_object_unref (ruler->priv->backing_surface);
+		cairo_surface_destroy (ruler->priv->backing_surface);
     ruler->priv->backing_surface=NULL;
 
     if (GTK_WIDGET_CLASS (gtk_databox_ruler_parent_class)->unrealize)
