@@ -61,7 +61,8 @@ AM_CFLAGS			=\
 
 
 LDADD 			= $(top_builddir)/gtk/libgtkdatabox.la\
-		 	@GTK_LIBS@
+		 	@GTK_LIBS@ \
+			-lm
 
 
 if BUILD_LIBGLADE
@@ -73,41 +74,3 @@ else
 basics_libglade_LDADD = $(LDADD)
 endif
 
-basics : basics.o
-	gcc -o basics basics.o ../gtk/.libs/libgtkdatabox.a `pkg-config --libs gtk+-3.0` -lm
-
-basics2 : basics2.o
-	gcc -o basics2 basics2.o ../gtk/.libs/libgtkdatabox.a `pkg-config --libs gtk+-3.0` -lm
-
-addremove : addremove.o
-	gcc -o addremove addremove.o ../gtk/.libs/libgtkdatabox.a `pkg-config --libs gtk+-3.0` -lm
-
-colors : colors.o
-	gcc -o colors colors.o ../gtk/.libs/libgtkdatabox.a `pkg-config --libs gtk+-3.0` -lm
-
-enable_disable : enable_disable.o
-	gcc -o enable_disable enable_disable.o ../gtk/.libs/libgtkdatabox.a `pkg-config --libs gtk+-3.0` -lm
-
-grid : grid.o
-	gcc -o grid grid.o ../gtk/.libs/libgtkdatabox.a `pkg-config --libs gtk+-3.0` -lm
-
-grid_array : grid_array.o
-	gcc -o grid_array grid_array.o ../gtk/.libs/libgtkdatabox.a `pkg-config --libs gtk+-3.0` -lm
-
-keycontrol : keycontrol.o
-	gcc -o keycontrol keycontrol.o ../gtk/.libs/libgtkdatabox.a `pkg-config --libs gtk+-3.0` -lm
-
-lissajous : lissajous.o
-	gcc -o lissajous lissajous.o ../gtk/.libs/libgtkdatabox.a `pkg-config --libs gtk+-3.0` -lm
-
-logarithmic : logarithmic.o
-	gcc -o logarithmic logarithmic.o ../gtk/.libs/libgtkdatabox.a `pkg-config --libs gtk+-3.0` -lm
-
-markers : markers.o
-	gcc -o markers markers.o ../gtk/.libs/libgtkdatabox.a `pkg-config --libs gtk+-3.0` -lm
-
-rulers : rulers.o
-	gcc -o rulers rulers.o ../gtk/.libs/libgtkdatabox.a `pkg-config --libs gtk+-3.0` -lm
-
-signals : signals.o
-	gcc -o signals signals.o ../gtk/.libs/libgtkdatabox.a `pkg-config --libs gtk+-3.0` -lm

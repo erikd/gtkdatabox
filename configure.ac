@@ -17,7 +17,7 @@
 
 
 m4_define([databox_major_version], [0]) # Change in case of really major changes
-m4_define([databox_minor_version], [9]) # Change in case of changes in exisiting API
+m4_define([databox_minor_version], [9]) # Change in case of changes in existing API
 m4_define([databox_micro_version], [1]) # Change in case of new functions being added
 m4_define([databox_nano_version],  [3]) # Change for bug fixes, code cleanup, etc.
 m4_define([databox_version],       [databox_major_version.databox_minor_version.databox_micro_version.databox_nano_version])
@@ -40,11 +40,12 @@ AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_INSTALL
 
-m4_define([gtk_required_version], [2.8.0])
+m4_define([gtk_required_version], [3.4.0])
 m4_define([pango_required_version], [1.16.0])
 m4_define([cairo_required_version], [1.4.0])
 
-AM_PATH_GTK_2_0([gtk_required_version])
+AM_PATH_GTK_3_0([gtk_required_version])
+PKG_CHECK_MODULES(GTK, [gdk-3.0 >= [gtk_required_version] gtk+-3.0 >= [gtk_required_version]])
 PKG_CHECK_MODULES(PANGO, pango >= [pango_required_version])
 PKG_CHECK_MODULES(CAIRO, cairo >= [cairo_required_version]) 
 AC_SUBST(GTK_REQUIRED, [gtk_required_version])
