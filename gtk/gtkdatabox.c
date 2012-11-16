@@ -1149,6 +1149,9 @@ gtk_databox_size_allocate (GtkWidget * widget, GtkAllocation * allocation) {
     GtkDatabox *box = GTK_DATABOX (widget);
     GtkDataboxPrivate *priv = GTK_DATABOX_GET_PRIVATE(box);
 
+    if (!gtk_widget_get_realized(widget))
+        return;
+
     widget->allocation = *allocation;
 
         gdk_window_move_resize (widget->window,
