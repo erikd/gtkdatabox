@@ -24,7 +24,9 @@ static void gtk_databox_lines_real_draw (GtkDataboxGraph * lines,
 
 struct _GtkDataboxLinesPrivate
 {
-   GdkPoint *data;
+   gint16 *xpixels;
+   gint16 *ypixels;
+   guint pixelsalloc;
 };
 
 static gpointer parent_class = NULL;
@@ -34,7 +36,8 @@ lines_finalize (GObject * object)
 {
    GtkDataboxLines *lines = GTK_DATABOX_LINES (object);
 
-   g_free (lines->priv->data);
+   g_free (lines->priv->xpixels);
+   g_free (lines->priv->ypixels);
    g_free (lines->priv);
 
    /* Chain up to the parent class */
@@ -56,25 +59,15 @@ gtk_databox_lines_class_init (gpointer g_class /*, gpointer g_class_data */ )
 }
 
 static void
-gtk_databox_lines_complete (GtkDataboxLines * lines)
-{
-   lines->priv->data =
-      g_new0 (GdkPoint,
-	      gtk_databox_xyc_graph_get_length
-	      (GTK_DATABOX_XYC_GRAPH (lines)));
-
-}
-
-static void
 gtk_databox_lines_instance_init (GTypeInstance * instance	/*,
 								   gpointer g_class */ )
 {
    GtkDataboxLines *lines = GTK_DATABOX_LINES (instance);
 
    lines->priv = g_new0 (GtkDataboxLinesPrivate, 1);
-
-   g_signal_connect (lines, "notify::length",
-		     G_CALLBACK (gtk_databox_lines_complete), NULL);
+   lines->priv->xpixels = NULL;
+   lines->priv->ypixels = NULL;
+   lines->priv->pixelsalloc = 0;
 }
 
 GType
@@ -127,7 +120,61 @@ gtk_databox_lines_new (guint len, gfloat * X, gfloat * Y,
    lines = g_object_new (GTK_DATABOX_TYPE_LINES,
 			 "X-Values", X,
 			 "Y-Values", Y,
-			 "length", len, "color", color, "size", size, NULL);
+			 "xstart", 0,
+			 "ystart", 0,
+			 "xstride", 1,
+			 "ystride", 1,
+			 "xtype", G_TYPE_FLOAT,
+			 "ytype", G_TYPE_FLOAT,
+			 "length", len,
+			 "maxlen", len,
+			 "color", color, "size", size, NULL);
+
+   return GTK_DATABOX_GRAPH (lines);
+}
+
+/**
+ * gtk_databox_lines_new_full:
+ * @maxlen: maximum length of @X and @Y
+ * @len: actual number of @X and @Y values to plot
+ * @X: array of horizontal position values of markers
+ * @Y: array of vertical position values of markers
+ * @xstart: the first element in the X array to plot (usually 0)
+ * @ystart: the first element in the Y array to plot (usually 0)
+ * @xstride: successive elements in the X array are separated by this much (1 if array, ncols if matrix)
+ * @ystride: successive elements in the Y array are separated by this much (1 if array, ncols if matrix)
+ * @xtype: the GType of the X array elements.  G_TYPE_FLOAT, G_TYPE_DOUBLE, etc.
+ * @ytype: the GType of the Y array elements.  G_TYPE_FLOAT, G_TYPE_DOUBLE, etc.
+ * @color: color of the markers
+ * @size: marker size or line width (depending on the @type)
+ *
+ * Creates a new #GtkDataboxLines object which can be added to a #GtkDatabox widget.
+ *
+ * Return value: A new #GtkDataboxLines object
+ **/
+GtkDataboxGraph *
+gtk_databox_lines_new_full (guint maxlen, guint len,
+			void * X, guint xstart, guint xstride, GType xtype,
+			void * Y, guint ystart, guint ystride, GType ytype,
+		    GdkColor * color, guint size)
+{
+   GtkDataboxLines *lines;
+   g_return_val_if_fail (X, NULL);
+   g_return_val_if_fail (Y, NULL);
+   g_return_val_if_fail ((len > 0), NULL);
+
+   lines = g_object_new (GTK_DATABOX_TYPE_LINES,
+			 "X-Values", X,
+			 "Y-Values", Y,
+			 "xstart", xstart,
+			 "ystart", ystart,
+			 "xstride", xstride,
+			 "ystride", ystride,
+			 "xtype", xtype,
+			 "ytype", ytype,
+			 "length", len,
+			 "maxlen", maxlen,
+			 "color", color, "size", size, NULL);
 
    return GTK_DATABOX_GRAPH (lines);
 }
@@ -137,31 +184,56 @@ gtk_databox_lines_real_draw (GtkDataboxGraph * graph,
 			     GtkDatabox * box)
 {
    GtkDataboxLines *lines = GTK_DATABOX_LINES (graph);
-   GdkPoint *data;
    guint i = 0;
-   gfloat *X;
-   gfloat *Y;
-   guint len;
+   void *X;
+   void *Y;
+   guint len, maxlen;
    cairo_t *cr;
+   gint16 *xpixels, *ypixels;
+   guint xstart, xstride, ystart, ystride;
+   GType xtype, ytype;
+   float linewidth;
 
    g_return_if_fail (GTK_DATABOX_IS_LINES (lines));
    g_return_if_fail (GTK_IS_DATABOX (box));
 
    len = gtk_databox_xyc_graph_get_length (GTK_DATABOX_XYC_GRAPH (graph));
-   X = gtk_databox_xyc_graph_get_X (GTK_DATABOX_XYC_GRAPH (graph));
-   Y = gtk_databox_xyc_graph_get_Y (GTK_DATABOX_XYC_GRAPH (graph));
-   data = lines->priv->data;
+   maxlen = gtk_databox_xyc_graph_get_maxlen (GTK_DATABOX_XYC_GRAPH (graph));
 
-   gtk_databox_values_to_pixels (box, len, X, Y, data);
+   if (lines->priv->pixelsalloc < len)
+   {
+   	lines->priv->pixelsalloc = len;
+	lines->priv->xpixels = (gint16 *)g_realloc(lines->priv->xpixels, len * sizeof(gint16));
+	lines->priv->ypixels = (gint16 *)g_realloc(lines->priv->ypixels, len * sizeof(gint16));
+   }
+
+   xpixels = lines->priv->xpixels;
+   ypixels = lines->priv->ypixels;
+
+   X = gtk_databox_xyc_graph_get_X (GTK_DATABOX_XYC_GRAPH (graph));
+   xstart = gtk_databox_xyc_graph_get_xstart (GTK_DATABOX_XYC_GRAPH (graph));
+   xstride = gtk_databox_xyc_graph_get_xstride (GTK_DATABOX_XYC_GRAPH (graph));
+   xtype = gtk_databox_xyc_graph_get_xtype (GTK_DATABOX_XYC_GRAPH (graph));
+   gtk_databox_values_to_xpixels(box, xpixels, X, xtype, maxlen, xstart, xstride, len);
+
+   Y = gtk_databox_xyc_graph_get_Y (GTK_DATABOX_XYC_GRAPH (graph));
+   ystart = gtk_databox_xyc_graph_get_ystart (GTK_DATABOX_XYC_GRAPH (graph));
+   ystride = gtk_databox_xyc_graph_get_ystride (GTK_DATABOX_XYC_GRAPH (graph));
+   ytype = gtk_databox_xyc_graph_get_ytype (GTK_DATABOX_XYC_GRAPH (graph));
+   gtk_databox_values_to_ypixels(box, ypixels, Y, ytype, maxlen, ystart, ystride, len);
 
    cr = gtk_databox_graph_create_gc (graph, box);
 
-   cairo_move_to(cr, data[0].x + 0.5, data[0].y + 0.5);
+   linewidth = gtk_databox_graph_get_size (graph);
+   cairo_set_line_width(cr, linewidth + 0.1);
+
+   cairo_move_to(cr, xpixels[0] + 0.5, ypixels[0] + 0.5);
    for (i = 1; i < len; i++)
-	  cairo_line_to(cr, data[i].x + 0.5, data[i].y + 0.5);
+	  cairo_line_to(cr, xpixels[i] + 0.5, ypixels[i] + 0.5);
 
    cairo_stroke(cr);
    cairo_destroy(cr);
 
    return;
 }
+

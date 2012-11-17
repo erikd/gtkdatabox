@@ -31,14 +31,28 @@ enum
 {
    PROP_X = 1,
    PROP_Y,
-   PROP_LEN
+   PROP_LEN,
+   PROP_MAXLEN,
+   PROP_XSTART,
+   PROP_YSTART,
+   PROP_XSTRIDE,
+   PROP_YSTRIDE,
+   PROP_XTYPE,
+   PROP_YTYPE
 };
 
 struct _GtkDataboxXYCGraphPrivate
 {
-   guint len;
    gfloat *X;
    gfloat *Y;
+   guint len;
+   guint maxlen;
+   guint xstart;
+   guint ystart;
+   guint xstride;
+   guint ystride;
+   GType xtype;
+   GType ytype;
 };
 
 static gpointer parent_class = NULL;
@@ -77,6 +91,77 @@ gtk_databox_xyc_graph_set_length (GtkDataboxXYCGraph * xyc_graph, guint len)
 }
 
 static void
+gtk_databox_xyc_graph_set_maxlen (GtkDataboxXYCGraph * xyc_graph, guint maxlen)
+{
+   g_return_if_fail (GTK_DATABOX_IS_XYC_GRAPH (xyc_graph));
+   g_return_if_fail (maxlen > 0);
+
+   xyc_graph->priv->maxlen = maxlen;
+
+   g_object_notify (G_OBJECT (xyc_graph), "maxlen");
+}
+
+static void
+gtk_databox_xyc_graph_set_xstart (GtkDataboxXYCGraph * xyc_graph, guint xstart)
+{
+   g_return_if_fail (GTK_DATABOX_IS_XYC_GRAPH (xyc_graph));
+
+   xyc_graph->priv->xstart = xstart;
+
+   g_object_notify (G_OBJECT (xyc_graph), "X-Values");
+}
+
+static void
+gtk_databox_xyc_graph_set_ystart (GtkDataboxXYCGraph * xyc_graph, guint ystart)
+{
+   g_return_if_fail (GTK_DATABOX_IS_XYC_GRAPH (xyc_graph));
+
+   xyc_graph->priv->ystart = ystart;
+
+   g_object_notify (G_OBJECT (xyc_graph), "Y-Values");
+}
+
+static void
+gtk_databox_xyc_graph_set_xstride (GtkDataboxXYCGraph * xyc_graph, guint xstride)
+{
+   g_return_if_fail (GTK_DATABOX_IS_XYC_GRAPH (xyc_graph));
+
+   xyc_graph->priv->xstride = xstride;
+
+   g_object_notify (G_OBJECT (xyc_graph), "X-Values");
+}
+
+static void
+gtk_databox_xyc_graph_set_ystride (GtkDataboxXYCGraph * xyc_graph, guint ystride)
+{
+   g_return_if_fail (GTK_DATABOX_IS_XYC_GRAPH (xyc_graph));
+
+   xyc_graph->priv->ystride = ystride;
+
+   g_object_notify (G_OBJECT (xyc_graph), "Y-Values");
+}
+
+static void
+gtk_databox_xyc_graph_set_xtype (GtkDataboxXYCGraph * xyc_graph, GType xtype)
+{
+   g_return_if_fail (GTK_DATABOX_IS_XYC_GRAPH (xyc_graph));
+
+   xyc_graph->priv->xtype = xtype;
+
+   g_object_notify (G_OBJECT (xyc_graph), "X-Values");
+}
+
+static void
+gtk_databox_xyc_graph_set_ytype (GtkDataboxXYCGraph * xyc_graph, GType ytype)
+{
+   g_return_if_fail (GTK_DATABOX_IS_XYC_GRAPH (xyc_graph));
+
+   xyc_graph->priv->ytype = ytype;
+
+   g_object_notify (G_OBJECT (xyc_graph), "Y-Values");
+}
+
+static void
 gtk_databox_xyc_graph_set_property (GObject * object,
 				    guint property_id,
 				    const GValue * value, GParamSpec * pspec)
@@ -86,22 +171,34 @@ gtk_databox_xyc_graph_set_property (GObject * object,
    switch (property_id)
    {
    case PROP_X:
-      {
-	 gtk_databox_xyc_graph_set_X (xyc_graph,
-				      (gfloat *) g_value_get_pointer (value));
-      }
+      gtk_databox_xyc_graph_set_X (xyc_graph, (gfloat *) g_value_get_pointer (value));
       break;
    case PROP_Y:
-      {
-	 gtk_databox_xyc_graph_set_Y (xyc_graph,
-				      (gfloat *) g_value_get_pointer (value));
-      }
+      gtk_databox_xyc_graph_set_Y (xyc_graph, (gfloat *) g_value_get_pointer (value));
       break;
    case PROP_LEN:
-      {
-	 gtk_databox_xyc_graph_set_length (xyc_graph,
-					   g_value_get_int (value));
-      }
+      gtk_databox_xyc_graph_set_length (xyc_graph, g_value_get_int (value));
+      break;
+   case PROP_MAXLEN:
+      gtk_databox_xyc_graph_set_maxlen (xyc_graph, g_value_get_int (value));
+      break;
+   case PROP_XSTART:
+      gtk_databox_xyc_graph_set_xstart (xyc_graph, g_value_get_int (value));
+      break;
+   case PROP_YSTART:
+      gtk_databox_xyc_graph_set_ystart (xyc_graph, g_value_get_int (value));
+      break;
+   case PROP_XSTRIDE:
+      gtk_databox_xyc_graph_set_xstride (xyc_graph, g_value_get_int (value));
+      break;
+   case PROP_YSTRIDE:
+      gtk_databox_xyc_graph_set_ystride (xyc_graph, g_value_get_int (value));
+      break;
+   case PROP_XTYPE:
+      gtk_databox_xyc_graph_set_xtype (xyc_graph, g_value_get_gtype (value));
+      break;
+   case PROP_YTYPE:
+      gtk_databox_xyc_graph_set_ytype (xyc_graph, g_value_get_gtype (value));
       break;
    default:
       /* We don't have any other property... */
@@ -154,8 +251,128 @@ guint
 gtk_databox_xyc_graph_get_length (GtkDataboxXYCGraph * xyc_graph)
 {
    g_return_val_if_fail (GTK_DATABOX_IS_XYC_GRAPH (xyc_graph), 0);
-
    return xyc_graph->priv->len;
+}
+
+/**
+ * gtk_databox_xyc_graph_get_maxlen:
+ * @xyc_graph: A #GtkDataboxXYCGraph object
+ *
+ * Gets the the maxlen of the X and Y values arrays.
+ *
+ * Return value: Size of X/Y arrays.
+ */
+guint
+gtk_databox_xyc_graph_get_maxlen (GtkDataboxXYCGraph * xyc_graph)
+{
+   g_return_val_if_fail (GTK_DATABOX_IS_XYC_GRAPH (xyc_graph), 0);
+   return xyc_graph->priv->maxlen;
+}
+
+/**
+ * gtk_databox_xyc_graph_get_xstart:
+ * @xyc_graph: A #GtkDataboxXYCGraph object
+ *
+ * Gets the the start offset of the X values array.  This is the element in the array pointed to by X that will be the first element plotted.
+ * If X is a pointer to a gfloat array, and xstart is 5, then x[5] will be the first data element.  If Xstride is 1, then x[6] will be the
+ * second element.  x[5 + len - 1] will be last element.
+ * Usually, xstart will be 0.  It can be nonzero to allow for interleaved X/Y samples, or if the data is stored as a matrix, then X can point
+ * to the start of the matrix, xstart can be the column number, and xstride the number of columns.
+ *
+ * Return value: The xstart value.
+ */
+guint
+gtk_databox_xyc_graph_get_xstart (GtkDataboxXYCGraph * xyc_graph)
+{
+   g_return_val_if_fail (GTK_DATABOX_IS_XYC_GRAPH (xyc_graph), 0);
+   return xyc_graph->priv->xstart;
+}
+
+/**
+ * gtk_databox_xyc_graph_get_ystart:
+ * @xyc_graph: A #GtkDataboxXYCGraph object
+ *
+ * Gets the the start offset of the Y values array.  This is the element in the array pointed to by Y that will be the first element plotted.
+ * If Y is a pointer to a gfloat array, and ystart is 5, then y[5] will be the first data element.  If Ystride is 1, then y[6] will be the
+ * second element.  y[5 + len - 1] will be last element.
+ * Usually, ystart will be 0.  It can be nonzero to allow for interleaved X/Y samples, or if the data is stored as a matrix, then Y can point
+ * to the start of the matrix, ystart can be the column number, and ystride the number of columns.
+ *
+ * Return value: The ystart value.
+ */
+guint
+gtk_databox_xyc_graph_get_ystart (GtkDataboxXYCGraph * xyc_graph)
+{
+   g_return_val_if_fail (GTK_DATABOX_IS_XYC_GRAPH (xyc_graph), 0);
+   return xyc_graph->priv->ystart;
+}
+
+/**
+ * gtk_databox_xyc_graph_get_xstride:
+ * @xyc_graph: A #GtkDataboxXYCGraph object
+ *
+ * Gets the the stride offset of the X values array.  This is the element in the array pointed to by X that will be the first element plotted.
+ * If X is a pointer to a gfloat array, and xstart is 5, then x[5] will be the first data element.  If Xstride is 1, then x[6] will be the
+ * second element.  x[5 + len - 1] will be last element.
+ * Usually, xstride will be 1.  It can be nonzero to allow for interleaved X/Y samples, or if the data is stored as a matrix, then X can point
+ * to the start of the matrix, xstart can be the column number, and xstride the number of columns.
+ *
+ * Return value: The xstride value.
+ */
+guint
+gtk_databox_xyc_graph_get_xstride (GtkDataboxXYCGraph * xyc_graph)
+{
+   g_return_val_if_fail (GTK_DATABOX_IS_XYC_GRAPH (xyc_graph), 0);
+   return xyc_graph->priv->xstride;
+}
+
+/**
+ * gtk_databox_xyc_graph_get_ystride:
+ * @xyc_graph: A #GtkDataboxXYCGraph object
+ *
+ * Gets the the stride offset of the Y values array.  This is the element in the array pointed to by Y that will be the first element plotted.
+ * If Y is a pointer to a gfloat array, and ystart is 5, then y[5] will be the first data element.  If Ystride is 1, then y[6] will be the
+ * second element.  y[5 + len - 1] will be last element.
+ * Usually, ystride will be 1.  It can be nonzero to allow for interleaved X/Y samples, or if the data is stored as a matrix, then Y can point
+ * to the start of the matrix, ystart can be the column number, and ystride the number of columns.
+ *
+ * Return value: The ystride value.
+ */
+guint
+gtk_databox_xyc_graph_get_ystride (GtkDataboxXYCGraph * xyc_graph)
+{
+   g_return_val_if_fail (GTK_DATABOX_IS_XYC_GRAPH (xyc_graph), 0);
+   return xyc_graph->priv->ystride;
+}
+
+/**
+ * gtk_databox_xyc_graph_get_xtype:
+ * @xyc_graph: A #GtkDataboxXYCGraph object
+ *
+ * Gets the the GType of the X array elements.  This may be G_TYPE_FLOAT, G_TYPE_DOUBLE, or similar.
+ *
+ * Return value: A GType, usually this is G_TYPE_FLOAT.
+ */
+GType
+gtk_databox_xyc_graph_get_xtype (GtkDataboxXYCGraph * xyc_graph)
+{
+   g_return_val_if_fail (GTK_DATABOX_IS_XYC_GRAPH (xyc_graph), 0);
+   return xyc_graph->priv->xtype;
+}
+
+/**
+ * gtk_databox_xyc_graph_get_ytype:
+ * @xyc_graph: A #GtkDataboxXYCGraph object
+ *
+ * Gets the the GType of the Y array elements.  This may be G_TYPE_FLOAT, G_TYPE_DOUBLE, or similar.
+ *
+ * Return value: A GType, usually this is G_TYPE_FLOAT.
+ */
+GType
+gtk_databox_xyc_graph_get_ytype (GtkDataboxXYCGraph * xyc_graph)
+{
+   g_return_val_if_fail (GTK_DATABOX_IS_XYC_GRAPH (xyc_graph), 0);
+   return xyc_graph->priv->ytype;
 }
 
 static void
@@ -168,20 +385,34 @@ gtk_databox_xyc_graph_get_property (GObject * object,
    switch (property_id)
    {
    case PROP_X:
-      {
-	 g_value_set_pointer (value, gtk_databox_xyc_graph_get_X (xyc_graph));
-      }
+      g_value_set_pointer (value, gtk_databox_xyc_graph_get_X (xyc_graph));
       break;
    case PROP_Y:
-      {
-	 g_value_set_pointer (value, gtk_databox_xyc_graph_get_Y (xyc_graph));
-      }
+      g_value_set_pointer (value, gtk_databox_xyc_graph_get_Y (xyc_graph));
       break;
    case PROP_LEN:
-      {
-	 g_value_set_int (value,
-			  gtk_databox_xyc_graph_get_length (xyc_graph));
-      }
+      g_value_set_int (value, gtk_databox_xyc_graph_get_length (xyc_graph));
+      break;
+   case PROP_MAXLEN:
+      g_value_set_int (value, gtk_databox_xyc_graph_get_maxlen (xyc_graph));
+      break;
+   case PROP_XSTART:
+      g_value_set_int (value, gtk_databox_xyc_graph_get_xstart (xyc_graph));
+      break;
+   case PROP_YSTART:
+      g_value_set_int (value, gtk_databox_xyc_graph_get_ystart (xyc_graph));
+      break;
+   case PROP_XSTRIDE:
+      g_value_set_int (value, gtk_databox_xyc_graph_get_xstride (xyc_graph));
+      break;
+   case PROP_YSTRIDE:
+      g_value_set_int (value, gtk_databox_xyc_graph_get_ystride (xyc_graph));
+      break;
+   case PROP_XTYPE:
+      g_value_set_gtype (value, gtk_databox_xyc_graph_get_xtype (xyc_graph));
+      break;
+   case PROP_YTYPE:
+      g_value_set_gtype (value, gtk_databox_xyc_graph_get_ytype (xyc_graph));
       break;
    default:
       /* We don't have any other property... */
@@ -221,7 +452,6 @@ gtk_databox_xyc_graph_class_init (gpointer g_class
 						"X values of data",
 						G_PARAM_CONSTRUCT_ONLY |
 						G_PARAM_READWRITE);
-
    g_object_class_install_property (gobject_class,
 				    PROP_X, xyc_graph_param_spec);
 
@@ -230,16 +460,56 @@ gtk_databox_xyc_graph_class_init (gpointer g_class
 						"Y values of data",
 						G_PARAM_CONSTRUCT_ONLY |
 						G_PARAM_READWRITE);
-
    g_object_class_install_property (gobject_class,
 				    PROP_Y, xyc_graph_param_spec);
 
    xyc_graph_param_spec = g_param_spec_int ("length", "length of X and Y", "number of data points", G_MININT, G_MAXINT, 0,	/* default value */
 					    G_PARAM_CONSTRUCT_ONLY |
 					    G_PARAM_READWRITE);
-
    g_object_class_install_property (gobject_class,
 				    PROP_LEN, xyc_graph_param_spec);
+
+   xyc_graph_param_spec = g_param_spec_int ("maxlen", "maxlen of X and Y", "maximal number of data points", G_MININT, G_MAXINT, 0,	/* default value */
+					    G_PARAM_CONSTRUCT_ONLY |
+					    G_PARAM_READWRITE);
+   g_object_class_install_property (gobject_class,
+				    PROP_MAXLEN, xyc_graph_param_spec);
+
+   xyc_graph_param_spec = g_param_spec_int ("xstart", "array index of first X", "array index of first X", G_MININT, G_MAXINT, 0,	/* default value */
+					    G_PARAM_CONSTRUCT_ONLY |
+					    G_PARAM_READWRITE);
+   g_object_class_install_property (gobject_class,
+				    PROP_XSTART, xyc_graph_param_spec);
+
+   xyc_graph_param_spec = g_param_spec_int ("ystart", "array index of first Y", "array index of first Y", G_MININT, G_MAXINT, 0,	/* default value */
+					    G_PARAM_CONSTRUCT_ONLY |
+					    G_PARAM_READWRITE);
+   g_object_class_install_property (gobject_class,
+				    PROP_YSTART, xyc_graph_param_spec);
+
+   xyc_graph_param_spec = g_param_spec_int ("xstride", "stride of X values", "stride of X values", G_MININT, G_MAXINT, 1,	/* default value */
+					    G_PARAM_CONSTRUCT_ONLY |
+					    G_PARAM_READWRITE);
+   g_object_class_install_property (gobject_class,
+				    PROP_XSTRIDE, xyc_graph_param_spec);
+
+   xyc_graph_param_spec = g_param_spec_int ("ystride", "stride of Y values", "stride of Y values", G_MININT, G_MAXINT, 1,	/* default value */
+					    G_PARAM_CONSTRUCT_ONLY |
+					    G_PARAM_READWRITE);
+   g_object_class_install_property (gobject_class,
+				    PROP_YSTRIDE, xyc_graph_param_spec);
+
+   xyc_graph_param_spec = g_param_spec_gtype ("xtype", "GType of X elements", "GType of X elements", G_TYPE_NONE,
+					    G_PARAM_CONSTRUCT_ONLY |
+					    G_PARAM_READWRITE);
+   g_object_class_install_property (gobject_class,
+				    PROP_XTYPE, xyc_graph_param_spec);
+
+   xyc_graph_param_spec = g_param_spec_gtype ("ytype", "GType of Y elements", "GType of Y elements", G_TYPE_NONE,
+					    G_PARAM_CONSTRUCT_ONLY |
+					    G_PARAM_READWRITE);
+   g_object_class_install_property (gobject_class,
+				    PROP_YTYPE, xyc_graph_param_spec);
 
    graph_class->calculate_extrema =
       gtk_databox_xyc_graph_real_calculate_extrema;
@@ -286,7 +556,10 @@ gtk_databox_xyc_graph_real_calculate_extrema (GtkDataboxGraph * graph,
 					      gfloat * min_y, gfloat * max_y)
 {
    GtkDataboxXYCGraph *xyc_graph = GTK_DATABOX_XYC_GRAPH (graph);
-   guint i;
+   guint i, indx, len, maxlen, start, stride;
+   void *values;
+   GType vtype;
+   gfloat fval = 0.0, minval = 0.0, maxval = 0.0;
 
    g_return_val_if_fail (GTK_DATABOX_IS_XYC_GRAPH (graph), -1);
    g_return_val_if_fail (min_x, -1);
@@ -295,21 +568,109 @@ gtk_databox_xyc_graph_real_calculate_extrema (GtkDataboxGraph * graph,
    g_return_val_if_fail (max_y, -1);
    g_return_val_if_fail (xyc_graph->priv->len, -1);
 
-   *min_x = *max_x = xyc_graph->priv->X[0];
-   *min_y = *max_y = xyc_graph->priv->Y[0];
+   len = xyc_graph->priv->len;
+   maxlen = xyc_graph->priv->maxlen;
+   values = xyc_graph->priv->X;
+   vtype = xyc_graph->priv->xtype;
+   start = xyc_graph->priv->xstart;
+   stride = xyc_graph->priv->xstride;
 
-   for (i = 1; i < xyc_graph->priv->len; ++i)
-   {
-      if (xyc_graph->priv->X[i] < *min_x)
-	 *min_x = xyc_graph->priv->X[i];
-      else if (xyc_graph->priv->X[i] > *max_x)
-	 *max_x = xyc_graph->priv->X[i];
-      if (xyc_graph->priv->Y[i] < *min_y)
-	 *min_y = xyc_graph->priv->Y[i];
-      else if (xyc_graph->priv->Y[i] > *max_y)
-	 *max_y = xyc_graph->priv->Y[i];
+   indx = start * stride;
+   i = 0;
+   do {
+		if (vtype == G_TYPE_FLOAT)
+			fval = ((gfloat *)values)[indx];
+		else if (vtype == G_TYPE_DOUBLE)
+			fval = ((gdouble *)values)[indx];
+		else if (vtype == G_TYPE_INT)
+			fval = ((gint *)values)[indx];
+		else if (vtype == G_TYPE_UINT)
+			fval = ((guint *)values)[indx];
+		else if (vtype == G_TYPE_LONG)
+			fval = ((glong *)values)[indx];
+		else if (vtype == G_TYPE_ULONG)
+			fval = ((gulong *)values)[indx];
+		else if (vtype == G_TYPE_INT64)
+			fval = ((gint64 *)values)[indx];
+		else if (vtype == G_TYPE_UINT64)
+			fval = ((guint64 *)values)[indx];
+		else if (vtype == G_TYPE_CHAR)
+			fval = ((gchar *)values)[indx];
+		else if (vtype == G_TYPE_UCHAR)
+			fval = ((guchar *)values)[indx];
 
-   }
+		if (i==0)
+		{
+			minval = maxval = fval;
+		}
+		else
+		{
+			if (fval < minval) minval = fval;
+			if (fval > maxval) maxval = fval;
+		}
+
+		/* handle the wrap-around (ring buffer) issue using modulus.  for efficiency, don't do this for non-wraparound cases. */
+		/* note this allows multiple wrap-arounds.  One could hold a single cycle of a sine wave, and plot a continuous wave */
+		/* This can be optimized using pointers later */
+		if (i + start > maxlen)
+			indx = ((i + start) % maxlen) * stride;
+		else
+			indx += stride;
+   } while (++i < len);
+
+   *min_x = minval;
+   *max_x = maxval;
+
+   values = xyc_graph->priv->Y;
+   vtype = xyc_graph->priv->ytype;
+   start = xyc_graph->priv->ystart;
+   stride = xyc_graph->priv->ystride;
+
+   indx = start * stride;
+   i = 0;
+   do {
+		if (vtype == G_TYPE_FLOAT)
+			fval = ((gfloat *)values)[indx];
+		else if (vtype == G_TYPE_DOUBLE)
+			fval = ((gdouble *)values)[indx];
+		else if (vtype == G_TYPE_INT)
+			fval = ((gint *)values)[indx];
+		else if (vtype == G_TYPE_UINT)
+			fval = ((guint *)values)[indx];
+		else if (vtype == G_TYPE_LONG)
+			fval = ((glong *)values)[indx];
+		else if (vtype == G_TYPE_ULONG)
+			fval = ((gulong *)values)[indx];
+		else if (vtype == G_TYPE_INT64)
+			fval = ((gint64 *)values)[indx];
+		else if (vtype == G_TYPE_UINT64)
+			fval = ((guint64 *)values)[indx];
+		else if (vtype == G_TYPE_CHAR)
+			fval = ((gchar *)values)[indx];
+		else if (vtype == G_TYPE_UCHAR)
+			fval = ((guchar *)values)[indx];
+
+		if (i==0) /* yes putting this check inside the loop is inefficient, but it makes the code simpler */
+		{
+			minval = maxval = fval;
+		}
+		else
+		{
+			if (fval < minval) minval = fval;
+			if (fval > maxval) maxval = fval;
+		}
+
+		/* handle the wrap-around (ring buffer) issue using modulus.  for efficiency, don't do this for non-wraparound cases. */
+		/* note this allows multiple wrap-arounds.  One could hold a single cycle of a sine wave, and plot a continuous wave */
+		/* This can be optimized using pointers later */
+		if (i + start > maxlen)
+			indx = ((i + start) % maxlen) * stride;
+		else
+			indx += stride;
+   } while (++i < len);
+
+   *min_y = minval;
+   *max_y = maxval;
 
    return 0;
 }

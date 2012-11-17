@@ -87,9 +87,18 @@ G_BEGIN_DECLS
    GType gtk_databox_xyyc_graph_get_type (void);
 
    guint gtk_databox_xyyc_graph_get_length (GtkDataboxXYYCGraph * xyyc_graph);
+   guint gtk_databox_xyyc_graph_get_maxlen (GtkDataboxXYYCGraph * xyyc_graph);
    gfloat *gtk_databox_xyyc_graph_get_X (GtkDataboxXYYCGraph * xyyc_graph);
    gfloat *gtk_databox_xyyc_graph_get_Y1 (GtkDataboxXYYCGraph * xyyc_graph);
    gfloat *gtk_databox_xyyc_graph_get_Y2 (GtkDataboxXYYCGraph * xyyc_graph);
+   guint gtk_databox_xyyc_graph_get_xstart (GtkDataboxXYYCGraph * xyyc_graph);
+   guint gtk_databox_xyyc_graph_get_y1start (GtkDataboxXYYCGraph * xyyc_graph);
+   guint gtk_databox_xyyc_graph_get_y2start (GtkDataboxXYYCGraph * xyyc_graph);
+   guint gtk_databox_xyyc_graph_get_xstride (GtkDataboxXYYCGraph * xyyc_graph);
+   guint gtk_databox_xyyc_graph_get_y1stride (GtkDataboxXYYCGraph * xyyc_graph);
+   guint gtk_databox_xyyc_graph_get_y2stride (GtkDataboxXYYCGraph * xyyc_graph);
+   GType gtk_databox_xyyc_graph_get_xtype (GtkDataboxXYYCGraph * xyyc_graph);
+   GType gtk_databox_xyyc_graph_get_ytype (GtkDataboxXYYCGraph * xyyc_graph);
 
 G_END_DECLS
 #endif				/* __GTK_DATABOX_XYYC_GRAPH_H__ */

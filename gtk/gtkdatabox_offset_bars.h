@@ -86,5 +86,11 @@ G_BEGIN_DECLS
    GtkDataboxGraph *gtk_databox_offset_bars_new (guint len, gfloat * X, gfloat * Y1, gfloat * Y2,
 					  GdkColor * color, guint size);
 
+   GtkDataboxGraph *gtk_databox_offset_bars_new_full (guint maxlen, guint len,
+			void * X, guint xstart, guint xstride, GType xtype,
+			void * Y1, guint y1start, guint y1stride,
+			void * Y2, guint y2start, guint y2stride, GType ytype,
+		    GdkColor * color, guint size);
+
 G_END_DECLS
 #endif				/* __GTK_DATABOX_OFFSET_BARS_H__ */

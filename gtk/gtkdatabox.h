@@ -178,11 +178,10 @@ gint16 gtk_databox_value_to_pixel_x (GtkDatabox * box, gfloat value);
 gint16 gtk_databox_value_to_pixel_y (GtkDatabox * box, gfloat value);
 gfloat gtk_databox_pixel_to_value_x (GtkDatabox * box, gint16 pixel);
 gfloat gtk_databox_pixel_to_value_y (GtkDatabox * box, gint16 pixel);
-void gtk_databox_values_to_pixels (GtkDatabox * box,
-                                   guint len,
-                                   const gfloat * values_x,
-                                   const gfloat * values_y,
-                                   GdkPoint * pixels);
+void gtk_databox_values_to_xpixels (GtkDatabox *box, gint16 *pixels,
+	void *values, GType vtype, guint size, guint start, guint stride, guint len);
+void gtk_databox_values_to_ypixels (GtkDatabox *box, gint16 *pixels,
+	void *values, GType vtype, guint size, guint start, guint stride, guint len);
 
 void gtk_databox_create_box_with_scrollbars_and_rulers (GtkWidget **
         p_box,

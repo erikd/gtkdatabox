@@ -2039,54 +2039,6 @@ gtk_databox_graph_remove_all (GtkDatabox * box) {
 }
 
 /**
- * gtk_databox_values_to_pixels:
- * @box: A #GtkDatabox widget
- * @len: Number of values/pixels
- * @values_x: Array of X values (length >= len)
- * @values_y: Array of Y values (length >= len)
- * @pixels: Array of pixel coordinates (length >= len)
- *
- * Calculates the pixel equivalents of the given X/Y values and stores them in the @pixels array.
- */
-void
-gtk_databox_values_to_pixels (GtkDatabox * box, guint len,
-                              const gfloat * values_x,
-                              const gfloat * values_y,
-                              GdkPoint * pixels)
-{
-    guint i;
-
-    for (i = 0; i < len; ++i, ++values_x, ++values_y, ++pixels)
-    {
-        if (box->priv->scale_type_x == GTK_DATABOX_SCALE_LINEAR)
-            pixels->x =
-                (*values_x -
-                 box->priv->visible_left) * box->priv->translation_factor_x;
-        else if (box->priv->scale_type_x == GTK_DATABOX_SCALE_LOG2)
-            pixels->x =
-                log2 (*values_x / box->priv->visible_left) *
-                box->priv->translation_factor_x;
-        else
-            pixels->x =
-                log10 (*values_x / box->priv->visible_left) *
-                box->priv->translation_factor_x;
-
-        if (box->priv->scale_type_y == GTK_DATABOX_SCALE_LINEAR)
-            pixels->y =
-                (*values_y -
-                 box->priv->visible_top) * box->priv->translation_factor_y;
-        else if (box->priv->scale_type_y == GTK_DATABOX_SCALE_LOG2)
-            pixels->y =
-                log2 (*values_y / box->priv->visible_top) *
-                box->priv->translation_factor_y;
-        else
-            pixels->y =
-                log10 (*values_y / box->priv->visible_top) *
-                box->priv->translation_factor_y;
-    }
-}
-
-/**
  * gtk_databox_value_to_pixel_x:
  * @box: A #GtkDatabox widget
  * @value: An x value
@@ -2131,6 +2083,136 @@ gtk_databox_value_to_pixel_y (GtkDatabox * box, gfloat value) {
     else
         return log10 (value / box->priv->visible_top) *
                box->priv->translation_factor_y;
+}
+
+/**
+ * gtk_databox_values_to_xpixels:
+ * @box: A #GtkDatabox widget
+ * @value: An x values array
+ *
+ * Calculates the horizontal pixel coordinates which represents the x @values.
+ * Pixel coordinates are relative to the left corner of the @box which is equivalent to (0).
+ *
+ * Return value: Pixel coordinates
+ */
+void
+gtk_databox_values_to_xpixels (GtkDatabox *box, gint16 *pixels,
+	void *values, GType vtype, guint maxlen, guint start, guint stride, guint len)
+{
+    guint i, indx;
+	gfloat fval = 0.0;
+	GtkDataboxScaleType scale_type;
+	gfloat tf, minvis;
+
+	scale_type = box->priv->scale_type_x;
+	tf = box->priv->translation_factor_x;
+	minvis = box->priv->visible_left;
+
+	indx = start * stride;
+	i = 0;
+	do {
+		/* This may be excessive, but it handles every conceivable type */
+		if (vtype == G_TYPE_FLOAT)
+			fval = ((gfloat *)values)[indx];
+		else if (vtype == G_TYPE_DOUBLE)
+			fval = ((gdouble *)values)[indx];
+		else if (vtype == G_TYPE_INT)
+			fval = ((gint *)values)[indx];
+		else if (vtype == G_TYPE_UINT)
+			fval = ((guint *)values)[indx];
+		else if (vtype == G_TYPE_LONG)
+			fval = ((glong *)values)[indx];
+		else if (vtype == G_TYPE_ULONG)
+			fval = ((gulong *)values)[indx];
+		else if (vtype == G_TYPE_INT64)
+			fval = ((gint64 *)values)[indx];
+		else if (vtype == G_TYPE_UINT64)
+			fval = ((guint64 *)values)[indx];
+		else if (vtype == G_TYPE_CHAR)
+			fval = ((gchar *)values)[indx];
+		else if (vtype == G_TYPE_UCHAR)
+			fval = ((guchar *)values)[indx];
+
+		if (scale_type == GTK_DATABOX_SCALE_LINEAR)
+			pixels[i] = tf * (fval - minvis);
+		else if (scale_type == GTK_DATABOX_SCALE_LOG2)
+			pixels[i] = tf * log2(fval / minvis);
+		else
+			pixels[i] = tf * log10(fval / minvis);
+
+		/* handle the wrap-around (ring buffer) issue using modulus.  for efficiency, don't do this for non-wraparound cases. */
+		/* note this allows multiple wrap-arounds.  One could hold a single cycle of a sine wave, and plot a continuous wave */
+		/* This can be optimized using pointers later */
+		if (i + start > maxlen)
+			indx = ((i + start) % maxlen) * stride;
+		else
+			indx += stride;
+	} while (++i < len);
+}
+
+/**
+ * gtk_databox_values_to_ypixels:
+ * @box: A #GtkDatabox widget
+ * @value: An y values array
+ *
+ * Calculates the vertical pixel coordinates which represents the y @values.
+ * Pixel coordinates are relative to the top corner of the @box which is equivalent to (0).
+ *
+ * Return value: Pixel coordinates
+ */
+void
+gtk_databox_values_to_ypixels (GtkDatabox *box, gint16 *pixels,
+	void *values, GType vtype, guint maxlen, guint start, guint stride, guint len)
+{
+    guint i, indx;
+	gfloat fval = 0.0;
+	GtkDataboxScaleType scale_type;
+	gfloat tf, minvis;
+
+	scale_type = box->priv->scale_type_y;
+	tf = box->priv->translation_factor_y;
+	minvis = box->priv->visible_top;
+
+	indx = start * stride;
+	i = 0;
+	do {
+		/* This may be excessive, but it handles every conceivable type */
+		if (vtype == G_TYPE_FLOAT)
+			fval = ((gfloat *)values)[indx];
+		else if (vtype == G_TYPE_DOUBLE)
+			fval = ((gdouble *)values)[indx];
+		else if (vtype == G_TYPE_INT)
+			fval = ((gint *)values)[indx];
+		else if (vtype == G_TYPE_UINT)
+			fval = ((guint *)values)[indx];
+		else if (vtype == G_TYPE_LONG)
+			fval = ((glong *)values)[indx];
+		else if (vtype == G_TYPE_ULONG)
+			fval = ((gulong *)values)[indx];
+		else if (vtype == G_TYPE_INT64)
+			fval = ((gint64 *)values)[indx];
+		else if (vtype == G_TYPE_UINT64)
+			fval = ((guint64 *)values)[indx];
+		else if (vtype == G_TYPE_CHAR)
+			fval = ((gchar *)values)[indx];
+		else if (vtype == G_TYPE_UCHAR)
+			fval = ((guchar *)values)[indx];
+
+		if (scale_type == GTK_DATABOX_SCALE_LINEAR)
+			pixels[i] = tf * (fval - minvis);
+		else if (scale_type == GTK_DATABOX_SCALE_LOG2)
+			pixels[i] = tf * log2(fval / minvis);
+		else
+			pixels[i] = tf * log10(fval / minvis);
+
+		/* handle the wrap-around (ring buffer) issue using modulus.  for efficiency, don't do this for non-wraparound cases. */
+		/* note this allows multiple wrap-arounds.  One could hold a single cycle of a sine wave, and plot a continuous wave */
+		/* This can be optimized using pointers later */
+		if (i + start > maxlen)
+			indx = ((i + start) % maxlen) * stride;
+		else
+			indx += stride;
+	} while (++i < len);
 }
 
 /**

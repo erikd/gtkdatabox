@@ -8,8 +8,8 @@ URL:        http://www.eudoxos.net/gtk/gtkdatabox/
 Source:     %{name}-%{version}.tar.gz
 BuildRoot:  %{_tmppath}/%{name}-%{version}-root
 
-Requires:      gtk3
-BuildRequires: gtk3-devel
+Requires:      gtk2
+BuildRequires: gtk2-devel
 
 %description
 GtkDatabox is a widget for the GTK+ library designed to display
@@ -18,7 +18,7 @@ large amounts of numerical data fast and easy.
 %package devel
 Summary:    Development headers and libraries for gtkdatabox
 Group:      Development/Libraries
-Requires:   gtkdatabox = %{version}, gtk3-devel, pkgconfig
+Requires:   gtkdatabox = %{version}, gtk2-devel, pkgconfig
 
 %description devel
 The development headers and libraries needed to develop

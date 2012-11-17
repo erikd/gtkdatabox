@@ -46,6 +46,9 @@ struct _GtkDataboxMarkersPrivate
 {
    GtkDataboxMarkersType type;
    GtkDataboxMarkersInfo *markers_info;
+   gint16 *xpixels;
+   gint16 *ypixels;
+   guint pixelsalloc;
 };
 
 static gpointer parent_class = NULL;
@@ -127,6 +130,8 @@ markers_finalize (GObject * object)
 	 g_free (markers->priv->markers_info[i].text);
    }
    g_free (markers->priv->markers_info);
+   g_free (markers->priv->xpixels);
+   g_free (markers->priv->ypixels);
    g_free (markers->priv);
 
    /* Chain up to the parent class */
@@ -195,6 +200,10 @@ gtk_databox_markers_instance_init (GTypeInstance * instance	/*,
    GtkDataboxMarkers *markers = GTK_DATABOX_MARKERS (instance);
 
    markers->priv = g_new0 (GtkDataboxMarkersPrivate, 1);
+   markers->priv->markers_info = NULL;
+   markers->priv->xpixels = NULL;
+   markers->priv->ypixels = NULL;
+   markers->priv->pixelsalloc = 0;
 
    g_signal_connect (markers, "notify::length", G_CALLBACK (complete), NULL);
 }
@@ -251,7 +260,63 @@ gtk_databox_markers_new (guint len, gfloat * X, gfloat * Y,
    markers = g_object_new (GTK_DATABOX_TYPE_MARKERS,
 			  "X-Values", X,
 			  "Y-Values", Y,
+			  "xstart", 0,
+			  "ystart", 0,
+			  "xstride", 1,
+			  "ystride", 1,
+			  "xtype", G_TYPE_FLOAT,
+			  "ytype", G_TYPE_FLOAT,
 			  "length", len,
+			  "maxlen", len,
+			  "color", color,
+			  "size", size, "markers-type", type, NULL);
+
+   return GTK_DATABOX_GRAPH (markers);
+}
+
+/**
+ * gtk_databox_markers_new_full:
+ * @maxlen: maximum length of @X and @Y
+ * @len: actual number of @X and @Y values to plot
+ * @X: array of horizontal position values of markers
+ * @Y: array of vertical position values of markers
+ * @xstart: the first element in the X array to plot (usually 0)
+ * @ystart: the first element in the Y array to plot (usually 0)
+ * @xstride: successive elements in the X array are separated by this much (1 if array, ncols if matrix)
+ * @ystride: successive elements in the Y array are separated by this much (1 if array, ncols if matrix)
+ * @xtype: the GType of the X array elements.  G_TYPE_FLOAT, G_TYPE_DOUBLE, etc.
+ * @ytype: the GType of the Y array elements.  G_TYPE_FLOAT, G_TYPE_DOUBLE, etc.
+ * @color: color of the markers
+ * @size: marker size or line width (depending on the @type)
+ * @type: type of markers (e.g. triangle or circle)
+ *
+ * Creates a new #GtkDataboxMarkers object which can be added to a #GtkDatabox widget as nice decoration for other graphs.
+ *
+ * Return value: A new #GtkDataboxMarkers object
+ **/
+GtkDataboxGraph *
+gtk_databox_markers_new_full (guint maxlen, guint len,
+			void * X, guint xstart, guint xstride, GType xtype,
+			void * Y, guint ystart, guint ystride, GType ytype,
+			GdkColor * color, guint size,
+			GtkDataboxMarkersType type)
+{
+   GtkDataboxMarkers *markers;
+   g_return_val_if_fail (X, NULL);
+   g_return_val_if_fail (Y, NULL);
+   g_return_val_if_fail ((len > 0), NULL);
+
+   markers = g_object_new (GTK_DATABOX_TYPE_MARKERS,
+			  "X-Values", X,
+			  "Y-Values", Y,
+			  "xstart", xstart,
+			  "ystart", ystart,
+			  "xstride", xstride,
+			  "ystride", ystride,
+			  "xtype", xtype,
+			  "ytype", ytype,
+			  "length", len,
+			  "maxlen", maxlen,
 			  "color", color,
 			  "size", size, "markers-type", type, NULL);
 
@@ -359,9 +424,9 @@ gtk_databox_markers_real_draw (GtkDataboxGraph * graph,
    GtkDataboxMarkers *markers = GTK_DATABOX_MARKERS (graph);
    GdkPoint points[3];
    PangoContext *context;
-   gfloat *X;
-   gfloat *Y;
-   guint len;
+   void *X;
+   void *Y;
+   guint len, maxlen;
    gint16 x;
    gint16 y;
    gint16 widget_width;
@@ -371,6 +436,9 @@ gtk_databox_markers_real_draw (GtkDataboxGraph * graph,
    guint i;
    cairo_t *cr;
    GtkAllocation allocation;
+   gint16 *xpixels, *ypixels;
+   guint xstart, xstride, ystart, ystride;
+   GType xtype, ytype;
 
    g_return_if_fail (GTK_DATABOX_IS_MARKERS (markers));
    g_return_if_fail (GTK_IS_DATABOX (box));
@@ -380,20 +448,42 @@ gtk_databox_markers_real_draw (GtkDataboxGraph * graph,
 
    context = gtk_widget_get_pango_context(widget);
 
-   cr = gtk_databox_graph_create_gc (graph, box);
-
    len = gtk_databox_xyc_graph_get_length (GTK_DATABOX_XYC_GRAPH (graph));
+   maxlen = gtk_databox_xyc_graph_get_maxlen (GTK_DATABOX_XYC_GRAPH (graph));
+
+   if (markers->priv->pixelsalloc < len)
+   {
+   	markers->priv->pixelsalloc = len;
+	markers->priv->xpixels = (gint16 *)g_realloc(markers->priv->xpixels, len * sizeof(gint16));
+	markers->priv->ypixels = (gint16 *)g_realloc(markers->priv->ypixels, len * sizeof(gint16));
+   }
+
+   xpixels = markers->priv->xpixels;
+   ypixels = markers->priv->ypixels;
+
    X = gtk_databox_xyc_graph_get_X (GTK_DATABOX_XYC_GRAPH (graph));
+   xstart = gtk_databox_xyc_graph_get_xstart (GTK_DATABOX_XYC_GRAPH (graph));
+   xstride = gtk_databox_xyc_graph_get_xstride (GTK_DATABOX_XYC_GRAPH (graph));
+   xtype = gtk_databox_xyc_graph_get_xtype (GTK_DATABOX_XYC_GRAPH (graph));
+   gtk_databox_values_to_xpixels(box, xpixels, X, xtype, maxlen, xstart, xstride, len);
+
    Y = gtk_databox_xyc_graph_get_Y (GTK_DATABOX_XYC_GRAPH (graph));
+   ystart = gtk_databox_xyc_graph_get_ystart (GTK_DATABOX_XYC_GRAPH (graph));
+   ystride = gtk_databox_xyc_graph_get_ystride (GTK_DATABOX_XYC_GRAPH (graph));
+   ytype = gtk_databox_xyc_graph_get_ytype (GTK_DATABOX_XYC_GRAPH (graph));
+   gtk_databox_values_to_ypixels(box, ypixels, Y, ytype, maxlen, ystart, ystride, len);
+
    size = gtk_databox_graph_get_size (graph);
 
    widget_width = allocation.width;
    widget_height = allocation.height;
 
+   cr = gtk_databox_graph_create_gc (graph, box);
+
 	for (i = 0; i < len; ++i)
 	{
-		coord.x = x = gtk_databox_value_to_pixel_x (box, X[i]);
-		coord.y = y = gtk_databox_value_to_pixel_y (box, Y[i]);
+		coord.x = x = xpixels[i];
+		coord.y = y = ypixels[i];
 
 		switch (markers->priv->type)
 		{

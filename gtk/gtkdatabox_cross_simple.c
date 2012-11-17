@@ -101,7 +101,14 @@ gtk_databox_cross_simple_new (GdkColor * color, guint size)
 				"markers-type", GTK_DATABOX_MARKERS_SOLID_LINE,
 				"X-Values", X,
 				"Y-Values", Y,
+			 	"xstart", 0,
+			 	"ystart", 0,
+			 	"xstride", 1,
+			 	"ystride", 1,
+			 	"xtype", G_TYPE_FLOAT,
+			 	"ytype", G_TYPE_FLOAT,
 				"length", len,
+				"maxlen", len,
 				"color", color, "size", size, NULL);
 
    gtk_databox_markers_set_position (GTK_DATABOX_MARKERS (cross_simple), 0,
