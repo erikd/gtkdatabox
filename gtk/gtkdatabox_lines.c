@@ -129,7 +129,7 @@ gtk_databox_lines_real_draw (GtkDataboxGraph * graph,
    widget = GTK_WIDGET(box);
 
    pixmap = gtk_databox_get_backing_pixmap (box);
-   style = widget->style;
+   style = gtk_widget_get_style(widget);
 
    if (!(gc = gtk_databox_graph_get_gc(graph)))
       gc = gtk_databox_graph_create_gc (graph, box);

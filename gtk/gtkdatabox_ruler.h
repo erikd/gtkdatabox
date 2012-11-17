@@ -66,7 +66,7 @@
 #endif
 
 #include <gdk/gdk.h>
-#include <gtk/gtkwidget.h>
+#include <gtk/gtk.h>
 #include <gtkdatabox_scale.h>
 
 G_BEGIN_DECLS

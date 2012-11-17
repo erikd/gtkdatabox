@@ -18,8 +18,7 @@
  */
 
 #include <gtkdatabox_graph.h>
-#include <gtk/gtkstyle.h>
-#include <gtk/gtkgc.h>
+#include <gtk/gtk.h>
 
 G_DEFINE_TYPE(GtkDataboxGraph, gtk_databox_graph,
 	G_TYPE_OBJECT)
@@ -173,7 +172,7 @@ gtk_databox_graph_real_create_gc (GtkDataboxGraph * graph,
   if (priv->gc)
     gtk_databox_graph_delete_gc (graph);
 
-  style = widget->style;
+  style = gtk_widget_get_style(widget);
 
   colormap = style->colormap;
   g_return_val_if_fail (colormap, NULL);

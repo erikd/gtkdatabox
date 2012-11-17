@@ -362,11 +362,13 @@ gtk_databox_markers_real_draw (GtkDataboxGraph * graph,
    GdkPoint coord;
    gint size;
    guint i;
+   GtkAllocation allocation;
 
    g_return_if_fail (GTK_DATABOX_IS_MARKERS (markers));
    g_return_if_fail (GTK_IS_DATABOX (box));
 
    widget = GTK_WIDGET(box);
+   gtk_widget_get_allocation(widget, &allocation);
 
    pixmap = gtk_databox_get_backing_pixmap (box);
    context = gtk_widget_get_pango_context(widget);
@@ -379,8 +381,8 @@ gtk_databox_markers_real_draw (GtkDataboxGraph * graph,
    Y = gtk_databox_xyc_graph_get_Y (GTK_DATABOX_XYC_GRAPH (graph));
    size = gtk_databox_graph_get_size (graph);
 
-   widget_width = widget->allocation.width;
-   widget_height = widget->allocation.height;
+   widget_width = allocation.width;
+   widget_height = allocation.height;
 
    for (i = 0; i < len; ++i)
    {
@@ -500,7 +502,6 @@ gtk_databox_markers_real_draw (GtkDataboxGraph * graph,
 	    pango_layout_set_text (priv->markers_info[i].label,
 				   priv->markers_info[i].text, -1);
 	 }
-
 	 if (priv->type == GTK_DATABOX_MARKERS_SOLID_LINE
 	     || priv->type == GTK_DATABOX_MARKERS_DASHED_LINE)
 	 {

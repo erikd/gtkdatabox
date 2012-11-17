@@ -23,8 +23,7 @@
 #include <gtkdatabox_typedefs.h>
 #include <gtkdatabox_graph.h>
 #include <gtkdatabox_ruler.h>
-#include <gtk/gtkwidget.h>
-#include <gtk/gtkadjustment.h>
+#include <gtk/gtk.h>
 
 /**
  * SECTION:gtkdatabox

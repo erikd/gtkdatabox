@@ -19,8 +19,6 @@
  */
 #include <stdio.h>
 #include <gtk/gtk.h>
-#include <gtk/gtkcolorsel.h>
-#include <gtk/gtkitemfactory.h>
 #include <gtkdatabox.h>
 #include <gtkdatabox_points.h>
 #include <math.h>

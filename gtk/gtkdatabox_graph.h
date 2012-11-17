@@ -34,7 +34,6 @@
 #ifndef __GTK_DATABOX_GRAPH_H__
 #define __GTK_DATABOX_GRAPH_H__
 
-#include <gtk/gtkstyle.h>
 #include <gdk/gdk.h>
 #include <pango/pango.h>
 #include <gtkdatabox.h>
