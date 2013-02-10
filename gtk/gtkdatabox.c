@@ -1407,29 +1407,30 @@ gtk_databox_zoom_to_selection (GtkDatabox * box) {
 
 	g_object_freeze_notify(G_OBJECT(box->priv->adj_x));
 	g_object_freeze_notify(G_OBJECT(box->priv->adj_y));
+
 	temp_value = gtk_adjustment_get_value(box->priv->adj_x);
     temp_value += (gdouble) (MIN (box->priv->marked.x, box->priv->select.x))
                                * gtk_adjustment_get_page_size(box->priv->adj_x)
                                / allocation.width;
+	temp_page_size = gtk_adjustment_get_page_size(box->priv->adj_x);
+    temp_page_size *=
+        (gdouble) (ABS (box->priv->marked.x - box->priv->select.x) + 1)
+        / allocation.width;
+
+	gtk_adjustment_set_page_size(box->priv->adj_x, temp_page_size);
 	gtk_adjustment_set_value(box->priv->adj_x, temp_value);
 
 	temp_value = gtk_adjustment_get_value(box->priv->adj_y);
     temp_value += (gdouble) (MIN (box->priv->marked.y, box->priv->select.y))
                                * gtk_adjustment_get_page_size(box->priv->adj_y)
                                / allocation.height;
-	gtk_adjustment_set_value(box->priv->adj_y, temp_value);
-
-	temp_page_size = gtk_adjustment_get_page_size(box->priv->adj_x);
-    temp_page_size *=
-        (gdouble) (ABS (box->priv->marked.x - box->priv->select.x) + 1)
-        / allocation.width;
-	gtk_adjustment_set_page_size(box->priv->adj_x, temp_page_size);
-
 	temp_page_size = gtk_adjustment_get_page_size(box->priv->adj_y);
     temp_page_size *=
         (gfloat) (ABS (box->priv->marked.y - box->priv->select.y) + 1)
         / allocation.height;
+
 	gtk_adjustment_set_page_size(box->priv->adj_y, temp_page_size);
+	gtk_adjustment_set_value(box->priv->adj_y, temp_value);
 
     /* If we zoom too far into the data, we will get funny results, because
      * of overflow effects. Therefore zooming is limited to box->zoom_limit.
@@ -1439,8 +1440,8 @@ gtk_databox_zoom_to_selection (GtkDatabox * box) {
 							- (box->priv->zoom_limit -
 							gtk_adjustment_get_page_size(box->priv->adj_x)) /
 							2.0);
-		gtk_adjustment_set_value(box->priv->adj_x, temp_value);
 		gtk_adjustment_set_page_size(box->priv->adj_x, box->priv->zoom_limit);
+		gtk_adjustment_set_value(box->priv->adj_x, temp_value);
     }
 
     if (gtk_adjustment_get_page_size(box->priv->adj_y) < box->priv->zoom_limit) {
@@ -1448,8 +1449,8 @@ gtk_databox_zoom_to_selection (GtkDatabox * box) {
 							- (box->priv->zoom_limit -
 							gtk_adjustment_get_page_size(box->priv->adj_y)) /
 							2.0);
-		gtk_adjustment_set_value(box->priv->adj_y, temp_value);
 		gtk_adjustment_set_page_size(box->priv->adj_y, box->priv->zoom_limit);
+		gtk_adjustment_set_value(box->priv->adj_y, temp_value);
     }
 	g_object_thaw_notify(G_OBJECT(box->priv->adj_y));
 	g_object_thaw_notify(G_OBJECT(box->priv->adj_x));
