@@ -21,7 +21,8 @@ libgtkdatabox_la_SOURCES= \
 libgtkdatabox_la_LDFLAGS= \
 		        -version-info $(LT_CURRENT)\
 			-release $(LT_RELEASE)\
-			@GTK_LIBS@
+			@GTK_LIBS@\
+			-no-undefined
 
 
 include_HEADERS		= \
@@ -63,4 +64,5 @@ AM_CFLAGS			=\
 			-DGDK_PIXBUF_DISABLE_DEPRECATED\
 			-DGTK_DISABLE_DEPRECATED\
 			-DGTK_MULTIHEAD_SAFE=1\
-			`pkg-config gtk+-3.0 --cflags`
+		 	@GTK_CFLAGS@
+

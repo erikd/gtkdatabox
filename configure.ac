@@ -34,9 +34,10 @@ AC_SUBST(DATABOX_VERSION, [databox_version])
 
 AM_INIT_AUTOMAKE(gtkdatabox, databox_version)
 
+AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
 
-AC_PROG_CC
+AC_PROG_CC_C99
 AC_PROG_CPP
 AC_PROG_INSTALL
 
@@ -45,7 +46,8 @@ m4_define([pango_required_version], [1.16.0])
 m4_define([cairo_required_version], [1.4.0])
 
 AM_PATH_GTK_3_0([gtk_required_version])
-PKG_CHECK_MODULES(GTK, [gdk-3.0 >= [gtk_required_version] gtk+-3.0 >= [gtk_required_version]])
+PKG_CHECK_MODULES(GTK, [gtk+-3.0 >= [gtk_required_version]])
+PKG_CHECK_MODULES(GTK, [gdk-3.0 >= [gtk_required_version]])
 PKG_CHECK_MODULES(PANGO, pango >= [pango_required_version])
 PKG_CHECK_MODULES(CAIRO, cairo >= [cairo_required_version]) 
 AC_SUBST(GTK_REQUIRED, [gtk_required_version])

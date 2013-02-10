@@ -60,7 +60,7 @@ AM_CFLAGS			=\
 			-DGDK_PIXBUF_DISABLE_DEPRECATED\
 			-DGTK_DISABLE_DEPRECATED\
 			@LIBGLADE_CFLAGS@ \
-			`pkg-config gtk+-3.0 --cflags`
+			@GTK_CFLAGS@
 
 
 LDADD 			= $(top_builddir)/gtk/libgtkdatabox.la\
