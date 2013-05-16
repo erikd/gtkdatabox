@@ -63,7 +63,8 @@ AM_CFLAGS			=\
 
 
 LDADD 			= $(top_builddir)/gtk/libgtkdatabox.la\
-		 	@GTK_LIBS@
+		 	@GTK_LIBS@ \
+			-lm
 
 
 if BUILD_LIBGLADE
