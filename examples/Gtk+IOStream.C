@@ -37,11 +37,6 @@ To test, run the following :
 ./PlotTest
 */
 
-// setup the possible plot colours ...
-int ColourLineSpec::colourCnt=9; // this number matches with the number of colours below
-const char *ColourLineSpec::shortColours[]={(char *)"y",(char *)"m",(char *)"c",(char *)"r",(char *)"g",(char *)"b",(char *)"w",(char *)"k",(char *)"o"}; // standard colours
-const char *ColourLineSpec::X11Colours[]={(char *)"yellow", (char *)"magenta", (char *)"cyan", (char *)"red", (char *)"green", (char *)"blue", (char *)"white", (char *)"black", (char *)"orange"};
-
 // Quit button callback
 static void quit(void *wid, gpointer data) {
     gtk_main_quit();
