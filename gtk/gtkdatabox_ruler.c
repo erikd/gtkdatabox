@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301 USA
  */
 
 /*
@@ -51,9 +51,15 @@ static void gtk_databox_ruler_realize (GtkWidget * widget);
 static void gtk_databox_ruler_unrealize (GtkWidget * widget);
 static void gtk_databox_ruler_size_allocate (GtkWidget * widget,
         GtkAllocation * allocation);
-static gint gtk_databox_ruler_expose (GtkWidget * widget,
-                                      GdkEventExpose * event);
-static void gtk_databox_ruler_make_pixmap (GtkDataboxRuler * ruler);
+static gint gtk_databox_ruler_draw (GtkWidget * widget,
+	cairo_t * cr);
+static void gtk_databox_ruler_get_preferred_width (GtkWidget *widget,
+	gint *minimal_width,
+	gint *natural_width);
+static void gtk_databox_ruler_get_preferred_height (GtkWidget *widget,
+	gint *minimal_height,
+	gint *natural_height);
+static void gtk_databox_ruler_create_backing_surface (GtkDataboxRuler * ruler);
 static void gtk_databox_ruler_set_property (GObject * object,
         guint prop_id,
         const GValue * value,
@@ -86,8 +92,12 @@ enum {
     PROP_END_OF_LIST
 };
 
-struct _GtkDataboxRulerPrivate {
-    GdkPixmap *backing_pixmap;
+struct _GtkDataboxRulerPrivate
+{
+	cairo_surface_t *backing_surface;
+	gint old_width;
+	gint old_height;
+
     gint xsrc;
     gint ysrc;
     /* The lower limit of the ruler */
@@ -154,8 +164,10 @@ static void gtk_databox_ruler_class_init (GtkDataboxRulerClass * class) {
     widget_class->realize = gtk_databox_ruler_realize;
     widget_class->unrealize = gtk_databox_ruler_unrealize;
     widget_class->size_allocate = gtk_databox_ruler_size_allocate;
-    widget_class->expose_event = gtk_databox_ruler_expose;
+    widget_class->draw = gtk_databox_ruler_draw;
     widget_class->motion_notify_event = gtk_databox_ruler_motion_notify;
+    widget_class->get_preferred_width = gtk_databox_ruler_get_preferred_width;
+    widget_class->get_preferred_height = gtk_databox_ruler_get_preferred_height;
 
     g_object_class_install_property (gobject_class,
                                      PROP_LOWER,
@@ -318,7 +330,7 @@ static void gtk_databox_ruler_class_init (GtkDataboxRulerClass * class) {
 static void
 gtk_databox_ruler_init (GtkDataboxRuler * ruler) {
     ruler->priv = g_new0 (GtkDataboxRulerPrivate, 1);
-    ruler->priv->backing_pixmap = NULL;
+    ruler->priv->backing_surface = NULL;
     ruler->priv->xsrc = 0;
     ruler->priv->ysrc = 0;
     ruler->priv->lower = 0;
@@ -341,7 +353,7 @@ gtk_databox_ruler_init (GtkDataboxRuler * ruler) {
     ruler->priv->manual_tick_cnt=0;
     ruler->priv->manual_tick_labels=NULL;
     ruler->priv->box_shadow=GTK_SHADOW_OUT;
-    }
+}
 
 /**
  * gtk_databox_ruler_new:
@@ -362,16 +374,15 @@ gtk_databox_ruler_motion_notify (GtkWidget * widget, GdkEventMotion * event) {
     GtkDataboxRuler *ruler;
     gint x;
     gint y;
-    GtkAllocation allocation;
-
-    gtk_widget_get_allocation(widget, &allocation);
+	GtkAllocation allocation;
 
     ruler = GTK_DATABOX_RULER (widget);
+	gtk_widget_get_allocation(widget, &allocation);
 
     if (gtk_databox_ruler_get_draw_position (ruler)) {
 
         if (event->is_hint) {
-            gdk_window_get_pointer (gtk_widget_get_window(widget), &x, &y, NULL);
+            gdk_window_get_device_position (gtk_widget_get_window(widget), event->device, &x, &y, NULL);
         } else {
             x = event->x;
             y = event->y;
@@ -389,7 +400,7 @@ gtk_databox_ruler_motion_notify (GtkWidget * widget, GdkEventMotion * event) {
         g_object_notify (G_OBJECT (ruler), "position");
 
         /*  Make sure the ruler has been allocated already  */
-        if (ruler->priv->backing_pixmap != NULL)
+        if (ruler->priv->backing_surface != NULL)
             if (ruler->priv->draw_position)
                 gtk_databox_ruler_draw_pos (ruler);
     }
@@ -630,8 +641,6 @@ void
 gtk_databox_ruler_set_orientation (GtkDataboxRuler * ruler,
                                    GtkOrientation orientation) {
     GtkWidget *widget;
-    gint width, height;
-
     g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
 
     if (ruler->priv->orientation != orientation) {
@@ -640,24 +649,67 @@ gtk_databox_ruler_set_orientation (GtkDataboxRuler * ruler,
     }
 
     widget = GTK_WIDGET (ruler);
+
+#ifdef WHAT_TO_DO_HERE
     if (orientation == GTK_ORIENTATION_HORIZONTAL) {
-        width = gtk_widget_get_style (widget)->xthickness * 2 + 1;
-        height = gtk_widget_get_style (widget)->ythickness * 2 + RULER_SIZE;
+        widget->requisition.width = xthickness * 2 + 1;
+        widget->requisition.height = ythickness * 2 + RULER_SIZE;
     } else {
-        height = gtk_widget_get_style (widget)->ythickness * 2 + 1;
+        widget->requisition.height = ythickness * 2 + 1;
         if (ruler->priv->max_y_text_width==0)
-            width = gtk_widget_get_style (widget)->xthickness * 2 + RULER_SIZE;
+            widget->requisition.width = xthickness * 2 + RULER_SIZE;
+        else
+            widget->requisition.width = ruler->priv->max_y_text_width;
+    }
+#endif
+
+    if (gtk_widget_is_drawable (widget)) {
+        gtk_widget_queue_resize (widget);
+        gtk_widget_queue_draw (widget);
+    }
+}
+
+static void gtk_databox_ruler_get_preferred_width (GtkWidget *widget, gint *minimal_width, gint *natural_width)
+{
+    GtkDataboxRuler *ruler;
+	GtkOrientation orientation;
+    gint xthickness = 1; /* widget->style->xthickness */
+	gint width;
+
+    ruler = GTK_DATABOX_RULER (widget);
+	orientation = ruler->priv->orientation;
+
+    if (orientation == GTK_ORIENTATION_HORIZONTAL) {
+        width = xthickness * 2 + 1;
+    }
+	else
+	{
+        if (ruler->priv->max_y_text_width==0)
+            width = xthickness * 2 + RULER_SIZE;
         else
             width = ruler->priv->max_y_text_width;
     }
-
-    gtk_widget_set_size_request (widget, width, height);
-
-    if (gtk_widget_is_drawable (GTK_WIDGET (ruler))) {
-        gtk_widget_queue_resize (GTK_WIDGET (ruler));
-        gtk_widget_queue_draw (GTK_WIDGET (ruler));
-    }
+	*minimal_width = *natural_width = width;
 }
+
+static void gtk_databox_ruler_get_preferred_height (GtkWidget *widget, gint *minimal_height, gint *natural_height)
+{
+    GtkDataboxRuler *ruler;
+	GtkOrientation orientation;
+    gint ythickness = 1; /* widget->style->ythickness */
+	gint height;
+
+    ruler = GTK_DATABOX_RULER (widget);
+	orientation = ruler->priv->orientation;
+
+    if (orientation == GTK_ORIENTATION_HORIZONTAL) {
+        height = ythickness * 2 + RULER_SIZE;
+    } else {
+        height = ythickness * 2 + 1;
+    }
+	*minimal_height = *natural_height = height;
+}
+
 
 /**
  * gtk_databox_ruler_get_orientation:
@@ -686,7 +738,6 @@ void
 gtk_databox_ruler_set_text_orientation (GtkDataboxRuler * ruler,
                                         GtkOrientation orientation) {
     GtkWidget *widget;
-    gint width, height;
 
     g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
 
@@ -700,17 +751,20 @@ gtk_databox_ruler_set_text_orientation (GtkDataboxRuler * ruler,
     }
 
     widget = GTK_WIDGET (ruler);
-    height = gtk_widget_get_style (widget)->ythickness * 2 + 1;
+
+#ifdef WHAT_TO_DO_HERE
+    xthickness = widget->style->xthickness;
+    ythickness = widget->style->ythickness;
+    widget->requisition.height = ythickness * 2 + 1;
     if (ruler->priv->max_y_text_width==0)
-        width = gtk_widget_get_style (widget)->xthickness * 2 + RULER_SIZE;
+        widget->requisition.width = xthickness * 2 + RULER_SIZE;
     else
-        width = ruler->priv->max_y_text_width;
-
-    gtk_widget_set_size_request (widget, width, height);
-
-    if (gtk_widget_is_drawable (GTK_WIDGET (ruler)))
-        gtk_widget_queue_draw (GTK_WIDGET (ruler));
-
+        widget->requisition.width = ruler->priv->max_y_text_width;
+#endif
+    if (gtk_widget_is_drawable (widget))
+	{
+        gtk_widget_queue_draw (widget);
+	}
 }
 
 /**
@@ -740,7 +794,6 @@ gtk_databox_ruler_get_text_orientation (GtkDataboxRuler * ruler) {
 void
 gtk_databox_ruler_set_text_alignment (GtkDataboxRuler * ruler,
                                         PangoAlignment alignment) {
-    GtkWidget *widget;
     g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
 
     /* check this is a vertical ruler */
@@ -783,7 +836,6 @@ gtk_databox_ruler_get_text_alignment (GtkDataboxRuler * ruler) {
 void
 gtk_databox_ruler_set_text_hoffset (GtkDataboxRuler * ruler,
                                         gint offset) {
-    GtkWidget *widget;
     g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
 
     if (ruler->priv->text_hoffset != offset) {
@@ -1202,7 +1254,6 @@ gtk_databox_ruler_get_scale_type (GtkDataboxRuler * ruler) {
 void
 gtk_databox_ruler_set_box_shadow(GtkDataboxRuler * ruler, GtkShadowType which_shadow) {
     g_return_if_fail (GTK_DATABOX_IS_RULER (ruler));
-    g_return_if_fail (which_shadow>=0);
     g_return_if_fail (which_shadow<=GTK_SHADOW_ETCHED_OUT);
 
     if (ruler->priv->box_shadow!=which_shadow) {
@@ -1232,6 +1283,7 @@ static void
 gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler) {
     GtkWidget *widget;
     cairo_t *cr;
+	GtkStyleContext *stylecontext;
     gint i;
     gint width, height;
     gint xthickness;
@@ -1254,7 +1306,8 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler) {
     PangoContext *context;
     PangoLayout *layout;
     PangoRectangle logical_rect, ink_rect;
-    GtkAllocation allocation;
+	GtkAllocation allocation;
+	GdkRGBA fg_color, bg_color;
 
     if (ruler->priv->scale_type == GTK_DATABOX_SCALE_LINEAR)
         if (ruler->priv->max_length==1)
@@ -1270,9 +1323,11 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler) {
         return;
 
     widget = GTK_WIDGET (ruler);
+	gtk_widget_get_allocation(widget, &allocation);
+	stylecontext = gtk_widget_get_style_context(widget);
 
-    xthickness = gtk_widget_get_style (widget)->xthickness;
-    ythickness = gtk_widget_get_style (widget)->ythickness;
+    xthickness = 1; /* widget->style->xthickness; */
+    ythickness = 1; /* widget->style->ythickness; */
 
     layout = gtk_widget_create_pango_layout (widget, "E+-012456789");
 
@@ -1289,15 +1344,17 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler) {
 
     digit_width = ceil ((logical_rect.width) / 12);
 
-    gtk_widget_get_allocation(widget, &allocation);
     width = allocation.width;
     height = allocation.height;
-    gtk_paint_box (gtk_widget_get_style (widget), ruler->priv->backing_pixmap,
-                   GTK_STATE_NORMAL, ruler->priv->box_shadow,
-                   NULL, widget, "ruler", 0, 0, width, height);
 
-    cr = gdk_cairo_create (ruler->priv->backing_pixmap);
-    gdk_cairo_set_source_color (cr, &gtk_widget_get_style (widget)->fg[gtk_widget_get_state (widget)]);
+    cr = cairo_create(ruler->priv->backing_surface);
+    gtk_style_context_get_background_color(stylecontext, GTK_STATE_FLAG_NORMAL, &bg_color);
+    gdk_cairo_set_source_rgba (cr, &bg_color);
+    cairo_paint(cr);
+	gtk_style_context_get_color(stylecontext, GTK_STATE_FLAG_NORMAL, &fg_color);
+    gdk_cairo_set_source_rgba (cr, &fg_color);
+
+	gtk_render_frame(stylecontext, cr, 0.0, 0.0, width, height);
 
     if (ruler->priv->draw_ticks) /* only draw the bottom line IF we are drawing ticks */
         cairo_rectangle (cr, xthickness, height - ythickness, width - 2 * xthickness, 1);
@@ -1424,13 +1481,9 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler) {
             else
                 ruler->priv->max_y_text_width=logical_rect.width;
             gtk_widget_set_size_request(GTK_WIDGET(ruler), ruler->priv->max_y_text_width, ruler->priv->max_x_text_height);
-            /*printf("set ruler->priv->max_x_text_height=%d\n",ruler->priv->max_x_text_height);
-            printf("set ruler->priv->max_y_text_width=%d\n",ruler->priv->max_y_text_width);*/
         } else if (ruler->priv->max_x_text_height<logical_rect.height) {
             ruler->priv->max_x_text_height=logical_rect.height;
             gtk_widget_set_size_request(GTK_WIDGET(ruler), ruler->priv->max_y_text_width, ruler->priv->max_x_text_height);
-            /*printf("set ruler->priv->max_x_text_height=%d\n",ruler->priv->max_x_text_height);
-            printf("set ruler->priv->max_y_text_width=%d\n",ruler->priv->max_y_text_width);*/
         }
 
 
@@ -1438,29 +1491,19 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler) {
         if (ruler->priv->orientation == GTK_ORIENTATION_HORIZONTAL){
             if (!ruler->priv->draw_ticks) /* if ticks aren't present, draw a little lower */
                 pos=pos - logical_rect.width+2+ruler->priv->text_hoffset;
-            gtk_paint_layout (gtk_widget_get_style (widget),
-                              ruler->priv->backing_pixmap,
-                              gtk_widget_get_state (widget),
-                              FALSE,
-                              NULL,
-                              widget, "ruler", pos + 2, ythickness - 1, layout);
+			gtk_render_layout(stylecontext, cr, pos + 2, ythickness - 1, layout);
         } else {
             y_loc=pos - logical_rect.width - 2; /* standard vertical text y alignment */
             if (ruler->priv->text_orientation == GTK_ORIENTATION_HORIZONTAL) /* if ticks are present, then draw a little higher */
                 y_loc=pos - logical_rect.width*2/3; /* horizontal text y alignment */
-            if (ruler->priv->text_orientation == GTK_ORIENTATION_HORIZONTAL & !ruler->priv->draw_ticks) /* if ticks aren't present, draw a little lower */
+            if ((ruler->priv->text_orientation == GTK_ORIENTATION_HORIZONTAL) & (!ruler->priv->draw_ticks)) /* if ticks aren't present, draw a little lower */
                 y_loc=pos - logical_rect.width/3;
             x_loc=xthickness-1+ruler->priv->text_hoffset;
-            if (ruler->priv->text_orientation == GTK_ORIENTATION_HORIZONTAL & ruler->priv->text_alignment == PANGO_ALIGN_RIGHT) /* set right adjusted text */
+            if ((ruler->priv->text_orientation == GTK_ORIENTATION_HORIZONTAL) & (ruler->priv->text_alignment == PANGO_ALIGN_RIGHT)) /* set right adjusted text */
                 x_loc=width-ink_rect.width-2+ruler->priv->text_hoffset; /* shift 2 pixels left to give a better aesthetic */
-            if (ruler->priv->text_orientation == GTK_ORIENTATION_HORIZONTAL & ruler->priv->text_alignment == PANGO_ALIGN_CENTER) /* set centrally adjusted text */
+            if ((ruler->priv->text_orientation == GTK_ORIENTATION_HORIZONTAL) & (ruler->priv->text_alignment == PANGO_ALIGN_CENTER)) /* set centrally adjusted text */
                 x_loc=(width-ink_rect.width)/2-2+ruler->priv->text_hoffset;
-            gtk_paint_layout (gtk_widget_get_style (widget),
-                              ruler->priv->backing_pixmap,
-                              gtk_widget_get_state (widget),
-                              FALSE,
-                              NULL,
-                              widget, "ruler", x_loc, y_loc, layout);
+			gtk_render_layout(stylecontext, cr, x_loc, y_loc, layout);
         }
 
         /* Draw sub-ticks */
@@ -1510,6 +1553,7 @@ out:
 static void
 gtk_databox_ruler_draw_pos (GtkDataboxRuler * ruler) {
     GtkWidget *widget = GTK_WIDGET (ruler);
+	GtkStyleContext *stylecontext = gtk_widget_get_style_context(widget);
     gint x, y;
     gint width, height;
     gint bs_width, bs_height;
@@ -1517,13 +1561,13 @@ gtk_databox_ruler_draw_pos (GtkDataboxRuler * ruler) {
     gint ythickness;
     gdouble increment;
     cairo_t *cr;
-    GtkAllocation allocation;
+	GtkAllocation allocation;
+	GdkRGBA fg_color;
 
-    gtk_widget_get_allocation(widget, &allocation);
-
-    if (gtk_widget_is_drawable (GTK_WIDGET (ruler))) {
-        xthickness = gtk_widget_get_style (widget)->xthickness;
-        ythickness = gtk_widget_get_style (widget)->ythickness;
+    if (gtk_widget_is_drawable (widget)) {
+        xthickness = 1; /* widget->style->xthickness; */
+        ythickness = 1; /* widget->style->ythickness; */
+		gtk_widget_get_allocation(widget, &allocation);
         width = allocation.width - xthickness * 2;
         height = allocation.height - ythickness * 2;
 
@@ -1550,13 +1594,14 @@ gtk_databox_ruler_draw_pos (GtkDataboxRuler * ruler) {
         cr = gdk_cairo_create (gtk_widget_get_window(widget));
 
         /*  If a backing store exists, restore the ruler  */
-        if (ruler->priv->backing_pixmap)
-            gdk_draw_drawable (gtk_widget_get_window (widget),
-                               gtk_widget_get_style (widget)->black_gc,
-                               ruler->priv->backing_pixmap,
-                               ruler->priv->xsrc, ruler->priv->ysrc,
-                               ruler->priv->xsrc, ruler->priv->ysrc, bs_width, bs_height);
+        if (ruler->priv->backing_surface)
+		{
+/* TODO: HERE WE SHOULD REALLY CLIP THIS TO THE RECTANGLE OF THE ARROW */
+			cairo_set_source_surface(cr, ruler->priv->backing_surface, 0, 0);
+			cairo_paint(cr);
+		}
 
+		gtk_style_context_get_color(stylecontext, gtk_style_context_get_state(stylecontext), &fg_color);
         if (ruler->priv->orientation == GTK_ORIENTATION_HORIZONTAL) {
             increment = (gdouble) width / (ruler->priv->upper - ruler->priv->lower);
 
@@ -1564,7 +1609,7 @@ gtk_databox_ruler_draw_pos (GtkDataboxRuler * ruler) {
                 (xthickness - bs_width) / 2 - 1;
             y = (height + bs_height) / 2 + ythickness;
 
-            gdk_cairo_set_source_color (cr, &gtk_widget_get_style (widget)->fg[gtk_widget_get_state (widget)]);
+			gdk_cairo_set_source_rgba (cr, &fg_color);
 
             cairo_move_to (cr, x, y);
             cairo_line_to (cr, x + bs_width / 2., y + bs_height);
@@ -1576,7 +1621,7 @@ gtk_databox_ruler_draw_pos (GtkDataboxRuler * ruler) {
             y = ROUND ((ruler->priv->position - ruler->priv->lower) * increment) +
                 (ythickness - bs_height) / 2 - 1;
 
-            gdk_cairo_set_source_color (cr, &gtk_widget_get_style (widget)->fg[gtk_widget_get_state (widget)]);
+			gdk_cairo_set_source_rgba (cr, &fg_color);
 
             cairo_move_to (cr, x, y);
             cairo_line_to (cr, x + bs_width, y + bs_height / 2.);
@@ -1603,16 +1648,14 @@ static void
 gtk_databox_ruler_realize (GtkWidget * widget) {
     GtkDataboxRuler *ruler;
     GdkWindowAttr attributes;
-    GdkWindow *window;
-    GtkStyle *style;
     gint attributes_mask;
-    GtkAllocation allocation;
-
-    gtk_widget_get_allocation (widget, &allocation);
+	GtkAllocation allocation;
+	GtkStyleContext *stylecontext;
 
     ruler = GTK_DATABOX_RULER (widget);
+    gtk_widget_set_realized(GTK_WIDGET (ruler), TRUE);
+	gtk_widget_get_allocation(widget, &allocation);
 
-    gtk_widget_set_realized(GTK_WIDGET (ruler), GTK_REALIZED);
     attributes.window_type = GDK_WINDOW_CHILD;
     attributes.x = allocation.x;
     attributes.y = allocation.y;
@@ -1620,24 +1663,22 @@ gtk_databox_ruler_realize (GtkWidget * widget) {
     attributes.height = allocation.height;
     attributes.wclass = GDK_INPUT_OUTPUT;
     attributes.visual = gtk_widget_get_visual (widget);
-    attributes.colormap = gtk_widget_get_colormap (widget);
     attributes.event_mask = gtk_widget_get_events (widget);
     attributes.event_mask |= (GDK_EXPOSURE_MASK |
                               GDK_POINTER_MOTION_MASK |
                               GDK_POINTER_MOTION_HINT_MASK);
 
-    attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL | GDK_WA_COLORMAP;
+    attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL;
 
-    window = gdk_window_new (gtk_widget_get_parent_window (widget), &attributes,
-                        attributes_mask);
-    gtk_widget_set_window (widget, window);
-    gdk_window_set_user_data (window, ruler);
+    gtk_widget_set_window(widget,
+        gdk_window_new (gtk_widget_get_parent_window (widget), &attributes,
+                        attributes_mask));
+    gdk_window_set_user_data (gtk_widget_get_window(widget), ruler);
 
-    style = gtk_style_attach (gtk_widget_get_style (widget), window);
-    gtk_style_set_background (style, window, GTK_STATE_ACTIVE);
-    gtk_widget_set_style (widget, style);
+	stylecontext = gtk_widget_get_style_context(widget);
+	gtk_style_context_set_background(stylecontext, gtk_widget_get_window(widget));
 
-    gtk_databox_ruler_make_pixmap (ruler);
+    gtk_databox_ruler_create_backing_surface (ruler);
 }
 
 static void
@@ -1645,10 +1686,9 @@ gtk_databox_ruler_unrealize (GtkWidget * widget) {
     GtkDataboxRuler *ruler = GTK_DATABOX_RULER (widget);
     gtk_widget_set_realized(widget, FALSE);
 
-    if (ruler->priv->backing_pixmap)
-        g_object_unref (ruler->priv->backing_pixmap);
-    ruler->priv->backing_pixmap=NULL;
-
+    if (ruler->priv->backing_surface)
+		cairo_surface_destroy (ruler->priv->backing_surface);
+    ruler->priv->backing_surface=NULL;
 
     if (GTK_WIDGET_CLASS (gtk_databox_ruler_parent_class)->unrealize)
         (*GTK_WIDGET_CLASS (gtk_databox_ruler_parent_class)->unrealize) (widget);
@@ -1659,35 +1699,36 @@ gtk_databox_ruler_size_allocate (GtkWidget * widget,
                                  GtkAllocation * allocation) {
     GtkDataboxRuler *ruler = GTK_DATABOX_RULER (widget);
 
-    gtk_widget_set_allocation(widget, allocation);
+	gtk_widget_set_allocation(widget, allocation);
 
     if (gtk_widget_get_realized (widget))
         if (gtk_widget_is_drawable(widget)) {
-            gdk_window_move_resize (gtk_widget_get_window (widget),
+            gdk_window_move_resize (gtk_widget_get_window(widget),
                                     allocation->x, allocation->y,
                                     allocation->width, allocation->height);
 
-            gtk_databox_ruler_make_pixmap (ruler);
+            gtk_databox_ruler_create_backing_surface (ruler);
         }
 }
 
 static gint
-gtk_databox_ruler_expose (GtkWidget * widget, GdkEventExpose * event) {
+gtk_databox_ruler_draw (GtkWidget * widget, cairo_t * cr){
     GtkDataboxRuler *ruler;
-    GtkAllocation allocation;
+	GtkAllocation allocation;
 
     if (gtk_widget_is_drawable (widget)) {
         ruler = GTK_DATABOX_RULER (widget);
+		gtk_widget_get_allocation(widget, &allocation);
 
         gtk_databox_ruler_draw_ticks (ruler);
-        gtk_widget_get_allocation (widget, &allocation);
 
-        gdk_draw_drawable (gtk_widget_get_window (widget),
-                           gtk_widget_get_style (widget)->fg_gc[gtk_widget_get_state (GTK_WIDGET (ruler))],
-                           ruler->priv->backing_pixmap,
-                           0, 0, 0, 0,
-                           allocation.width, allocation.height);
+		if (ruler->priv->backing_surface)
+		{
+			cairo_set_source_surface(cr, ruler->priv->backing_surface, 0, 0);
+			cairo_paint(cr);
+		}
 
+/* TODO: draw_pos also blits the backing_surface to the window, should make it happen only once) */
         if (ruler->priv->draw_position)
             gtk_databox_ruler_draw_pos (ruler);
     }
@@ -1696,28 +1737,35 @@ gtk_databox_ruler_expose (GtkWidget * widget, GdkEventExpose * event) {
 }
 
 static void
-gtk_databox_ruler_make_pixmap (GtkDataboxRuler * ruler) {
+gtk_databox_ruler_create_backing_surface (GtkDataboxRuler * ruler) {
     GtkWidget *widget;
     gint width;
     gint height;
-    GtkAllocation allocation;
+	GtkAllocation allocation;
+	cairo_t *cr;
 
     widget = GTK_WIDGET (ruler);
+	gtk_widget_get_allocation(widget, &allocation);
+	width = allocation.width;
+	height = allocation.height;
 
-    if (ruler->priv->backing_pixmap) {
-        gdk_pixmap_get_size (ruler->priv->backing_pixmap, &width, &height);
-        if ((width == allocation.width) &&
-                (height == allocation.height))
+    if (ruler->priv->backing_surface) {
+        if ((width == ruler->priv->old_width) &&
+                (height == ruler->priv->old_height))
             return;
 
-        g_object_unref (ruler->priv->backing_pixmap);
+		cairo_surface_destroy(ruler->priv->backing_surface);
     }
 
-    gtk_widget_get_allocation(widget, &allocation);
+	ruler->priv->old_width = width;
+	ruler->priv->old_height = height;
 
-    ruler->priv->backing_pixmap = gdk_pixmap_new (gtk_widget_get_window (widget),
-                                  allocation.width,
-                                  allocation.height, -1);
+	cr = gdk_cairo_create(gtk_widget_get_window(widget));
+
+    ruler->priv->backing_surface = cairo_surface_create_similar(
+		cairo_get_target(cr),
+		CAIRO_CONTENT_COLOR,
+		width, height);
 
     ruler->priv->xsrc = 0;
     ruler->priv->ysrc = 0;

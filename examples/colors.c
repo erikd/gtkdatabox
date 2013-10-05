@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, 
+ * Boston, MA 02110-1301 USA.
  */
 #include <stdio.h>
 #include <gtk/gtk.h>
@@ -28,7 +28,7 @@
 
 typedef struct
 {
-   GtkColorSelectionDialog *selector;
+   GtkWidget *selector;
    GtkWidget *box;
    GtkDataboxGraph *graph;
    gint index;
@@ -36,45 +36,38 @@ typedef struct
 col_sel;
 
 static void
-get_color_cb (col_sel * sel /*, GtkWidget *widget */ )
+get_color_cb(GtkDialog *dialog, gint response_id, gpointer user_data)
 {
-   GdkColor color;
+	GdkRGBA rgba;
+	col_sel *sel = (col_sel *)user_data;
 
-   g_return_if_fail (GTK_IS_COLOR_SELECTION_DIALOG (sel->selector));
-   g_return_if_fail (GTK_IS_DATABOX (sel->box));
+	g_return_if_fail (GTK_IS_DATABOX (sel->box));
 
-   gtk_color_selection_get_current_color (GTK_COLOR_SELECTION
-					  (sel->selector->colorsel), &color);
-
-   gtk_databox_graph_set_color (sel->graph, &color);
-   gtk_widget_queue_draw (GTK_WIDGET (sel->box));
+	if (response_id == GTK_RESPONSE_OK)
+	{
+		gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(dialog), &rgba);
+		gtk_databox_graph_set_rgba (sel->graph, &rgba);
+		gtk_widget_queue_draw (GTK_WIDGET (sel->box));
+	}
+	gtk_widget_destroy(GTK_WIDGET(dialog));
 }
 
 static void
 menu_color_change_cb (col_sel * sel)
 {
-   GtkColorSelectionDialog *selector;
+   GtkWidget *selector;
    gchar title[20];
-   GdkColor *color;
+   GdkRGBA rgba;
 
    sprintf (title, "Choose color #%d", sel->index);
-   selector =
-      GTK_COLOR_SELECTION_DIALOG (gtk_color_selection_dialog_new (title));
-   gtk_widget_destroy (selector->help_button);
+   selector = gtk_color_chooser_dialog_new(title, NULL);
    sel->selector = selector;
 
-   color = gtk_databox_graph_get_color (sel->graph);
-   gtk_color_selection_set_current_color (GTK_COLOR_SELECTION
-					  (selector->colorsel), color);
-
-   g_signal_connect_object (G_OBJECT (selector->cancel_button), "clicked",
-			    G_CALLBACK (gtk_widget_destroy),
-			    G_OBJECT (selector), G_CONNECT_SWAPPED);
-   g_signal_connect_swapped (G_OBJECT
-			     (selector->ok_button),
-			     "clicked", G_CALLBACK (get_color_cb),
-			     (gpointer) sel);
-   gtk_widget_show (GTK_WIDGET (selector));
+   rgba = *gtk_databox_graph_get_rgba (sel->graph);
+   gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(sel->selector), &rgba);
+   gtk_color_chooser_set_use_alpha(GTK_COLOR_CHOOSER(sel->selector), FALSE);
+   g_signal_connect(G_OBJECT(sel->selector), "response", G_CALLBACK(get_color_cb), (gpointer)sel);
+   gtk_widget_show (GTK_WIDGET (sel->selector));
 
    return;
 }
@@ -117,8 +110,8 @@ create_colors (void)
    gfloat *X = NULL;
    gfloat *Y = NULL;
    gint i, j;
-   GdkColor color;
    GtkDataboxGraph *graph;
+   GdkColor color;
 
    window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
    gtk_widget_set_size_request (window, 500, 300);
@@ -129,7 +122,7 @@ create_colors (void)
    gtk_window_set_title (GTK_WINDOW (window), "GtkDatabox: Colors");
    gtk_container_set_border_width (GTK_CONTAINER (window), 0);
 
-   box1 = gtk_vbox_new (FALSE, 0);
+   box1 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
    gtk_container_add (GTK_CONTAINER (window), box1);
 
    box = gtk_databox_new ();
@@ -153,7 +146,7 @@ create_colors (void)
       gtk_label_new
       ("You can change the colors of the shown datasets via the menu.\n\n");
    gtk_box_pack_start (GTK_BOX (box1), label, FALSE, FALSE, 0);
-   separator = gtk_hseparator_new ();
+   separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
    gtk_box_pack_start (GTK_BOX (box1), separator, FALSE, FALSE, 0);
 
    g_signal_connect (G_OBJECT (box), "destroy",
@@ -182,17 +175,17 @@ create_colors (void)
 
    gtk_box_pack_start (GTK_BOX (box1), box, TRUE, TRUE, 0);
 
-   separator = gtk_hseparator_new ();
+   separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
    gtk_box_pack_start (GTK_BOX (box1), separator, FALSE, TRUE, 0);
 
-   box2 = gtk_vbox_new (FALSE, 10);
+   box2 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 10);
    gtk_container_set_border_width (GTK_CONTAINER (box2), 10);
    gtk_box_pack_end (GTK_BOX (box1), box2, FALSE, TRUE, 0);
    close_button = gtk_button_new_with_label ("close");
    g_signal_connect (G_OBJECT (close_button), "clicked",
 		     G_CALLBACK (gtk_main_quit), (gpointer) NULL);
    gtk_box_pack_start (GTK_BOX (box2), close_button, TRUE, TRUE, 0);
-   gtk_widget_set_can_default(close_button, GTK_CAN_DEFAULT);
+   gtk_widget_set_can_default(close_button, TRUE);
    gtk_widget_grab_default (close_button);
 
 

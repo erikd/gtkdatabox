@@ -14,7 +14,7 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #include <stdio.h>
 
@@ -50,21 +50,21 @@ create_grid (void)
    window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
    gtk_widget_set_size_request (window, 500, 500);
 
-   g_signal_connect (GTK_OBJECT (window), "destroy",
+   g_signal_connect (G_OBJECT (window), "destroy",
 		     G_CALLBACK (gtk_main_quit), NULL);
 
    gtk_window_set_title (GTK_WINDOW (window),
 			 "GtkDatabox: Double Grid Example");
    gtk_container_set_border_width (GTK_CONTAINER (window), 0);
 
-   box1 = gtk_vbox_new (FALSE, 0);
+   box1 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
    gtk_container_add (GTK_CONTAINER (window), box1);
 
    label =
       gtk_label_new
       ("This is an example of two grids\nLove it or hate it.\nI love it...\n\nFor basic understanding see basics :-)");
    gtk_box_pack_start (GTK_BOX (box1), label, FALSE, FALSE, 0);
-   separator = gtk_hseparator_new ();
+   separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
    gtk_box_pack_start (GTK_BOX (box1), separator, FALSE, FALSE, 0);
 
    /* Create a GtkDatabox widget along with scrollbars and rulers */
@@ -122,18 +122,18 @@ create_grid (void)
 
    gtk_databox_auto_rescale (GTK_DATABOX (box), 0.05);
 
-   separator = gtk_hseparator_new ();
+   separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
    gtk_box_pack_start (GTK_BOX (box1), separator, FALSE, TRUE, 0);
 
-   box2 = gtk_vbox_new (FALSE, 10);
+   box2 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 10);
    gtk_container_set_border_width (GTK_CONTAINER (box2), 10);
    gtk_box_pack_end (GTK_BOX (box1), box2, FALSE, TRUE, 0);
    close_button = gtk_button_new_with_label ("close");
-   g_signal_connect_swapped (GTK_OBJECT (close_button), "clicked",
+   g_signal_connect_swapped (G_OBJECT (close_button), "clicked",
 			     G_CALLBACK (gtk_main_quit),
-			     GTK_OBJECT (box));
+			     G_OBJECT (box));
    gtk_box_pack_start (GTK_BOX (box2), close_button, TRUE, TRUE, 0);
-   gtk_widget_set_can_default(close_button, GTK_CAN_DEFAULT);
+   gtk_widget_set_can_default(close_button, TRUE);
    gtk_widget_grab_default (close_button);
 
    gtk_widget_show_all (window);

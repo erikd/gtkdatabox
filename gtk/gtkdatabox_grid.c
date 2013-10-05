@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 #include <gtkdatabox_grid.h>
@@ -24,7 +24,7 @@ G_DEFINE_TYPE(GtkDataboxGrid, gtk_databox_grid,
 
 static void gtk_databox_grid_real_draw (GtkDataboxGraph * grid,
 					GtkDatabox* box);
-static GdkGC* gtk_databox_grid_real_create_gc (GtkDataboxGraph * graph,
+static cairo_t* gtk_databox_grid_real_create_gc (GtkDataboxGraph * graph,
 					     GtkDatabox* box);
 
 /* IDs of properties */
@@ -125,28 +125,32 @@ gtk_databox_grid_get_property (GObject * object,
    }
 }
 
-static GdkGC*
+
+
+static cairo_t*
 gtk_databox_grid_real_create_gc (GtkDataboxGraph * graph,
 				 GtkDatabox* box)
 {
-   GdkGC *gc;
-   GdkGCValues values;
+   cairo_t *cr;
+   static const double grid_dash = 5.0;
 
    g_return_val_if_fail (GTK_DATABOX_IS_GRID (graph), NULL);
 
-   gc = GTK_DATABOX_GRAPH_CLASS (gtk_databox_grid_parent_class)->create_gc (graph, box);
+   cr = GTK_DATABOX_GRAPH_CLASS (gtk_databox_grid_parent_class)->create_gc (graph, box);
 
-   if (gc)
-   {
-      values.line_style = GDK_LINE_ON_OFF_DASH;
-      values.cap_style = GDK_CAP_BUTT;
-      values.join_style = GDK_JOIN_MITER;
-      gdk_gc_set_values (gc, &values,
-			 GDK_GC_LINE_STYLE |
-			 GDK_GC_CAP_STYLE | GDK_GC_JOIN_STYLE);
-   }
+   if (cr)
+      cairo_set_dash(cr, &grid_dash, 1, 0.0);
 
-   return gc;
+   return cr;
+}
+
+static void
+grid_finalize (GObject * object)
+{
+  GtkDataboxGraph *graph = GTK_DATABOX_GRAPH (object);
+
+  /* Chain up to the parent class */
+  G_OBJECT_CLASS (gtk_databox_grid_parent_class)->finalize (object);
 }
 
 static void
@@ -158,6 +162,7 @@ gtk_databox_grid_class_init (GtkDataboxGridClass *klass)
 
    gobject_class->set_property = gtk_databox_grid_set_property;
    gobject_class->get_property = gtk_databox_grid_get_property;
+   gobject_class->finalize = grid_finalize;
 
    grid_param_spec = g_param_spec_int ("grid-hlines", "grid-hlines", "Number of horizontal lines", G_MININT, G_MAXINT, 0,	/* default value */
 				       G_PARAM_READWRITE);
@@ -247,10 +252,7 @@ gtk_databox_grid_real_draw (GtkDataboxGraph * graph,
 {
    GtkWidget *widget;
    GtkDataboxGrid *grid = GTK_DATABOX_GRID (graph);
-   GtkDataboxGridPrivate *priv = GTK_DATABOX_GRID_GET_PRIVATE(grid);
-   GdkGC *gc;
-   GdkPixmap *pixmap;
-   gint i = 0;
+   GtkDataboxGridPrivate *priv = GTK_DATABOX_GRID_GET_PRIVATE(grid);   gint i = 0;
    gfloat x;
    gfloat y;
    gint16 width;
@@ -262,6 +264,7 @@ gtk_databox_grid_real_draw (GtkDataboxGraph * graph,
    gint16 pixel_x;
    gint16 pixel_y;
    gfloat left, right, top, bottom;
+   cairo_t *cr;
    GtkAllocation allocation;
 
    g_return_if_fail (GTK_DATABOX_IS_GRID (grid));
@@ -270,11 +273,9 @@ gtk_databox_grid_real_draw (GtkDataboxGraph * graph,
    widget = GTK_WIDGET(box);
    gtk_widget_get_allocation(widget, &allocation);
 
-   pixmap = gtk_databox_get_backing_pixmap (box);
    gtk_databox_get_total_limits (box, &left, &right, &top, &bottom);
 
-   if (!(gc = gtk_databox_graph_get_gc(graph)))
-      gc = gtk_databox_graph_create_gc (graph, box);
+   cr = gtk_databox_graph_create_gc (graph, box);
 
    width = allocation.width;
    height = allocation.height;
@@ -292,14 +293,16 @@ gtk_databox_grid_real_draw (GtkDataboxGraph * graph,
       {
          y = offset_y + (i + 1) * factor_y;
          pixel_y = gtk_databox_value_to_pixel_y (box, y);
-         gdk_draw_line (pixmap, gc, 0, pixel_y, width, pixel_y);
+         cairo_move_to (cr, 0.0, pixel_y + 0.5);
+         cairo_line_to (cr, width, pixel_y + 0.5);
       }
    else
       for (i = 0; i < priv->hlines; i++)
       {
          y = priv->hline_vals[i];
          pixel_y = gtk_databox_value_to_pixel_y (box, y);
-         gdk_draw_line (pixmap, gc, 0, pixel_y, width, pixel_y);
+         cairo_move_to (cr, 0.0, pixel_y + 0.5);
+         cairo_line_to (cr, width, pixel_y + 0.5);
       }
 
    if (priv->vline_vals == NULL)
@@ -307,16 +310,19 @@ gtk_databox_grid_real_draw (GtkDataboxGraph * graph,
       {
          x = offset_x + (i + 1) * factor_x;
          pixel_x = gtk_databox_value_to_pixel_x (box, x);
-         gdk_draw_line (pixmap, gc, pixel_x, 0, pixel_x, height);
+         cairo_move_to (cr, pixel_x + 0.5, 0.0);
+         cairo_line_to (cr, pixel_x + 0.5, height);
       }
    else
       for (i = 0; i < priv->vlines; i++)
       {
          x = priv->vline_vals[i];
          pixel_x = gtk_databox_value_to_pixel_x (box, x);
-         gdk_draw_line (pixmap, gc, pixel_x, 0, pixel_x, height);
+         cairo_move_to (cr, pixel_x + 0.5, 0);
+         cairo_line_to (cr, pixel_x + 0.5, height);
       }
-
+   cairo_stroke(cr);
+   cairo_destroy(cr);
 
    return;
 }
@@ -410,12 +416,12 @@ gtk_databox_grid_set_hline_vals (GtkDataboxGrid * grid, gfloat *hline_vals)
  *
  * Gets the pointer to the horizontal line values for the @grid.
  *
- * Return value: Pointer to the horizontal line values for the @grid.
+ * Return value: Pointer to the horizontal line values for the @grid. (or NULL if error)
  **/
 gfloat*
 gtk_databox_grid_get_hline_vals (GtkDataboxGrid * grid)
 {
-   g_return_val_if_fail (GTK_DATABOX_IS_GRID (grid), -1);
+   g_return_val_if_fail (GTK_DATABOX_IS_GRID (grid), NULL);
 
    return GTK_DATABOX_GRID_GET_PRIVATE(grid)->hline_vals;
 }
@@ -443,12 +449,12 @@ gtk_databox_grid_set_vline_vals (GtkDataboxGrid * grid, gfloat *vline_vals)
  *
  * Gets the pointer to the vertical line values for the @grid.
  *
- * Return value: Pointer to the vertical line values for the @grid.
+ * Return value: Pointer to the vertical line values for the @grid. (or NULL if error)
  **/
 gfloat*
 gtk_databox_grid_get_vline_vals (GtkDataboxGrid * grid)
 {
-   g_return_val_if_fail (GTK_DATABOX_IS_GRID (grid), -1);
+   g_return_val_if_fail (GTK_DATABOX_IS_GRID (grid), NULL);
 
    return GTK_DATABOX_GRID_GET_PRIVATE(grid)->vline_vals;
 }

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="gtkdatabox" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/gtkdatabox" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/gtkdatabox" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Unit filename="../../../../../../home/flatmax/personal.work/gtkdatabox/examples/Gtk+IOStream.C">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../../../home/flatmax/personal.work/gtkdatabox/examples/addremove.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../../../home/flatmax/personal.work/gtkdatabox/examples/basics.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../../../home/flatmax/personal.work/gtkdatabox/examples/basics2.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../../../home/flatmax/personal.work/gtkdatabox/examples/basics_libglade.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../../../home/flatmax/personal.work/gtkdatabox/examples/colors.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../../../home/flatmax/personal.work/gtkdatabox/examples/enable_disable.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../../../home/flatmax/personal.work/gtkdatabox/examples/full.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../../../home/flatmax/personal.work/gtkdatabox/examples/grid.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../../../home/flatmax/personal.work/gtkdatabox/examples/grid_array.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../../../home/flatmax/personal.work/gtkdatabox/examples/keycontrol.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../../../home/flatmax/personal.work/gtkdatabox/examples/lissajous.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../../../home/flatmax/personal.work/gtkdatabox/examples/logarithmic.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../../../home/flatmax/personal.work/gtkdatabox/examples/markers.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../../../home/flatmax/personal.work/gtkdatabox/examples/rulers.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../../../home/flatmax/personal.work/gtkdatabox/examples/signals.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../gtk/gtkdatabox.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../gtk/gtkdatabox.h" />
+		<Unit filename="../gtk/gtkdatabox_bars.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../gtk/gtkdatabox_bars.h" />
+		<Unit filename="../gtk/gtkdatabox_cross_simple.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../gtk/gtkdatabox_cross_simple.h" />
+		<Unit filename="../gtk/gtkdatabox_graph.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../gtk/gtkdatabox_graph.h" />
+		<Unit filename="../gtk/gtkdatabox_grid.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../gtk/gtkdatabox_grid.h" />
+		<Unit filename="../gtk/gtkdatabox_lines.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../gtk/gtkdatabox_lines.h" />
+		<Unit filename="../gtk/gtkdatabox_markers.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../gtk/gtkdatabox_markers.h" />
+		<Unit filename="../gtk/gtkdatabox_marshal.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../gtk/gtkdatabox_marshal.h" />
+		<Unit filename="../gtk/gtkdatabox_offset_bars.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../gtk/gtkdatabox_offset_bars.h" />
+		<Unit filename="../gtk/gtkdatabox_points.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../gtk/gtkdatabox_points.h" />
+		<Unit filename="../gtk/gtkdatabox_regions.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../gtk/gtkdatabox_regions.h" />
+		<Unit filename="../gtk/gtkdatabox_ruler.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../gtk/gtkdatabox_ruler.h" />
+		<Unit filename="../gtk/gtkdatabox_scale.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../gtk/gtkdatabox_scale.h" />
+		<Unit filename="../gtk/gtkdatabox_typedefs.h" />
+		<Unit filename="../gtk/gtkdatabox_xyc_graph.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../gtk/gtkdatabox_xyc_graph.h" />
+		<Unit filename="../gtk/gtkdatabox_xyyc_graph.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../gtk/gtkdatabox_xyyc_graph.h" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 #ifndef __GTK_DATABOX_H__
@@ -167,11 +167,10 @@ gint16 gtk_databox_value_to_pixel_x (GtkDatabox * box, gfloat value);
 gint16 gtk_databox_value_to_pixel_y (GtkDatabox * box, gfloat value);
 gfloat gtk_databox_pixel_to_value_x (GtkDatabox * box, gint16 pixel);
 gfloat gtk_databox_pixel_to_value_y (GtkDatabox * box, gint16 pixel);
-void gtk_databox_values_to_pixels (GtkDatabox * box,
-                                   guint len,
-                                   const gfloat * values_x,
-                                   const gfloat * values_y,
-                                   GdkPoint * pixels);
+void gtk_databox_values_to_xpixels (GtkDatabox *box, gint16 *pixels,
+	void *values, GType vtype, guint size, guint start, guint stride, guint len);
+void gtk_databox_values_to_ypixels (GtkDatabox *box, gint16 *pixels,
+	void *values, GType vtype, guint size, guint start, guint stride, guint len);
 
 void gtk_databox_create_box_with_scrollbars_and_rulers (GtkWidget **
         p_box,
@@ -193,7 +192,7 @@ gtk_databox_create_box_with_scrollbars_and_rulers_positioned (GtkWidget ** p_box
         gboolean ruler_y_left);
 
 /* Used by graph objects */
-GdkPixmap* gtk_databox_get_backing_pixmap(GtkDatabox * box);
+cairo_surface_t* gtk_databox_get_backing_surface(GtkDatabox * box);
 
 G_END_DECLS
 #endif				/* __GTK_DATABOX_H__ */

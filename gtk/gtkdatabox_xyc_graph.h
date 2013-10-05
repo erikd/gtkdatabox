@@ -14,7 +14,7 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 /**
@@ -78,8 +78,15 @@ G_BEGIN_DECLS
    GType gtk_databox_xyc_graph_get_type (void);
 
    guint gtk_databox_xyc_graph_get_length (GtkDataboxXYCGraph * xyc_graph);
+   guint gtk_databox_xyc_graph_get_maxlen (GtkDataboxXYCGraph * xyc_graph);
    gfloat *gtk_databox_xyc_graph_get_X (GtkDataboxXYCGraph * xyc_graph);
    gfloat *gtk_databox_xyc_graph_get_Y (GtkDataboxXYCGraph * xyc_graph);
+   guint gtk_databox_xyc_graph_get_xstart (GtkDataboxXYCGraph * xyc_graph);
+   guint gtk_databox_xyc_graph_get_ystart (GtkDataboxXYCGraph * xyc_graph);
+   guint gtk_databox_xyc_graph_get_xstride (GtkDataboxXYCGraph * xyc_graph);
+   guint gtk_databox_xyc_graph_get_ystride (GtkDataboxXYCGraph * xyc_graph);
+   GType gtk_databox_xyc_graph_get_xtype (GtkDataboxXYCGraph * xyc_graph);
+   GType gtk_databox_xyc_graph_get_ytype (GtkDataboxXYCGraph * xyc_graph);
 
 G_END_DECLS
 #endif				/* __GTK_DATABOX_XYC_GRAPH_H__ */

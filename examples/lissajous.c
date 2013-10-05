@@ -14,7 +14,7 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #include <stdio.h>
 
@@ -94,19 +94,19 @@ create_lissajous (void)
 			 "GtkDatabox: Lissajous Example");
    gtk_container_set_border_width (GTK_CONTAINER (window), 0);
 
-   box1 = gtk_vbox_new (FALSE, 0);
+   box1 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
    gtk_container_add (GTK_CONTAINER (window), box1);
 
    label =
       gtk_label_new
       ("This example resembles an oszilloscope\nreceiving two signals, one is a sine (horizontal),\nthe other is a cosine with ever changing frequency (vertical).\nThe counter is synchron with the updates.");
    gtk_box_pack_start (GTK_BOX (box1), label, FALSE, FALSE, 0);
-   separator = gtk_hseparator_new ();
+   separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
    gtk_box_pack_start (GTK_BOX (box1), separator, FALSE, FALSE, 0);
    lissajous_label = gtk_entry_new ();
    gtk_entry_set_text (GTK_ENTRY (lissajous_label), "0");
    gtk_box_pack_start (GTK_BOX (box1), lissajous_label, FALSE, FALSE, 0);
-   separator = gtk_hseparator_new ();
+   separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
    gtk_box_pack_start (GTK_BOX (box1), separator, FALSE, FALSE, 0);
 
    lissajous_idle = 0;
@@ -142,10 +142,10 @@ create_lissajous (void)
 
    gtk_databox_auto_rescale (GTK_DATABOX (box), 0.05);
 
-   separator = gtk_hseparator_new ();
+   separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
    gtk_box_pack_start (GTK_BOX (box1), separator, FALSE, TRUE, 0);
 
-   box2 = gtk_vbox_new (FALSE, 10);
+   box2 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 10);
    gtk_container_set_border_width (GTK_CONTAINER (box2), 10);
    gtk_box_pack_end (GTK_BOX (box1), box2, FALSE, TRUE, 0);
    close_button = gtk_button_new_with_label ("close");
@@ -154,7 +154,7 @@ create_lissajous (void)
 			     G_CALLBACK (gtk_main_quit), G_OBJECT (box));
 
    gtk_box_pack_start (GTK_BOX (box2), close_button, TRUE, TRUE, 0);
-   gtk_widget_set_can_default(close_button, GTK_CAN_DEFAULT);
+   gtk_widget_set_can_default(close_button, TRUE);
    gtk_widget_grab_default (close_button);
    lissajous_idle = g_idle_add ((GSourceFunc) lissajous_idle_func, box);
 

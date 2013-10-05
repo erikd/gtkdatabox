@@ -21,6 +21,7 @@ libgtkdatabox_la_SOURCES= \
 libgtkdatabox_la_LDFLAGS= \
 		        -version-info $(LT_CURRENT)\
 			-release $(LT_RELEASE)\
+			-no-undefined
 			@GTK_LIBS@
 
 
@@ -65,4 +66,5 @@ AM_CFLAGS			=\
 			-DGTK_MULTIHEAD_SAFE=1\
 			-DGSEAL_ENABLE\
 			-DGTK_DISABLE_SINGLE_INCLUDES\
-			`pkg-config gtk+-2.0 --cflags`
+		 	@GTK_CFLAGS@
+

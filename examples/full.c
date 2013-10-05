@@ -1,4 +1,4 @@
-/* $Id: basics.c 4 2008-06-22 09:19:11Z rbock $ */
+/* $Id: full.c 4 2008-06-22 09:19:11Z rbock $ */
 /* GtkDatabox - An extension to the gtk+ library
  * Copyright (C) 1998 - 2008  Dr. Roland Bock
  *
@@ -30,11 +30,11 @@
 #define MARKER 10
 
 /*----------------------------------------------------------------
- *  databox basics
+ *  databox full
  *----------------------------------------------------------------*/
 
 static void
-create_basics (void)
+create_full (void)
 {
    GtkWidget *window = NULL;
    GtkWidget *vbox;
@@ -44,14 +44,14 @@ create_basics (void)
    GtkWidget *separator;
    GtkWidget *table;
    GtkDataboxGraph *graph;
-   gfloat *X;
-   gfloat *Y;
+   guint *X;
+   gdouble *Y;
    GdkColor color;
    gint i;
 
    /* We define some data */
-   X = g_new0 (gfloat, POINTS);
-   Y = g_new0 (gfloat, POINTS);
+   X = g_new0 (guint, POINTS);
+   Y = g_new0 (gdouble, POINTS);
 
    for (i = 0; i < POINTS; i++)
    {
@@ -95,7 +95,10 @@ create_basics (void)
    color.green = 0;
    color.blue = 0;
 
-   graph = gtk_databox_points_new (POINTS, X, Y, &color, 1);
+   graph = gtk_databox_points_new_full (POINTS, POINTS,
+		X, 0, 1, G_TYPE_UINT,
+		Y, 0, 1, G_TYPE_DOUBLE,
+		&color, 1);
    gtk_databox_graph_add (GTK_DATABOX (box), graph);
 
    gtk_databox_set_total_limits (GTK_DATABOX (box), -1000., 5000., -10000., 23000.);
@@ -126,7 +129,7 @@ main (gint argc, char *argv[])
 {
    gtk_init (&argc, &argv);
 
-   create_basics ();
+   create_full ();
    gtk_main ();
 
    return 0;

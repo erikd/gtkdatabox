@@ -14,7 +14,7 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #include <stdio.h>
 
@@ -218,7 +218,7 @@ create_signals (void)
    gtk_window_set_title (GTK_WINDOW (window), "GtkDatabox: Signals Examples");
    gtk_container_set_border_width (GTK_CONTAINER (window), 0);
 
-   box1 = gtk_vbox_new (FALSE, 0);
+   box1 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
    gtk_container_add (GTK_CONTAINER (window), box1);
 
    label =
@@ -226,10 +226,10 @@ create_signals (void)
       ("The output on the shell and in the text boxes below\nshow you the information that you can get\n by using signals.\n\nSee basics for a usage of this window...");
 
    gtk_box_pack_start (GTK_BOX (box1), label, FALSE, FALSE, 0);
-   separator = gtk_hseparator_new ();
+   separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
    gtk_box_pack_start (GTK_BOX (box1), separator, FALSE, FALSE, 0);
 
-   hbox = gtk_hbox_new (TRUE, 3);
+   hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 3);
    gtk_box_pack_start (GTK_BOX (box1), hbox, FALSE, TRUE, 0);
 
    entries[SHOW_ACTUAL_X] = show_entry (hbox, "Actual X");
@@ -277,17 +277,17 @@ create_signals (void)
 
    gtk_databox_auto_rescale (GTK_DATABOX (box), 0.00);
 
-   separator = gtk_hseparator_new ();
+   separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
    gtk_box_pack_start (GTK_BOX (box1), separator, FALSE, TRUE, 0);
 
-   box2 = gtk_vbox_new (FALSE, 10);
+   box2 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 10);
    gtk_container_set_border_width (GTK_CONTAINER (box2), 10);
    gtk_box_pack_end (GTK_BOX (box1), box2, FALSE, TRUE, 0);
    close_button = gtk_button_new_with_label ("close");
    g_signal_connect_swapped (G_OBJECT (close_button), "clicked",
 			     G_CALLBACK (gtk_main_quit), G_OBJECT (box));
    gtk_box_pack_start (GTK_BOX (box2), close_button, TRUE, TRUE, 0);
-   gtk_widget_set_can_default(close_button, GTK_CAN_DEFAULT);
+   gtk_widget_set_can_default(close_button, TRUE);
    gtk_widget_grab_default (close_button);
 
    g_signal_connect (G_OBJECT (box), "zoomed",

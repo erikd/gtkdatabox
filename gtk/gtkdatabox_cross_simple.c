@@ -14,7 +14,7 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 #include <gtkdatabox_cross_simple.h>
@@ -70,7 +70,14 @@ gtk_databox_cross_simple_new (GdkColor * color, guint size)
 				"markers-type", GTK_DATABOX_MARKERS_SOLID_LINE,
 				"X-Values", X,
 				"Y-Values", Y,
+			 	"xstart", 0,
+			 	"ystart", 0,
+			 	"xstride", 1,
+			 	"ystride", 1,
+			 	"xtype", G_TYPE_FLOAT,
+			 	"ytype", G_TYPE_FLOAT,
 				"length", len,
+				"maxlen", len,
 				"color", color, "size", size, NULL);
 
    gtk_databox_markers_set_position (GTK_DATABOX_MARKERS (cross_simple), 0,

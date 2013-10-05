@@ -3,6 +3,7 @@
 noinst_PROGRAMS         = \
                           basics\
                           basics2\
+                          full\
                           logarithmic\
                           rulers\
                           keycontrol\
@@ -20,6 +21,8 @@ noinst_PROGRAMS         = \
 basics_SOURCES          = basics.c
 
 basics2_SOURCES         = basics2.c
+
+full_SOURCES         	= full.c
 
 logarithmic_SOURCES     = logarithmic.c
 
@@ -59,7 +62,7 @@ AM_CFLAGS			=\
 			-DGSEAL_ENABLED\
 			-DGTK_DISABLE_SINGLE_INCLUDES\
 			@LIBGLADE_CFLAGS@ \
-			`pkg-config gtk+-2.0 --cflags`
+			@GTK_CFLAGS@
 
 
 LDADD 			= $(top_builddir)/gtk/libgtkdatabox.la\
@@ -75,3 +78,4 @@ basics_libglade_LDADD	= $(top_builddir)/gtk/libgtkdatabox.la \
 else
 basics_libglade_LDADD = $(LDADD)
 endif
+
