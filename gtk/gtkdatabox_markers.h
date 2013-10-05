@@ -47,11 +47,13 @@ G_BEGIN_DECLS
 #define GTK_DATABOX_MARKERS_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), \
                                            GTK_DATABOX_TYPE_MARKERS, \
                                            GtkDataboxMarkersClass))
+#define GTK_DATABOX_MARKERS_GET_PRIVATE(obj) \
+	G_TYPE_INSTANCE_GET_PRIVATE ((obj), GTK_DATABOX_TYPE_MARKERS, \
+	GtkDataboxMarkersPrivate)
 
 /**
  * GtkDataboxMarkers:
  * @parent: The parent object 
- * @priv: A private structure containing internal data.
  * 
  * #GtkDataboxMarkers is a #GtkDataboxGraph class for displaying labeled markers (circles, triangles, lines) for xy-values.
  *
@@ -59,15 +61,6 @@ G_BEGIN_DECLS
    typedef struct _GtkDataboxMarkers GtkDataboxMarkers;
 
    typedef struct _GtkDataboxMarkersClass GtkDataboxMarkersClass;
-
-   /**
-    * GtkDataboxMarkersPrivate:
-    *
-    * A private data structure used by the #GtkDataboxMarkers. It shields all internal things
-    * from developers who are just using the object. 
-    *
-    **/
-   typedef struct _GtkDataboxMarkersPrivate GtkDataboxMarkersPrivate;
 
    /**
     * GtkDataboxMarkersPosition:
@@ -139,8 +132,6 @@ G_BEGIN_DECLS
    {
       /*< private >*/
       GtkDataboxXYCGraph parent;
-
-      GtkDataboxMarkersPrivate *priv;
    };
 
    struct _GtkDataboxMarkersClass

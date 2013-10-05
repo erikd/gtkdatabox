@@ -49,6 +49,8 @@ G_BEGIN_DECLS
 #define GTK_DATABOX_XYYC_GRAPH_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), \
                                            GTK_DATABOX_TYPE_XYYC_GRAPH, \
                                            GtkDataboxXYYCGraphClass))
+#define GTK_DATABOX_XYYC_GRAPH_GET_PRIVATE(obj) \
+	G_TYPE_INSTANCE_GET_PRIVATE ((obj), GTK_DATABOX_TYPE_XYYC_GRAPH, GtkDataboxXYYCGraphPrivate)
 
 /**
  * GtkDataboxXYYCGraph:
@@ -62,21 +64,10 @@ G_BEGIN_DECLS
 
    typedef struct _GtkDataboxXYYCGraphClass GtkDataboxXYYCGraphClass;
 
-   /**
-    * GtkDataboxXYYCGraphPrivate
-    *
-    * A private data structure used by the #GtkDataboxXYYCGraph. It shields all internal things
-    * from developers who are just using the object.
-    *
-    **/
-   typedef struct _GtkDataboxXYYCGraphPrivate GtkDataboxXYYCGraphPrivate;
-
    struct _GtkDataboxXYYCGraph
    {
       /*< private >*/
       GtkDataboxGraph parent;
-
-      GtkDataboxXYYCGraphPrivate *priv;
    };
 
    struct _GtkDataboxXYYCGraphClass

@@ -26,7 +26,6 @@ G_BEGIN_DECLS
    /**
     * GtkDatabox:
     * @box: The parent object 
-    * @priv: A private structure containing internal data.
     *
     * A GTK+ widget to display large amounts of numerical data quickly and easily. 
     * The numerical data is represented/displayed by #GtkDataboxGraph objects, e.g.
@@ -40,7 +39,6 @@ G_BEGIN_DECLS
   /**
     * GtkDataboxGraph
     * @parent: The parent object 
-    * @priv: A private structure containing internal data.
     *
     * The GtkDataboxGraph is the base class for all kinds of graphs (e.g. lines, points, decorations like coordinate crosses) 
     * to be shown in a #GtkDatabox wiget.

@@ -66,21 +66,10 @@ G_BEGIN_DECLS
 
    typedef struct _GtkDataboxCrossSimpleClass GtkDataboxCrossSimpleClass;
 
-   /**
-    * GtkDataboxCrossSimplePrivate
-    *
-    * A private data structure used by the #GtkDataboxCrossSimple. It shields all internal things
-    * from developers who are just using the object. 
-    *
-    **/
-   typedef struct _GtkDataboxCrossSimplePrivate GtkDataboxCrossSimplePrivate;
-
    struct _GtkDataboxCrossSimple
    {
       /*< private >*/
       GtkDataboxMarkers parent;
-
-      GtkDataboxCrossSimplePrivate *priv;
    };
 
    struct _GtkDataboxCrossSimpleClass

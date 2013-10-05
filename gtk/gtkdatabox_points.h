@@ -47,6 +47,8 @@ G_BEGIN_DECLS
 #define GTK_DATABOX_POINTS_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), \
                                            GTK_DATABOX_TYPE_POINTS, \
                                            GtkDataboxPointsClass))
+#define GTK_DATABOX_POINTS_GET_PRIVATE(obj) \
+	G_TYPE_INSTANCE_GET_PRIVATE ((obj), GTK_DATABOX_TYPE_POINTS, GtkDataboxPointsPrivate)
 
 /**
  * GtkDataboxPoints:
@@ -60,21 +62,10 @@ G_BEGIN_DECLS
 
    typedef struct _GtkDataboxPointsClass GtkDataboxPointsClass;
 
-   /**
-    * GtkDataboxPointsPrivate
-    *
-    * A private data structure used by the #GtkDataboxPoints. It shields all internal things
-    * from developers who are just using the object. 
-    *
-    **/
-   typedef struct _GtkDataboxPointsPrivate GtkDataboxPointsPrivate;
-
    struct _GtkDataboxPoints
    {
       /*< private >*/
       GtkDataboxXYCGraph parent;
-
-      GtkDataboxPointsPrivate *priv;
    };
 
    struct _GtkDataboxPointsClass

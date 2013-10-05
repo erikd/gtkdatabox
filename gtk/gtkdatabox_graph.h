@@ -6,12 +6,12 @@
  * modify it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation; either version 2.1
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
@@ -25,9 +25,9 @@
  *
  * GtkDataboxGraphs can display data or other things in a #GtkDatabox widget.
  *
- * This class is just the basic interface. Other graph classes are derived from this 
+ * This class is just the basic interface. Other graph classes are derived from this
  * class and implement some real things.
- * 
+ *
  */
 
 
@@ -53,22 +53,14 @@ G_BEGIN_DECLS
 #define GTK_DATABOX_GRAPH_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), \
                                            GTK_DATABOX_TYPE_GRAPH, \
                                            GtkDataboxGraphClass))
+#define GTK_DATABOX_GRAPH_GET_PRIVATE(obj) \
+	G_TYPE_INSTANCE_GET_PRIVATE ((obj), GTK_DATABOX_TYPE_GRAPH, GtkDataboxGraphPrivate)
 
    typedef struct _GtkDataboxGraphClass GtkDataboxGraphClass;
 
    /**
-    * GtkDataboxGraphPrivate
-    *
-    * A private data structure used by the #GtkDataboxGraph. It shields all internal things
-    * from developers who are just using the object. 
-    *
-    **/
-   typedef struct _GtkDataboxGraphPrivate GtkDataboxGraphPrivate;
-
-   /**
     * _GtkDataboxGraph
-    * @parent: The parent object 
-    * @priv: A private structure containing internal data.
+    * @parent: The parent object
     *
     * Implementation of #GtkDataboxGraph
     *
@@ -77,8 +69,6 @@ G_BEGIN_DECLS
    {
       /*< private >*/
       GObject parent;
-
-      GtkDataboxGraphPrivate *priv;
    };
 
    struct _GtkDataboxGraphClass
@@ -86,7 +76,7 @@ G_BEGIN_DECLS
       GObjectClass parent_class;
 
       /*
-       * public virtual drawing function 
+       * public virtual drawing function
        */
       void (*draw) (GtkDataboxGraph * graph, GtkDatabox * box);
 
@@ -96,7 +86,7 @@ G_BEGIN_DECLS
       cairo_t* (*create_gc) (GtkDataboxGraph * graph, GtkDatabox * box);
    };
 
-   GType gtk_databox_graph_get_type (void);
+//   GType gtk_databox_graph_get_type (void);
 
    void gtk_databox_graph_set_hide (GtkDataboxGraph * graph, gboolean hide);
    gboolean gtk_databox_graph_get_hide (GtkDataboxGraph * graph);

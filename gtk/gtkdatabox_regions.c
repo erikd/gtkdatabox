@@ -19,8 +19,20 @@
 
 #include <gtkdatabox_regions.h>
 
+G_DEFINE_TYPE(GtkDataboxRegions, gtk_databox_regions,
+	GTK_DATABOX_TYPE_XYYC_GRAPH)
+
 static void gtk_databox_regions_real_draw (GtkDataboxGraph * regions,
 					GtkDatabox* box);
+
+/**
+ * GtkDataboxRegionsPrivate
+ *
+ * A private data structure used by the #GtkDataboxRegions. It shields all internal things
+ * from developers who are just using the object.
+ *
+ **/
+typedef struct _GtkDataboxRegionsPrivate GtkDataboxRegionsPrivate;
 
 struct _GtkDataboxRegionsPrivate
 {
@@ -30,72 +42,46 @@ struct _GtkDataboxRegionsPrivate
    guint pixelsalloc;
 };
 
-static gpointer parent_class = NULL;
-
 static void
 regions_finalize (GObject * object)
 {
    GtkDataboxRegions *regions = GTK_DATABOX_REGIONS (object);
-
-   g_free (regions->priv->xpixels);
-   g_free (regions->priv->y1pixels);
-   g_free (regions->priv->y2pixels);
-   g_free (regions->priv);
+   GtkDataboxRegionsPrivate *priv=GTK_DATABOX_REGIONS_GET_PRIVATE(regions);
+   g_free (priv->xpixels);
+   g_free (priv->y1pixels);
+   g_free (priv->y2pixels);
 
    /* Chain up to the parent class */
-   G_OBJECT_CLASS (parent_class)->finalize (object);
+   G_OBJECT_CLASS (gtk_databox_regions_parent_class)->finalize (object);
 }
 
 static void
-gtk_databox_regions_class_init (gpointer g_class /*, gpointer g_class_data */ )
+gtk_databox_regions_class_init (GtkDataboxRegionsClass *klass )
 {
-   GObjectClass *gobject_class = G_OBJECT_CLASS (g_class);
-   GtkDataboxGraphClass *graph_class = GTK_DATABOX_GRAPH_CLASS (g_class);
-   GtkDataboxRegionsClass *klass = GTK_DATABOX_REGIONS_CLASS (g_class);
-
-   parent_class = g_type_class_peek_parent (klass);
+   GtkDataboxGraphClass *graph_class = GTK_DATABOX_GRAPH_CLASS (klass);
+   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
    gobject_class->finalize = regions_finalize;
 
    graph_class->draw = gtk_databox_regions_real_draw;
+
+   g_type_class_add_private (klass, sizeof (GtkDataboxRegionsPrivate));
 }
 
 static void
-gtk_databox_regions_instance_init (GTypeInstance * instance)
+gtk_databox_regions_complete (GtkDataboxRegions * regions)
 {
-   GtkDataboxRegions *regions = GTK_DATABOX_REGIONS (instance);
-
-   regions->priv = g_new0 (GtkDataboxRegionsPrivate, 1);
-   regions->priv->xpixels = NULL;
-   regions->priv->y1pixels = NULL;
-   regions->priv->y2pixels = NULL;
-   regions->priv->pixelsalloc = 0;
+   GTK_DATABOX_REGIONS_GET_PRIVATE(regions)->xpixels = NULL;
+   GTK_DATABOX_REGIONS_GET_PRIVATE(regions)->y1pixels = NULL;
+   GTK_DATABOX_REGIONS_GET_PRIVATE(regions)->y2pixels = NULL;
+   GTK_DATABOX_REGIONS_GET_PRIVATE(regions)->pixelsalloc = 0;
 }
 
-GType
-gtk_databox_regions_get_type (void)
+static void
+gtk_databox_regions_init (GtkDataboxRegions *regions)
 {
-   static GType type = 0;
-
-   if (type == 0)
-   {
-      static const GTypeInfo info = {
-	 sizeof (GtkDataboxRegionsClass),
-	 NULL,			/* base_init */
-	 NULL,			/* base_finalize */
-	 (GClassInitFunc) gtk_databox_regions_class_init,	/* class_init */
-	 NULL,			/* class_finalize */
-	 NULL,			/* class_data */
-	 sizeof (GtkDataboxRegions),	/* instance_size */
-	 0,			/* n_preallocs */
-	 (GInstanceInitFunc) gtk_databox_regions_instance_init,	/* instance_init */
-	 NULL,			/* value_table */
-      };
-      type = g_type_register_static (GTK_DATABOX_TYPE_XYYC_GRAPH,
-				     "GtkDataboxRegions", &info, (GTypeFlags)0);
-   }
-
-   return type;
+   g_signal_connect (regions, "notify::length",
+		     G_CALLBACK (gtk_databox_regions_complete), NULL);
 }
 
 /**
@@ -196,7 +182,8 @@ gtk_databox_regions_real_draw (GtkDataboxGraph * graph,
 			    GtkDatabox* box)
 {
    GtkDataboxRegions *regions = GTK_DATABOX_REGIONS (graph);
-   GdkPoint data1, data2, data3, data4;
+   GtkDataboxRegionsPrivate *priv=GTK_DATABOX_REGIONS_GET_PRIVATE(regions);
+   GdkPoint data[4];
    guint i = 0;
    void *X;
    void *Y1;
@@ -217,17 +204,17 @@ gtk_databox_regions_real_draw (GtkDataboxGraph * graph,
    len = gtk_databox_xyyc_graph_get_length (GTK_DATABOX_XYYC_GRAPH (graph));
    maxlen = gtk_databox_xyyc_graph_get_maxlen (GTK_DATABOX_XYYC_GRAPH (graph));
 
-   if (regions->priv->pixelsalloc < len)
+   if (priv->pixelsalloc < len)
    {
-   	regions->priv->pixelsalloc = len;
-	regions->priv->xpixels = (gint16 *)g_realloc(regions->priv->xpixels, len * sizeof(gint16));
-	regions->priv->y1pixels = (gint16 *)g_realloc(regions->priv->y1pixels, len * sizeof(gint16));
-	regions->priv->y2pixels = (gint16 *)g_realloc(regions->priv->y2pixels, len * sizeof(gint16));
+   	priv->pixelsalloc = len;
+	priv->xpixels = (gint16 *)g_realloc(priv->xpixels, len * sizeof(gint16));
+	priv->y1pixels = (gint16 *)g_realloc(priv->y1pixels, len * sizeof(gint16));
+	priv->y2pixels = (gint16 *)g_realloc(priv->y2pixels, len * sizeof(gint16));
    }
 
-   xpixels = regions->priv->xpixels;
-   y1pixels = regions->priv->y1pixels;
-   y2pixels = regions->priv->y2pixels;
+   xpixels = priv->xpixels;
+   y1pixels = priv->y1pixels;
+   y2pixels = priv->y2pixels;
 
    X = gtk_databox_xyyc_graph_get_X (GTK_DATABOX_XYYC_GRAPH (graph));
    xstart = gtk_databox_xyyc_graph_get_xstart (GTK_DATABOX_XYYC_GRAPH (graph));
@@ -248,25 +235,25 @@ gtk_databox_regions_real_draw (GtkDataboxGraph * graph,
 
    cr = gtk_databox_graph_create_gc (graph, box);
 
-   data3.x = *xpixels;
-   data3.y = *y2pixels;
-   data4.x = *xpixels;
-   data4.y = *y1pixels;
+   data[2].x = *xpixels;
+   data[2].y = *y2pixels;
+   data[3].x = *xpixels;
+   data[3].y = *y1pixels;
    xpixels++; y1pixels++; y2pixels++;
    for (i = 0; i < len-1; i++, xpixels++, y1pixels++, y2pixels++)
    {
-      data1.x = data3.x; /* 4 points in the polygon */
-      data1.y = data3.y;
-      data2.x = data4.x;
-      data2.y = data4.y;
-      data3.x = *xpixels;
-      data3.y = *y2pixels;
-      data4.x = *xpixels;
-      data4.y = *y1pixels;
-      cairo_move_to(cr, data2.x, data2.y);
-      cairo_line_to(cr, data1.x, data1.y);
-      cairo_line_to(cr, data3.x, data3.y);
-      cairo_line_to(cr, data4.x, data4.y);
+      data[0].x = data[2].x; /* 4 points in the polygon */
+      data[0].y = data[2].y;
+      data[1].x = data[3].x;
+      data[1].y = data[3].y;
+      data[2].x = *xpixels;
+      data[2].y = *y2pixels;
+      data[3].x = *xpixels;
+      data[3].y = *y1pixels;
+      cairo_move_to(cr, data[1].x, data[1].y);
+      cairo_line_to(cr, data[0].x, data[0].y);
+      cairo_line_to(cr, data[2].x, data[2].y);
+      cairo_line_to(cr, data[3].x, data[3].y);
       cairo_close_path  (cr);
       cairo_fill(cr);
    }
@@ -274,4 +261,3 @@ gtk_databox_regions_real_draw (GtkDataboxGraph * graph,
 
    return;
 }
-
