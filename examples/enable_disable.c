@@ -84,7 +84,7 @@ create_show_hide (void)
    GtkDataboxGraph *graph;
    gfloat *X;
    gfloat *Y;
-   GdkColor color;
+   GdkRGBA color;
    gint i;
 
    window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
@@ -128,7 +128,8 @@ create_show_hide (void)
    }
    color.red = 0;
    color.green = 0;
-   color.blue = 65535;
+   color.blue = 1;
+   color.alpha = 1;
 
    graph = gtk_databox_bars_new (POINTS, X, Y, &color, 1);
    gtk_databox_graph_add (GTK_DATABOX (box), graph);

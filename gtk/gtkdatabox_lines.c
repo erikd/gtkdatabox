@@ -91,7 +91,7 @@ gtk_databox_lines_init (GtkDataboxLines *lines)
  **/
 GtkDataboxGraph *
 gtk_databox_lines_new (guint len, gfloat * X, gfloat * Y,
-		       GdkColor * color, guint size)
+		       GdkRGBA * color, guint size)
 {
    GtkDataboxLines *lines;
    g_return_val_if_fail (X, NULL);
@@ -137,7 +137,7 @@ GtkDataboxGraph *
 gtk_databox_lines_new_full (guint maxlen, guint len,
 			void * X, guint xstart, guint xstride, GType xtype,
 			void * Y, guint ystart, guint ystride, GType ytype,
-		    GdkColor * color, guint size)
+		    GdkRGBA * color, guint size)
 {
    GtkDataboxLines *lines;
    g_return_val_if_fail (X, NULL);
@@ -213,6 +213,7 @@ gtk_databox_lines_real_draw (GtkDataboxGraph * graph,
    for (i = 1; i < len; i++)
 	  cairo_line_to(cr, xpixels[i] + 0.5, ypixels[i] + 0.5);
 
+   cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
    cairo_stroke(cr);
    cairo_destroy(cr);
 

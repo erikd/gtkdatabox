@@ -80,7 +80,7 @@ create_lissajous (void)
    GtkWidget *table;
    GtkWidget *separator;
    GtkDataboxGraph *graph;
-   GdkColor color;
+   GdkRGBA color;
    gint i;
 
    lissajous_frequency = 0;
@@ -117,13 +117,16 @@ create_lissajous (void)
    gtk_databox_create_box_with_scrollbars_and_rulers (&box, &table,
 						      TRUE, TRUE, TRUE, TRUE);
 
+   g_object_set(G_OBJECT(box), "expand", TRUE, NULL);
+
    gtk_box_pack_start (GTK_BOX (box1), table, TRUE, TRUE, 0);
 
    color.red = 0;
    color.green = 0;
-   color.blue = 32768;
+   color.blue = 0.5;
+   color.alpha = 1;
 
-   gtk_widget_modify_bg (box, GTK_STATE_NORMAL, &color);
+   gtk_widget_override_background_color (box, GTK_STATE_FLAG_NORMAL, &color);
 
    lissajousX = g_new0 (gfloat, POINTS);
    lissajousY = g_new0 (gfloat, POINTS);
@@ -133,9 +136,10 @@ create_lissajous (void)
       lissajousX[i] = 100. * sin (i * 4 * G_PI / POINTS);
       lissajousY[i] = 100. * cos (i * 4 * G_PI / POINTS);
    }
-   color.red = 65535;
-   color.green = 65535;
+   color.red = 1;
+   color.green = 1;
    color.blue = 0;
+   color.alpha = 1;
 
    graph = gtk_databox_lines_new (POINTS, lissajousX, lissajousY, &color, 1);
    gtk_databox_graph_add (GTK_DATABOX (box), graph);

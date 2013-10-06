@@ -44,7 +44,7 @@ create_grid (void)
    GtkDataboxGraph *graph;
    gfloat *X;
    gfloat *Y;
-   GdkColor color;
+   GdkRGBA color;
    gint i;
 
    window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
@@ -72,10 +72,12 @@ create_grid (void)
 						      TRUE, TRUE, TRUE, TRUE);
    gtk_box_pack_start (GTK_BOX (box1), table, TRUE, TRUE, 0);
 
-   color.red = 8192;
-   color.green = 8192;
-   color.blue = 8192;
-   gtk_widget_modify_bg (box, GTK_STATE_NORMAL, &color);
+   color.red = 0.6;
+   color.green = 0.6;
+   color.blue = 0.6;
+   color.alpha = 1;
+
+   gtk_widget_override_background_color (box, GTK_STATE_FLAG_NORMAL, &color);
 
    X = g_new0 (gfloat, POINTS);
    Y = g_new0 (gfloat, POINTS);
@@ -86,8 +88,9 @@ create_grid (void)
       Y[i] = 100. * sin (i * 2 * G_PI / POINTS);
    }
    color.red = 0;
-   color.green = 65535;
+   color.green = 1;
    color.blue = 0;
+   color.alpha = 1;
 
    graph = gtk_databox_points_new (POINTS, X, Y, &color, 3);
    gtk_databox_graph_add (GTK_DATABOX (box), graph);
@@ -98,9 +101,10 @@ create_grid (void)
    {
       Y[i] = 100. * cos (i * 2 * G_PI / POINTS);
    }
-   color.red = 65535;
+   color.red = 1;
    color.green = 0;
    color.blue = 0;
+   color.alpha = 1;
 
    graph = gtk_databox_points_new (POINTS, X, Y, &color, 3);
    gtk_databox_graph_add (GTK_DATABOX (box), graph);
@@ -108,14 +112,16 @@ create_grid (void)
    /* Here we start with the first grid */
    color.red = 0;
    color.green = 0;
-   color.blue = 65535;
+   color.blue = 1;
+   color.alpha = 1;
 
    graph = gtk_databox_grid_new (7, 7, &color, 2);
    gtk_databox_graph_add (GTK_DATABOX (box), graph);
 
-   color.red = 51000;
+   color.red = 0.9;
    color.green = 0;
    color.blue = 0;
+   color.alpha = 1;
 
    graph = gtk_databox_grid_new (15, 15, &color, 2);
    gtk_databox_graph_add (GTK_DATABOX (box), graph);

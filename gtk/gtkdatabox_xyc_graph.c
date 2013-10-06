@@ -69,6 +69,15 @@ struct _GtkDataboxXYCGraphPrivate
 
 static gpointer parent_class = NULL;
 
+void
+gtk_databox_xyc_graph_set_X_Y_length(GtkDataboxXYCGraph * xyc_graph, gfloat * X, gfloat * Y, guint len)
+{
+   GtkDataboxXYCGraphPrivate *priv = GTK_DATABOX_XYC_GRAPH_GET_PRIVATE(xyc_graph);
+   priv->Y = Y;
+   priv->X = X;
+   priv->len = len;
+}
+
 static void
 gtk_databox_xyc_graph_set_X (GtkDataboxXYCGraph * xyc_graph, gfloat * X)
 {

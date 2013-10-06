@@ -61,7 +61,7 @@ create_basics ()
    gfloat *X;
    gfloat *Y;
    gfloat buffer;
-   GdkColor color;
+   GdkRGBA color;
    gint i;
    GladeXML *gxml;
 
@@ -92,10 +92,10 @@ create_basics ()
    /* end of gtk_databox_create_box_with_scrollbars_and_rulers */
 
 
-   color.red = 16383;
-   color.green = 16383;
-   color.blue = 16383;
-   gtk_widget_modify_bg (box, GTK_STATE_NORMAL, &color);
+   color.red = 0.33;
+   color.green = 0.33;
+   color.blue = 0.33;
+   gtk_widget_override_background_color (box, GTK_STATE_FLAG_NORMAL, &color);
 
 
    X = g_new0 (gfloat, POINTS);
@@ -107,8 +107,9 @@ create_basics ()
       Y[i] = 100. * sin (i * 2 * G_PI / POINTS);
    }
    color.red = 0;
-   color.green = 65535;
+   color.green = 1;
    color.blue = 0;
+   color.alpha = 1;
 
    graph = gtk_databox_points_new (POINTS, X, Y, &color, 1);
    gtk_databox_graph_add (GTK_DATABOX (box), graph);
@@ -126,9 +127,10 @@ create_basics ()
       if (i == STEPS / 2 - 1)
 	 Y[i * 2 + 1] = 100. * sin (((i + 1) * 2) * 2 * G_PI / STEPS);
    }
-   color.red = 65535;
+   color.red = 1;
    color.green = 0;
    color.blue = 0;
+   color.alpha = 1;
 
    graph = gtk_databox_lines_new (STEPS, X, Y, &color, 1);
    gtk_databox_graph_add (GTK_DATABOX (box), graph);
@@ -142,15 +144,16 @@ create_basics ()
       Y[i] = 80. * sin (i * 2 * G_PI / BARS);
    }
    color.red = 0;
-   color.green = 65535;
-   color.blue = 65535;
+   color.green = 1;
+   color.blue = 1;
+   color.alpha = 1;
 
    graph = gtk_databox_bars_new (BARS, X, Y, &color, 1);
    gtk_databox_graph_add (GTK_DATABOX (box), graph);
 
-   color.red = 32768;
-   color.green = 32768;
-   color.blue = 32768;
+   color.red = 0.5;
+   color.green = 0.5;
+   color.blue = 0.5;
 
    graph = gtk_databox_cross_simple_new (&color, 0);
    gtk_databox_graph_add (GTK_DATABOX (box), graph);

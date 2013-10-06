@@ -49,7 +49,7 @@ create_basics (void)
    GtkWidget *box;
    GtkWidget *label;
    GtkWidget *separator;
-   GtkWidget *table;
+   GtkWidget *grid;
    GtkWidget *scrollbar;
    GtkWidget *ruler;
    GtkDataboxGraph *graph;
@@ -60,7 +60,7 @@ create_basics (void)
    gfloat *Y1; /*  for the offset bars and regions*/
    gfloat *Y2; /* for the offset bars and regions */
    gfloat buffer;
-   GdkColor color;
+   GdkRGBA color;
    gint i;
 
    window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
@@ -88,11 +88,13 @@ create_basics (void)
     * as it is done in the other examples.
     * Of course, you are more flexible in using scrollbars and rulers
     * by doing it yourself. */
-   table = gtk_table_new (3, 3, FALSE);
+   grid = gtk_grid_new ();
+
    box = gtk_databox_new ();
-   gtk_table_attach (GTK_TABLE (table), box, 1, 2, 1, 2,
-		     GTK_FILL | GTK_EXPAND | GTK_SHRINK,
-		     GTK_FILL | GTK_EXPAND | GTK_SHRINK, 0, 0);
+
+   g_object_set(G_OBJECT(box), "expand", TRUE, NULL);
+
+   gtk_grid_attach (GTK_GRID (grid), box, 1, 1, 1, 1);
 
    /* You can associate a scrollbar with a GtkDatabox widget either
     * this way ...*/
@@ -100,36 +102,33 @@ create_basics (void)
    gtk_databox_set_adjustment_x (GTK_DATABOX (box),
 				gtk_range_get_adjustment (GTK_RANGE
 							  (scrollbar)));
-   gtk_table_attach (GTK_TABLE (table), scrollbar, 1, 2, 2, 3,
-		     GTK_FILL | GTK_EXPAND | GTK_SHRINK, GTK_FILL, 0, 0);
+   gtk_grid_attach (GTK_GRID (grid), scrollbar, 1, 2, 1, 1);
    /* or this way ... */
    scrollbar = gtk_scrollbar_new(GTK_ORIENTATION_VERTICAL,
       (gtk_databox_get_adjustment_y (GTK_DATABOX (box))));
-   gtk_table_attach (GTK_TABLE (table), scrollbar, 2, 3, 1, 2,
-		     GTK_FILL, GTK_FILL | GTK_EXPAND | GTK_SHRINK, 0, 0);
+   gtk_grid_attach (GTK_GRID (grid), scrollbar, 2, 1, 1, 1);
 
 
    ruler = gtk_databox_ruler_new (GTK_ORIENTATION_HORIZONTAL);
    gtk_widget_set_sensitive (ruler, FALSE);
 
-   gtk_table_attach (GTK_TABLE (table), ruler, 1, 2, 0, 1,
-		     GTK_FILL | GTK_EXPAND | GTK_SHRINK, GTK_FILL, 0, 0);
+   gtk_grid_attach (GTK_GRID (grid), ruler, 1, 0, 1, 1);
    gtk_databox_set_ruler_x (GTK_DATABOX (box), GTK_DATABOX_RULER (ruler));
 
    ruler = gtk_databox_ruler_new (GTK_ORIENTATION_VERTICAL);
    gtk_widget_set_sensitive (ruler, FALSE);
-   gtk_table_attach (GTK_TABLE (table), ruler, 0, 1, 1, 2,
-		     GTK_FILL, GTK_FILL | GTK_EXPAND | GTK_SHRINK, 0, 0);
+   gtk_grid_attach (GTK_GRID (grid), ruler, 0, 1, 1, 1);
    gtk_databox_set_ruler_y (GTK_DATABOX (box), GTK_DATABOX_RULER (ruler));
    /* end of gtk_databox_create_box_with_scrollbars_and_rulers */
 
-   gtk_box_pack_start (GTK_BOX (vbox), table, TRUE, TRUE, 0);
+   gtk_box_pack_start (GTK_BOX (vbox), grid, TRUE, TRUE, 0);
 
-   color.red = 16383;
-   color.green = 16383;
-   color.blue = 16383;
-   gtk_widget_modify_bg (box, GTK_STATE_NORMAL, &color);
+   color.red = 0.2;
+   color.green = 0.2;
+   color.blue = 0.2;
+   color.alpha = 1;
 
+   gtk_widget_override_background_color (box, GTK_STATE_FLAG_NORMAL, &color);
 
    X = g_new0 (gfloat, POINTS);
    Y = g_new0 (gfloat, POINTS);
@@ -140,8 +139,9 @@ create_basics (void)
       Y[i] = 100. * sin (i * 2 * G_PI / POINTS);
    }
    color.red = 0;
-   color.green = 65535;
+   color.green = 1;
    color.blue = 0;
+   color.alpha = 1;
 
    graph = gtk_databox_points_new (POINTS, X, Y, &color, 1);
    gtk_databox_graph_add (GTK_DATABOX (box), graph);
@@ -159,9 +159,10 @@ create_basics (void)
       if (i == STEPS / 2 - 1)
 	 Y[i * 2 + 1] = 100. * sin (((i + 1) * 2) * 2 * G_PI / STEPS);
    }
-   color.red = 65535;
+   color.red = 1;
    color.green = 0;
    color.blue = 0;
+   color.alpha = 1;
 
    graph = gtk_databox_lines_new (STEPS, X, Y, &color, 1);
    gtk_databox_graph_add (GTK_DATABOX (box), graph);
@@ -176,15 +177,17 @@ create_basics (void)
    }
 
    color.red = 0;
-   color.green = 65535;
-   color.blue = 65535;
+   color.green = 1;
+   color.blue = 1;
+   color.alpha = 1;
 
    graph = gtk_databox_bars_new (BARS, X, Y, &color, 1);
    gtk_databox_graph_add (GTK_DATABOX (box), graph);
 
-   color.red = 32768;
-   color.green = 32768;
-   color.blue = 32768;
+   color.red = 0.5;
+   color.green = 0.5;
+   color.blue = 0.5;
+   color.alpha = 1;
 
    graph = gtk_databox_cross_simple_new (&color, 0);
    gtk_databox_graph_add (GTK_DATABOX (box), graph);
@@ -199,9 +202,10 @@ create_basics (void)
       Y1[i] = 80. * sin ((i+0.5) * 2 * G_PI / OFFSET_BARS);
       Y2[i] = -0.5*(80. * sin ((i+0.5) * 2 * G_PI / OFFSET_BARS));
    }
-   color.red = 65535;
+   color.red = 1;
    color.green = 0;
-   color.blue = 65535;
+   color.blue = 1;
+   color.alpha = 1;
 
    graph = gtk_databox_offset_bars_new (BARS, X, Y1, Y2, &color, 1);
    gtk_databox_graph_add (GTK_DATABOX (box), graph);
@@ -216,9 +220,10 @@ create_basics (void)
       Y1[i] = .5*80. * sin ((i+0.5) * 2 * G_PI / REGIONS);
       Y2[i] = .5*-0.5*(80. * sin ((i+0.5) * 2 * G_PI / REGIONS));
    }
-   color.red = 0.5*65535;
-   color.green = 0.25*65535;
-   color.blue = 0.5*65535;
+   color.red = 0.5;
+   color.green = 0.25;
+   color.blue = 0.5;
+   color.alpha = 1;
 
    graph = gtk_databox_regions_new (BARS, X, Y1, Y2, &color);
    gtk_databox_graph_add (GTK_DATABOX (box), graph);

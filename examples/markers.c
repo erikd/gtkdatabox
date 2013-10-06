@@ -85,7 +85,7 @@ create_markerss (void)
    gfloat *Y;
    gint i;
    GtkDataboxGraph *graph;
-   GdkColor color;
+   GdkRGBA color;
 
    window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
    gtk_widget_set_size_request (window, 600, 600);
@@ -110,10 +110,12 @@ create_markerss (void)
 						      TRUE, TRUE, TRUE, TRUE);
    gtk_box_pack_start (GTK_BOX (box1), table, TRUE, TRUE, 0);
 
-   color.red = 16383;
-   color.green = 16383;
-   color.blue = 16383;
-   gtk_widget_modify_bg (box, GTK_STATE_NORMAL, &color);
+   color.red = 0.33;
+   color.green = 0.33;
+   color.blue = 0.33;
+   color.alpha = 1;
+
+   gtk_widget_override_background_color (box, GTK_STATE_FLAG_NORMAL, &color);
 
    X = g_new0 (gfloat, 20 + 4 + 5);
    Y = g_new0 (gfloat, 20 + 4 + 5);
@@ -143,16 +145,18 @@ create_markerss (void)
    X[28] = +1.5;
    Y[28] = +2.;
 
-   color.red = 65535;
+   color.red = 1;
    color.green = 0;
    color.blue = 0;
+   color.alpha = 1;
 
    graph = gtk_databox_points_new (20 + 4 + 5, X, Y, &color, 3);
    gtk_databox_graph_add (GTK_DATABOX (box), graph);
 
    color.red = 0;
-   color.green = 65535;
+   color.green = 1;
    color.blue = 0;
+   color.alpha = 1;
 
    graph = gtk_databox_markers_new (20, X, Y, &color, 15,
 				   GTK_DATABOX_MARKERS_TRIANGLE);
@@ -193,9 +197,10 @@ create_markerss (void)
    setL (graph, 2, GTK_DATABOX_MARKERS_W, GTK_DATABOX_MARKERS_TEXT_N, "North", TRUE);
    setL (graph, 3, GTK_DATABOX_MARKERS_S, GTK_DATABOX_MARKERS_TEXT_E, "East", TRUE);
 
-   color.red = 65535;
-   color.green = 65535;
+   color.red = 1;
+   color.green = 1;
    color.blue = 0;
+   color.alpha = 1;
 
    graph = gtk_databox_markers_new (5, X + 20 + 4, Y + 20 + 4, &color, 1,
 				   GTK_DATABOX_MARKERS_NONE);

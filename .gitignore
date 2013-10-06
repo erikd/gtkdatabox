@@ -26,6 +26,7 @@ examples/Makefile
 examples/markers
 examples/signals
 examples/basics
+examples/full
 examples/basics2
 examples/basics_libglade
 examples/colors

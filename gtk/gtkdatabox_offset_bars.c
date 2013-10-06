@@ -99,7 +99,7 @@ gtk_databox_offset_bars_init (GtkDataboxOffsetBars *bars)
  **/
 GtkDataboxGraph *
 gtk_databox_offset_bars_new (guint len, gfloat * X, gfloat * Y1, gfloat * Y2,
-		      GdkColor * color, guint size)
+		      GdkRGBA * color, guint size)
 {
    GtkDataboxOffsetBars *bars;
    g_return_val_if_fail (X, NULL);
@@ -153,7 +153,7 @@ gtk_databox_offset_bars_new_full (guint maxlen, guint len,
 			void * X, guint xstart, guint xstride, GType xtype,
 			void * Y1, guint y1start, guint y1stride,
 			void * Y2, guint y2start, guint y2stride, GType ytype,
-		    GdkColor * color, guint size)
+		    GdkRGBA * color, guint size)
 {
    GtkDataboxOffsetBars *bars;
    g_return_val_if_fail (X, NULL);

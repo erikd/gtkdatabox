@@ -202,7 +202,7 @@ create_signals (void)
    gfloat *X;
    gfloat *Y;
    GtkDataboxGraph *graph;
-   GdkColor color;
+   GdkRGBA color;
    gint i;
    GtkWidget **entries;
    GtkWidget *hbox;
@@ -256,8 +256,9 @@ create_signals (void)
       Y[i] = 100. * sin (i * 2 * G_PI / POINTS);
    }
    color.red = 0;
-   color.green = 65535;
+   color.green = 1;
    color.blue = 0;
+   color.alpha = 1;
 
    graph = gtk_databox_points_new (POINTS, X, Y, &color, 1);
    gtk_databox_graph_add (GTK_DATABOX (box), graph);
@@ -268,9 +269,10 @@ create_signals (void)
    {
       Y[i] = 100. * cos (i * 2 * G_PI / POINTS);
    }
-   color.red = 65535;
+   color.red = 1;
    color.green = 0;
    color.blue = 0;
+   color.alpha = 1;
 
    graph = gtk_databox_points_new (POINTS, X, Y, &color, 1);
    gtk_databox_graph_add (GTK_DATABOX (box), graph);

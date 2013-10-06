@@ -52,7 +52,7 @@ create_rulers (void)
     gfloat min_y, max_y;
     gfloat *X;
     gfloat *Y;
-    GdkColor color;
+    GdkRGBA color;
     gint i;
     GtkDataboxRuler *ruler;
 
@@ -153,11 +153,13 @@ create_rulers (void)
     gtk_databox_set_ruler_y (GTK_DATABOX (box[3]), ruler);
 
     /* set the background */
-    color.red = 16383;
-    color.green = 16383;
-    color.blue = 16383;
+    color.red = 0.33;
+    color.green = 0.33;
+    color.blue = 0.33;
+    color.alpha = 1;
+
     for (i = 0; i < NO_BOXES; ++i)
-        gtk_widget_modify_bg (box[i], GTK_STATE_NORMAL, &color);
+        gtk_widget_override_background_color (box[i], GTK_STATE_FLAG_NORMAL, &color);
 
     /* add a sinus^2 */
     X = g_new0 (gfloat, POINTS);
@@ -170,8 +172,9 @@ create_rulers (void)
     }
 
     color.red = 0;
-    color.green = 65535;
+    color.green = 1;
     color.blue = 0;
+    color.alpha = 1;
 
     graph = gtk_databox_points_new (POINTS, X, Y, &color, 1);
     for (i = 0; i < NO_BOXES; ++i)
@@ -187,9 +190,10 @@ create_rulers (void)
         Y[i] = exp (log (1000) * i / ((gfloat) POINTS));
     }
 
-    color.red = 65535;
+    color.red = 1;
     color.green = 0;
     color.blue = 0;
+    color.alpha = 1;
 
     graph = gtk_databox_points_new (POINTS, X, Y, &color, 1);
     for (i = 0; i < NO_BOXES; ++i)
@@ -205,9 +209,10 @@ create_rulers (void)
         Y[i] = 1000. / (100. * (gfloat) i / POINTS);
     }
 
-    color.red = 65535;
+    color.red = 1;
     color.green = 0;
-    color.blue = 65535;
+    color.blue = 1;
+    color.alpha = 1;
 
     graph = gtk_databox_points_new (POINTS, X, Y, &color, 1);
     for (i = 0; i < NO_BOXES; ++i)
@@ -223,9 +228,10 @@ create_rulers (void)
         Y[i] = 1000. * (gfloat) i / POINTS * (gfloat) i / POINTS;
     }
 
-    color.red = 65535;
-    color.green = 65535;
+    color.red = 1;
+    color.green = 1;
     color.blue = 0;
+    color.alpha = 1;
 
     graph = gtk_databox_points_new (POINTS, X, Y, &color, 1);
     for (i = 0; i < NO_BOXES; ++i)

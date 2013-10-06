@@ -59,7 +59,7 @@ static void gtk_databox_cross_simple_init(GtkDataboxCrossSimple *cross) {}
  * Return value: A new #GtkDataboxCrossSimple object
  **/
 GtkDataboxGraph *
-gtk_databox_cross_simple_new (GdkColor * color, guint size)
+gtk_databox_cross_simple_new (GdkRGBA * color, guint size)
 {
    GtkDataboxCrossSimple *cross_simple;
    gfloat *X = g_new0 (gfloat, 2);

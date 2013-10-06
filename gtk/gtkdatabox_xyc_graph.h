@@ -88,5 +88,7 @@ G_BEGIN_DECLS
    GType gtk_databox_xyc_graph_get_xtype (GtkDataboxXYCGraph * xyc_graph);
    GType gtk_databox_xyc_graph_get_ytype (GtkDataboxXYCGraph * xyc_graph);
 
+   void gtk_databox_xyc_graph_set_X_Y_length(GtkDataboxXYCGraph * xyc_graph, gfloat * X, gfloat * Y, guint len);
+
 G_END_DECLS
 #endif				/* __GTK_DATABOX_XYC_GRAPH_H__ */

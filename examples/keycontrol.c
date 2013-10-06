@@ -107,7 +107,7 @@ create_basics (void)
    GtkWidget *separator;
    GtkWidget *table;
    GtkDataboxGraph *graph;
-   GdkColor color;
+   GdkRGBA color;
    gfloat left, right, top, bottom;
    gint i;
 
@@ -138,10 +138,12 @@ create_basics (void)
 
    gtk_box_pack_start (GTK_BOX (box1), table, TRUE, TRUE, 0);
 
-   color.red = 16383;
-   color.green = 16383;
-   color.blue = 16383;
-   gtk_widget_modify_bg (box, GTK_STATE_NORMAL, &color);
+   color.red = 0.33;
+   color.green = 0.33;
+   color.blue = 0.33;
+   color.alpha = 1;
+
+   gtk_widget_override_background_color (box, GTK_STATE_FLAG_NORMAL, &color);
 
    X = g_new0 (gfloat, POINTS);
    Y = g_new0 (gfloat, POINTS);
@@ -152,8 +154,9 @@ create_basics (void)
       Y[i] = 100. * sin (i * 2 * G_PI / (POINTS - 1));
    }
    color.red = 0;
-   color.green = 65535;
+   color.green = 1;
    color.blue = 0;
+   color.alpha = 1;
 
    graph = gtk_databox_lines_new (POINTS, X, Y, &color, 1);
    gtk_databox_graph_add (GTK_DATABOX (box), graph);
@@ -161,9 +164,10 @@ create_basics (void)
    markX = g_new0 (gfloat, 2);
    markY = g_new0 (gfloat, 2);
 
-   color.red = 65535;
+   color.red = 1;
    color.green = 0;
    color.blue = 0;
+   color.alpha = 1;
 
    graph = gtk_databox_markers_new (2, markX, markY, &color, 7,
 				   GTK_DATABOX_MARKERS_TRIANGLE);

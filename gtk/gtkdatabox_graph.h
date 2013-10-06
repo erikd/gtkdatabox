@@ -92,8 +92,8 @@ G_BEGIN_DECLS
    gboolean gtk_databox_graph_get_hide (GtkDataboxGraph * graph);
 
    void gtk_databox_graph_set_color (GtkDataboxGraph * graph,
-				     GdkColor * color);
-   GdkColor *gtk_databox_graph_get_color (GtkDataboxGraph * graph);
+				     GdkRGBA * color);
+   GdkRGBA *gtk_databox_graph_get_color (GtkDataboxGraph * graph);
 
    void gtk_databox_graph_set_rgba (GtkDataboxGraph * graph,
 				     GdkRGBA * rgba);

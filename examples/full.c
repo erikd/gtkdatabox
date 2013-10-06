@@ -46,7 +46,7 @@ create_full (void)
    GtkDataboxGraph *graph;
    guint *X;
    gdouble *Y;
-   GdkColor color;
+   GdkRGBA color;
    gint i;
 
    /* We define some data */
@@ -94,6 +94,7 @@ create_full (void)
    color.red = 0;
    color.green = 0;
    color.blue = 0;
+   color.alpha = 1;
 
    graph = gtk_databox_points_new_full (POINTS, POINTS,
 		X, 0, 1, G_TYPE_UINT,

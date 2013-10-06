@@ -95,7 +95,7 @@ gtk_databox_points_init (GtkDataboxPoints *points)
  **/
 GtkDataboxGraph *
 gtk_databox_points_new (guint len, gfloat * X, gfloat * Y,
-			GdkColor * color, gint size)
+			GdkRGBA * color, gint size)
 {
    GtkDataboxPoints *points;
    g_return_val_if_fail (X, NULL);
@@ -141,7 +141,7 @@ GtkDataboxGraph *
 gtk_databox_points_new_full (guint maxlen, guint len,
 			void * X, guint xstart, guint xstride, GType xtype,
 			void * Y, guint ystart, guint ystride, GType ytype,
-			GdkColor * color, gint size)
+			GdkRGBA * color, gint size)
 {
    GtkDataboxPoints *points;
    g_return_val_if_fail (X, NULL);

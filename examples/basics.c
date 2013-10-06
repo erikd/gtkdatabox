@@ -46,7 +46,7 @@ create_basics (void)
    GtkDataboxGraph *graph;
    gfloat *X;
    gfloat *Y;
-   GdkColor color;
+   GdkRGBA color;
    gint i;
 
    /* We define some data */
@@ -94,6 +94,7 @@ create_basics (void)
    color.red = 0;
    color.green = 0;
    color.blue = 0;
+   color.alpha = 1;
 
    graph = gtk_databox_points_new (POINTS, X, Y, &color, 1);
    gtk_databox_graph_add (GTK_DATABOX (box), graph);

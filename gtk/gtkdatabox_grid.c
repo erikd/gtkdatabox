@@ -209,7 +209,7 @@ gtk_databox_grid_init (GtkDataboxGrid *grid)
  * Return value: A new #GtkDataboxGrid object
  **/
 GtkDataboxGraph *
-gtk_databox_grid_new (gint hlines, gint vlines, GdkColor * color, guint size)
+gtk_databox_grid_new (gint hlines, gint vlines, GdkRGBA * color, guint size)
 {
    GtkDataboxGrid *grid;
    grid = g_object_new (GTK_DATABOX_TYPE_GRID,
@@ -234,7 +234,7 @@ gtk_databox_grid_new (gint hlines, gint vlines, GdkColor * color, guint size)
  * Return value: A new #GtkDataboxGrid object
  **/
 GtkDataboxGraph *gtk_databox_grid_array_new (gint hlines, gint vlines, gfloat * local_hline_vals, gfloat * local_vline_vals,
-					  GdkColor * color, guint size)
+					  GdkRGBA * color, guint size)
 {
    GtkDataboxGrid *grid;
 

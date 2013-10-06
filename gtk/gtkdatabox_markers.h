@@ -142,7 +142,7 @@ G_BEGIN_DECLS
    GType gtk_databox_markers_get_type (void);
 
    GtkDataboxGraph *gtk_databox_markers_new (guint len, gfloat * X, gfloat * Y,
-					    GdkColor * color, guint size,
+					    GdkRGBA * color, guint size,
 					    GtkDataboxMarkersType type);
 
    void gtk_databox_markers_set_position (GtkDataboxMarkers * markers,
@@ -157,7 +157,7 @@ G_BEGIN_DECLS
    GtkDataboxGraph *gtk_databox_markers_new_full (guint maxlen, guint len,
 			void * X, guint xstart, guint xstride, GType xtype,
 			void * Y, guint ystart, guint ystride, GType ytype,
-			GdkColor * color, guint size,
+			GdkRGBA * color, guint size,
 			GtkDataboxMarkersType type);
 
 G_END_DECLS

@@ -97,7 +97,7 @@ gtk_databox_regions_init (GtkDataboxRegions *regions)
  * Return value: A new #GtkDataboxRegions object
  **/
 GtkDataboxGraph *
-gtk_databox_regions_new (guint len, gfloat * X, gfloat * Y1, gfloat * Y2, GdkColor * color)
+gtk_databox_regions_new (guint len, gfloat * X, gfloat * Y1, gfloat * Y2, GdkRGBA * color)
 {
    GtkDataboxRegions *regions;
    g_return_val_if_fail (X, NULL);
@@ -150,7 +150,7 @@ gtk_databox_regions_new_full (guint maxlen, guint len,
 			void * X, guint xstart, guint xstride, GType xtype,
 			void * Y1, guint y1start, guint y1stride,
 			void * Y2, guint y2start, guint y2stride, GType ytype,
-		    GdkColor * color)
+		    GdkRGBA * color)
 {
    GtkDataboxRegions *regions;
    g_return_val_if_fail (X, NULL);

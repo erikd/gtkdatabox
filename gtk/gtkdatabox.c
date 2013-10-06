@@ -435,6 +435,7 @@ gtk_databox_init (GtkDatabox * box) {
     gtk_databox_set_adjustment_x (box, NULL);
     gtk_databox_set_adjustment_y (box, NULL);
     /*gtk_databox_set_total_limits(box, -1., 1., 1., -1.);*/
+	g_object_set(GTK_WIDGET(box), "expand", TRUE, NULL);
 }
 
 /**
@@ -448,6 +449,22 @@ gtk_databox_init (GtkDatabox * box) {
 GtkWidget *
 gtk_databox_new (void) {
     return g_object_new (GTK_TYPE_DATABOX, NULL);
+}
+
+/**
+ * gtk_databox_get_graphs:
+ * @box: A #GtkDatabox widget
+ *
+ * Return a list of graphs that were previously added to @box
+ *
+ * Return value: A #GList that contains all graphs
+ */
+GList *
+gtk_databox_get_graphs (GtkDatabox * box) 
+{
+    g_return_val_if_fail (GTK_IS_DATABOX (box), -1);
+
+    return GTK_DATABOX_GET_PRIVATE(box)->graphs;
 }
 
 static gint
@@ -631,6 +648,9 @@ gtk_databox_realize (GtkWidget * widget) {
     gdk_window_set_user_data (gtk_widget_get_window(widget), box);
 
 	stylecontext = gtk_widget_get_style_context(widget);
+
+    gtk_style_context_add_class(stylecontext, GTK_STYLE_CLASS_BACKGROUND);
+
 	gtk_style_context_set_background(stylecontext, gtk_widget_get_window(widget));
 
     gtk_databox_create_backing_surface (box);
@@ -1218,7 +1238,8 @@ gtk_databox_draw (GtkWidget * widget, cairo_t * cr) {
 
     cairo_set_source_surface (cr, priv->backing_surface, 0, 0);
     cairo_paint(cr);
-    gtk_databox_draw_selection (box, FALSE);
+	/* the following was removed - unsure if it creates problems */
+    /*gtk_databox_draw_selection (box, FALSE);*/
 
     return FALSE;
 }
@@ -1353,6 +1374,7 @@ gtk_databox_scroll_event (GtkWidget *widget, GdkEventScroll *event) {
 
         switch (event->direction) {
         case GDK_SCROLL_UP:
+        case GDK_SCROLL_SMOOTH:
         case GDK_SCROLL_LEFT:
             delta = 0 - gtk_adjustment_get_step_increment(adj);
             break;
@@ -2337,14 +2359,14 @@ gtk_databox_pixel_to_value_y (GtkDatabox * box, gint16 pixel) {
 /**
  * gtk_databox_create_box_with_scrollbars_and_rulers:
  * @p_box: Will contain a pointer to a #GtkDatabox widget
- * @p_table: Will contain a pointer to a #GtkTable widget
+ * @p_grid: Will contain a pointer to a #GtkGrid widget
  * @scrollbar_x: Whether to attach a horizontal scrollbar
  * @scrollbar_y: Whether to attach a vertical scrollbar
  * @ruler_x: Whether to attach a horizontal ruler
  * @ruler_y: Whether to attach a vertical ruler
  *
  * This is a convenience function which creates a #GtkDatabox widget in a
- * GtkTable widget optionally accompanied by scrollbars and rulers. You only
+ * GtkGrid widget optionally accompanied by scrollbars and rulers. You only
  * have to fill in the data (gtk_databox_graph_add()) and adjust the limits
  * (gtk_databox_set_total_limits() or gtk_databox_auto_rescale()).
  *
@@ -2355,19 +2377,19 @@ gtk_databox_pixel_to_value_y (GtkDatabox * box, gint16 pixel) {
  */
 void
 gtk_databox_create_box_with_scrollbars_and_rulers (GtkWidget ** p_box,
-        GtkWidget ** p_table,
+        GtkWidget ** p_grid,
         gboolean scrollbar_x,
         gboolean scrollbar_y,
         gboolean ruler_x,
         gboolean ruler_y) {
     /* create with rulers top left by default */
-    gtk_databox_create_box_with_scrollbars_and_rulers_positioned (p_box, p_table, scrollbar_x, scrollbar_y, ruler_x, ruler_y, TRUE, TRUE);
+    gtk_databox_create_box_with_scrollbars_and_rulers_positioned (p_box, p_grid, scrollbar_x, scrollbar_y, ruler_x, ruler_y, TRUE, TRUE);
 }
 
 /**
  * gtk_databox_create_box_with_scrollbars_and_rulers_positioned:
  * @p_box: Will contain a pointer to a #GtkDatabox widget
- * @p_table: Will contain a pointer to a #GtkTable widget
+ * @p_grid: Will contain a pointer to a #GtkGrid widget
  * @scrollbar_x: Whether to attach a horizontal scrollbar
  * @scrollbar_y: Whether to attach a vertical scrollbar
  * @ruler_x: Whether to attach a horizontal ruler
@@ -2376,7 +2398,7 @@ gtk_databox_create_box_with_scrollbars_and_rulers (GtkWidget ** p_box,
  * @ruler_y_left: Whether to put the ruler_y on the left
  *
  * This is a convenience function which creates a #GtkDatabox widget in a
- * GtkTable widget optionally accompanied by scrollbars and rulers. You only
+ * GtkGrid widget optionally accompanied by scrollbars and rulers. You only
  * have to fill in the data (gtk_databox_graph_add()) and adjust the limits
  * (gtk_databox_set_total_limits() or gtk_databox_auto_rescale()).
  *
@@ -2387,33 +2409,29 @@ gtk_databox_create_box_with_scrollbars_and_rulers (GtkWidget ** p_box,
  */
 void
 gtk_databox_create_box_with_scrollbars_and_rulers_positioned (GtkWidget ** p_box,
-        GtkWidget ** p_table,
+        GtkWidget ** p_grid,
         gboolean scrollbar_x,
         gboolean scrollbar_y,
         gboolean ruler_x,
         gboolean ruler_y,
         gboolean ruler_x_top,
         gboolean ruler_y_left) {
-    GtkTable *table;
+    GtkGrid *grid;
     GtkDatabox *box;
     GtkWidget *scrollbar;
     GtkWidget *ruler;
     GtkDataboxPrivate *priv;
-    gint left_col, right_col, top_row, bot_row;
+    gint left_col, top_row;
 
-    *p_table = gtk_table_new (3, 3, FALSE);
+    *p_grid = gtk_grid_new ();
     *p_box = gtk_databox_new ();
     box = GTK_DATABOX (*p_box);
-    table = GTK_TABLE (*p_table);
+    grid = GTK_GRID (*p_grid);
     priv = GTK_DATABOX_GET_PRIVATE(box);
 
     left_col=1;
-    right_col=2;
     top_row=1;
-    bot_row=2;
-    gtk_table_attach (table, GTK_WIDGET (box), left_col, right_col, top_row, bot_row,
-                      GTK_FILL | GTK_EXPAND | GTK_SHRINK,
-                      GTK_FILL | GTK_EXPAND | GTK_SHRINK, 0, 0);
+    gtk_grid_attach (grid, GTK_WIDGET (box), left_col, top_row, 1, 1);
 
     if (scrollbar_x) {
         scrollbar = gtk_scrollbar_new (GTK_ORIENTATION_HORIZONTAL, NULL);
@@ -2422,17 +2440,12 @@ gtk_databox_create_box_with_scrollbars_and_rulers_positioned (GtkWidget ** p_box
                                               (scrollbar)));
         if (ruler_x_top) {
             left_col=1;
-            right_col=2;
             top_row=2;
-            bot_row=3;
         } else {
             left_col=1;
-            right_col=2;
             top_row=0;
-            bot_row=1;
         }
-        gtk_table_attach (table, scrollbar, left_col, right_col, top_row, bot_row,
-                          GTK_FILL | GTK_EXPAND | GTK_SHRINK, GTK_FILL, 0, 0);
+        gtk_grid_attach (grid, scrollbar, left_col, top_row, 1, 1);
     }
 
     if (scrollbar_y) {
@@ -2442,17 +2455,12 @@ gtk_databox_create_box_with_scrollbars_and_rulers_positioned (GtkWidget ** p_box
                                               (scrollbar)));
         if (ruler_y_left) {
             left_col=2;
-            right_col=3;
             top_row=1;
-            bot_row=2;
         } else {
             left_col=0;
-            right_col=1;
             top_row=1;
-            bot_row=2;
         }
-        gtk_table_attach (table, scrollbar, left_col, right_col, top_row, bot_row,
-                          GTK_FILL, GTK_FILL | GTK_EXPAND | GTK_SHRINK, 0, 0);
+        gtk_grid_attach (grid, scrollbar, left_col, top_row, 1, 1);
     }
 
     if (ruler_x) {
@@ -2461,18 +2469,13 @@ gtk_databox_create_box_with_scrollbars_and_rulers_positioned (GtkWidget ** p_box
                                           priv->scale_type_x);
         if (ruler_x_top) {
             left_col=1;
-            right_col=2;
             top_row=0;
-            bot_row=1;
         } else {
             gtk_databox_ruler_set_invert_edge(GTK_DATABOX_RULER(ruler), TRUE); /* set the ruler to reverse its edge */
             left_col=1;
-            right_col=2;
             top_row=2;
-            bot_row=3;
         }
-        gtk_table_attach (table, ruler, left_col, right_col, top_row, bot_row,
-                          GTK_FILL | GTK_EXPAND | GTK_SHRINK, GTK_FILL, 0, 0);
+        gtk_grid_attach (grid, ruler, left_col, top_row, 1, 1);
         gtk_databox_set_ruler_x (box, GTK_DATABOX_RULER (ruler));
     }
 
@@ -2482,18 +2485,13 @@ gtk_databox_create_box_with_scrollbars_and_rulers_positioned (GtkWidget ** p_box
                                           priv->scale_type_y);
         if (ruler_y_left) {
             left_col=0;
-            right_col=1;
             top_row=1;
-            bot_row=2;
         } else {
             gtk_databox_ruler_set_invert_edge(GTK_DATABOX_RULER(ruler), TRUE); /* set the ruler to reverse its edge */
             left_col=2;
-            right_col=3;
             top_row=1;
-            bot_row=2;
         }
-        gtk_table_attach (table, ruler, left_col, right_col, top_row, bot_row,
-                          GTK_FILL, GTK_FILL | GTK_EXPAND | GTK_SHRINK, 0, 0);
+        gtk_grid_attach (grid, ruler, left_col, top_row, 1, 1);
         gtk_databox_set_ruler_y (box, GTK_DATABOX_RULER (ruler));
     }
 }

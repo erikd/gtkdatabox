@@ -77,9 +77,9 @@ G_BEGIN_DECLS
    GType gtk_databox_grid_get_type (void);
 
    GtkDataboxGraph *gtk_databox_grid_new (gint hlines, gint vlines,
-					  GdkColor * color, guint size);
+					  GdkRGBA * color, guint size);
    GtkDataboxGraph *gtk_databox_grid_array_new (gint hlines, gint vlines, gfloat *hline_vals, gfloat *vline_vals,
-					  GdkColor * color, guint size);
+					  GdkRGBA * color, guint size);
 
    void gtk_databox_grid_set_hlines (GtkDataboxGrid * grid, gint hlines);
    gint gtk_databox_grid_get_hlines (GtkDataboxGrid * grid);

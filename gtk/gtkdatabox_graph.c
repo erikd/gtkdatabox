@@ -37,7 +37,6 @@ enum
   GRAPH_COLOR = 1,
   GRAPH_SIZE,
   GRAPH_HIDE,
-  GRAPH_RGBA
 };
 
 /**
@@ -51,7 +50,7 @@ typedef struct _GtkDataboxGraphPrivate GtkDataboxGraphPrivate;
 
 struct _GtkDataboxGraphPrivate
 {
-  GdkColor color;
+  GdkRGBA color;
   gint size;
   gboolean hide;
   GdkRGBA rgba;
@@ -69,7 +68,7 @@ gtk_databox_graph_set_property (GObject * object,
     case GRAPH_COLOR:
     {
       gtk_databox_graph_set_color (graph,
-                                   (GdkColor *)
+                                   (GdkRGBA *)
                                    g_value_get_pointer (value));
     }
     break;
@@ -81,13 +80,6 @@ gtk_databox_graph_set_property (GObject * object,
     case GRAPH_HIDE:
     {
       gtk_databox_graph_set_hide (graph, g_value_get_boolean (value));
-    }
-    break;
-    case GRAPH_RGBA:
-    {
-      gtk_databox_graph_set_rgba (graph,
-                                   (GdkRGBA *)
-                                   g_value_get_pointer (value));
     }
     break;
     default:
@@ -119,11 +111,6 @@ gtk_databox_graph_get_property (GObject * object,
     case GRAPH_HIDE:
     {
       g_value_set_boolean (value, gtk_databox_graph_get_hide (graph));
-    }
-    break;
-    case GRAPH_RGBA:
-    {
-      g_value_set_pointer (value, gtk_databox_graph_get_rgba (graph));
     }
     break;
     default:
@@ -161,7 +148,7 @@ gtk_databox_graph_real_create_gc (GtkDataboxGraph * graph,
   g_return_val_if_fail (GTK_DATABOX_IS_GRAPH (graph), NULL);
 
    cr = cairo_create (gtk_databox_get_backing_surface (box));
-   gdk_cairo_set_source_color (cr, &priv->color);
+   gdk_cairo_set_source_rgba (cr, &priv->color);
    cairo_set_line_width (cr,  (priv->size > 1) ? priv->size : 1);
 
    return cr;
@@ -288,17 +275,13 @@ gtk_databox_graph_real_calculate_extrema (GtkDataboxGraph * graph,
  *
  */
 void
-gtk_databox_graph_set_color (GtkDataboxGraph * graph, GdkColor * color)
+gtk_databox_graph_set_color (GtkDataboxGraph * graph, GdkRGBA * color)
 {
   GtkDataboxGraphPrivate *priv = GTK_DATABOX_GRAPH_GET_PRIVATE(graph);
 
   g_return_if_fail (GTK_DATABOX_IS_GRAPH (graph));
 
   priv->color = *color;
-  priv->rgba.red = color->red / 65535.0;
-  priv->rgba.blue = color->blue / 65535.0;
-  priv->rgba.green = color->green / 65535.0;
-  priv->rgba.alpha = 1.0;
 
   g_object_notify (G_OBJECT (graph), "color");
 }
@@ -312,48 +295,10 @@ gtk_databox_graph_set_color (GtkDataboxGraph * graph, GdkColor * color)
  * Return value: The color of the graph.
  *
  */
-GdkColor *
+GdkRGBA *
 gtk_databox_graph_get_color (GtkDataboxGraph * graph)
 {
   return &GTK_DATABOX_GRAPH_GET_PRIVATE(graph)->color;
-}
-
-/**
- * gtk_databox_graph_set_rgba:
- * @graph: A #GtkDataboxGraph object
- * @rgba: Color which is to be used by the graph object
- *
- * Sets the color which the #GtkDataboxGraph object is supposed to be using when drawing itself.
- *
- */
-void
-gtk_databox_graph_set_rgba (GtkDataboxGraph * graph, GdkRGBA * rgba)
-{
-  GtkDataboxGraphPrivate *priv = GTK_DATABOX_GRAPH_GET_PRIVATE(graph);
-
-  g_return_if_fail (GTK_DATABOX_IS_GRAPH (graph));
-
-  priv->rgba = *rgba;
-  priv->color.red = rgba->red * 65535.0;
-  priv->color.blue = rgba->blue * 65535.0;
-  priv->color.green = rgba->green * 65535.0;
-
-  g_object_notify (G_OBJECT (graph), "color");
-}
-
-/**
- * gtk_databox_graph_get_rgba:
- * @graph: A #GtkDataboxGraph object
- *
- * Gets the current color of the graph elements (e.g. points).
- *
- * Return value: The color of the graph (as GdkRGBA).
- *
- */
-GdkRGBA *
-gtk_databox_graph_get_rgba (GtkDataboxGraph * graph)
-{
-  return &GTK_DATABOX_GRAPH_GET_PRIVATE(graph)->rgba;
 }
 
 /**

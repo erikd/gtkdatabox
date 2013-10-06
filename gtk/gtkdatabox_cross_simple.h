@@ -79,7 +79,7 @@ G_BEGIN_DECLS
 
    GType gtk_databox_cross_simple_get_type (void);
 
-   GtkDataboxGraph *gtk_databox_cross_simple_new (GdkColor * color,
+   GtkDataboxGraph *gtk_databox_cross_simple_new (GdkRGBA * color,
 						  guint size);
 
 G_END_DECLS

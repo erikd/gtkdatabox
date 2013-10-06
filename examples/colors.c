@@ -46,7 +46,7 @@ get_color_cb(GtkDialog *dialog, gint response_id, gpointer user_data)
 	if (response_id == GTK_RESPONSE_OK)
 	{
 		gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(dialog), &rgba);
-		gtk_databox_graph_set_rgba (sel->graph, &rgba);
+		gtk_databox_graph_set_color (sel->graph, &rgba);
 		gtk_widget_queue_draw (GTK_WIDGET (sel->box));
 	}
 	gtk_widget_destroy(GTK_WIDGET(dialog));
@@ -63,7 +63,7 @@ menu_color_change_cb (col_sel * sel)
    selector = gtk_color_chooser_dialog_new(title, NULL);
    sel->selector = selector;
 
-   rgba = *gtk_databox_graph_get_rgba (sel->graph);
+   rgba = *gtk_databox_graph_get_color (sel->graph);
    gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(sel->selector), &rgba);
    gtk_color_chooser_set_use_alpha(GTK_COLOR_CHOOSER(sel->selector), FALSE);
    g_signal_connect(G_OBJECT(sel->selector), "response", G_CALLBACK(get_color_cb), (gpointer)sel);
@@ -111,7 +111,7 @@ create_colors (void)
    gfloat *Y = NULL;
    gint i, j;
    GtkDataboxGraph *graph;
-   GdkColor color;
+   GdkRGBA color;
 
    window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
    gtk_widget_set_size_request (window, 500, 300);
@@ -132,7 +132,9 @@ create_colors (void)
    color.red = 0;
    color.green = 0;
    color.blue = 0;
-   gtk_widget_modify_bg (box, GTK_STATE_NORMAL, &color);
+   color.alpha = 1;
+
+   gtk_widget_override_background_color (box, GTK_STATE_FLAG_NORMAL, &color);
 
    menu = gtk_menu_new ();
    root_menu = gtk_menu_item_new_with_label ("Color Menu");
@@ -163,9 +165,9 @@ create_colors (void)
 	 X[j] = j;
 	 Y[j] = 100. * sin ((i + 1) * 2 * j * G_PI / POINTS);
       }
-      color.red = 65535 * ((i + 1) % 2);
-      color.green = (65535 / 2) * ((i + 1) % 3);
-      color.blue = (65535 / 3) * ((i + 1) % 4);
+      color.red = 1 * ((i + 1) % 2);
+      color.green = (1 / 2) * ((i + 1) % 3);
+      color.blue = (1 / 3) * ((i + 1) % 4);
       graph = gtk_databox_points_new (POINTS, X, Y, &color, 1);
       gtk_databox_graph_add (GTK_DATABOX (box), graph);
       create_menu_entry (menu, i, box, graph);

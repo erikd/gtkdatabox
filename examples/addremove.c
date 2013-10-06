@@ -35,12 +35,13 @@ GtkDataboxGraph **graphs;
 void
 add_data (GtkDatabox * box, gint index)
 {
-   GdkColor color;
+   GdkRGBA color;
    gint add_index;
 
-   color.red = 32768 + 32767 * (index + 1) / 10;
-   color.green = 65535 - 32768 * index / 10;
-   color.blue = 65535;
+   color.red = 0.5 + 0.5 * (index + 1) / 10;
+   color.green = 1 - 0.5 * index / 10;
+   color.blue = 1;
+   color.alpha = 1;
 
    gtk_databox_graph_set_color (graphs[index], &color);
 
@@ -114,7 +115,7 @@ create_addremove (void)
    GtkWidget *label;
    GtkWidget *separator;
    GtkDataboxGraph *graph;
-   GdkColor color;
+   GdkRGBA color;
    gfloat *X;
    gfloat *Y;
    gint i, j;
@@ -146,10 +147,10 @@ create_addremove (void)
 
    gtk_box_pack_start (GTK_BOX (box1), table, TRUE, TRUE, 0);
 
-   color.red = 16383;
-   color.green = 16383;
-   color.blue = 16383;
-   gtk_widget_modify_bg (box, GTK_STATE_NORMAL, &color);
+   color.red = 0.33;
+   color.green = 0.33;
+   color.blue = 0.33;
+   gtk_widget_override_background_color (box, GTK_STATE_FLAG_NORMAL, &color);
 
    X = g_new0 (gfloat, POINTS);
 
@@ -180,9 +181,11 @@ create_addremove (void)
    Y[3] = +1100.;
 
 
-   color.red = 65535;
+   color.red = 1;
    color.green = 0;
    color.blue = 0;
+   color.alpha = 1;
+
    graph = gtk_databox_points_new (4, X, Y, &color, 3);
    gtk_databox_graph_add (GTK_DATABOX (box), graph);
 

@@ -76,12 +76,12 @@ G_BEGIN_DECLS
    GType gtk_databox_points_get_type (void);
 
    GtkDataboxGraph *gtk_databox_points_new (guint len, gfloat * X, gfloat * Y,
-					    GdkColor * color, gint size);
+					    GdkRGBA * color, gint size);
 
    GtkDataboxGraph *gtk_databox_points_new_full (guint maxlen, guint len,
 			void * X, guint xstart, guint xstride, GType xtype,
 			void * Y, guint ystart, guint ystride, GType ytype,
-			GdkColor * color, gint size);
+			GdkRGBA * color, gint size);
 
 G_END_DECLS
 #endif				/* __GTK_DATABOX_POINTS_H__ */

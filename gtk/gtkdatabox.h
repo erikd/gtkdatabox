@@ -110,6 +110,8 @@ GType gtk_databox_get_type (void);
 
 GtkWidget *gtk_databox_new (void);
 
+GList * gtk_databox_get_graphs (GtkDatabox *);
+
 gint gtk_databox_graph_add (GtkDatabox * box, GtkDataboxGraph * graph);
 gint gtk_databox_graph_add_front (GtkDatabox * box, GtkDataboxGraph * graph);
 
