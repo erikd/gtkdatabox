@@ -18,6 +18,7 @@
  */
 
 #include <gtkdatabox_grid.h>
+#include <math.h>
 
 G_DEFINE_TYPE(GtkDataboxGrid, gtk_databox_grid,
 	GTK_DATABOX_TYPE_GRAPH)
@@ -33,7 +34,8 @@ enum
    GRID_HLINES = 1,
    GRID_VLINES,
    GRID_HLINE_VALS,
-   GRID_VLINE_VALS
+   GRID_VLINE_VALS,
+   GRID_LINE_STYLE
 };
 
 /**
@@ -51,6 +53,7 @@ struct _GtkDataboxGridPrivate
    gint vlines;
    gfloat *hline_vals;
    gfloat *vline_vals;
+   GtkDataboxGridLineStyle line_style;
 };
 
 static void
@@ -80,6 +83,11 @@ gtk_databox_grid_set_property (GObject * object,
    case GRID_VLINE_VALS:
       {
 	 gtk_databox_grid_set_vline_vals (grid, (gfloat *) g_value_get_pointer (value));
+      }
+      break;
+   case GRID_LINE_STYLE:
+      {
+	 gtk_databox_grid_set_line_style (grid, g_value_get_int (value));
       }
       break;
    default:
@@ -118,6 +126,11 @@ gtk_databox_grid_get_property (GObject * object,
     g_value_set_pointer (value, gtk_databox_grid_get_vline_vals (grid));
       }
       break;
+   case GRID_LINE_STYLE:
+      {
+	 g_value_set_int (value, gtk_databox_grid_get_line_style (grid));
+      }
+      break;
    default:
       /* We don't have any other property... */
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -132,14 +145,11 @@ gtk_databox_grid_real_create_gc (GtkDataboxGraph * graph,
 				 GtkDatabox* box)
 {
    cairo_t *cr;
-   static const double grid_dash = 5.0;
+   GtkDataboxGrid *grid = GTK_DATABOX_GRID (graph);
 
    g_return_val_if_fail (GTK_DATABOX_IS_GRID (graph), NULL);
 
    cr = GTK_DATABOX_GRAPH_CLASS (gtk_databox_grid_parent_class)->create_gc (graph, box);
-
-   if (cr)
-      cairo_set_dash(cr, &grid_dash, 1, 0.0);
 
    return cr;
 }
@@ -185,6 +195,15 @@ gtk_databox_grid_class_init (GtkDataboxGridClass *klass)
 
    g_object_class_install_property (gobject_class,
 				    GRID_VLINE_VALS, grid_param_spec);
+
+   grid_param_spec = g_param_spec_int ("line-style", "line-style", "Line style of grid lines",
+				       GTK_DATABOX_GRID_DASHED_LINES, GTK_DATABOX_GRID_DOTTED_LINES,
+				       GTK_DATABOX_GRID_DASHED_LINES,
+				       G_PARAM_READWRITE);
+
+   g_object_class_install_property (gobject_class,
+				    GRID_LINE_STYLE, grid_param_spec);
+
 
    graph_class->draw = gtk_databox_grid_real_draw;
    graph_class->create_gc = gtk_databox_grid_real_create_gc;
@@ -264,6 +283,9 @@ gtk_databox_grid_real_draw (GtkDataboxGraph * graph,
    gint16 pixel_x;
    gint16 pixel_y;
    gfloat left, right, top, bottom;
+   double pixel_right, pixel_left, pixel_top, pixel_bottom;
+   double grid_spacing;
+   double grid_dot[] = {0.0, 0.0};
    cairo_t *cr;
    GtkAllocation allocation;
 
@@ -288,6 +310,46 @@ gtk_databox_grid_real_draw (GtkDataboxGraph * graph,
    factor_y =
       (bottom - top) / (priv->hlines + 1);
 
+   /* Cairo accepts spacing of dotted and dashed lines in user-space
+    * coordinates, in our case, pixels, but using floating point
+    * values, and we use this to our advantage!
+    *
+    * For dotted lines, we target a dot every five pixels, but adjust
+    * this so that horizontal and vertical grid lines always meet at a
+    * dot.
+    *
+    * For dashed lines, we target five pixel dashes with five pixel
+    * spaces between them, but adjust this so that grid crossings
+    * always occur in the middle of a dash.
+    *
+    * This doesn't work for custom hline_vals, but we'll always get
+    * something close to five pixels per dot or dash.
+    *
+    * We should probably widen the target spacing if the line size is
+    * greater than one.
+    */
+
+   pixel_right = gtk_databox_value_to_pixel_x (box, right);
+   pixel_left = gtk_databox_value_to_pixel_x (box, left);
+   grid_spacing = (pixel_right - pixel_left)/(priv->vlines+1);
+
+   switch (priv->line_style) {
+   case GTK_DATABOX_GRID_DASHED_LINES:
+     grid_spacing /= 2*round(grid_spacing/10);
+     cairo_set_dash(cr, &grid_spacing, 1, grid_spacing/2);
+     break;
+
+   case GTK_DATABOX_GRID_DOTTED_LINES:
+     grid_spacing /= round(grid_spacing/5);
+     grid_dot[1] = grid_spacing;
+     cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND);
+     cairo_set_dash(cr, grid_dot, 2, 0.0);
+     break;
+
+   case GTK_DATABOX_GRID_SOLID_LINES:
+     break;
+   }
+
    if (priv->hline_vals == NULL)
       for (i = 0; i < priv->hlines; i++)
       {
@@ -304,6 +366,28 @@ gtk_databox_grid_real_draw (GtkDataboxGraph * graph,
          cairo_move_to (cr, 0.0, pixel_y + 0.5);
          cairo_line_to (cr, width, pixel_y + 0.5);
       }
+
+   cairo_stroke(cr);
+
+   pixel_bottom = gtk_databox_value_to_pixel_y (box, bottom);
+   pixel_top = gtk_databox_value_to_pixel_y (box, top);
+   grid_spacing = (pixel_bottom - pixel_top)/(priv->hlines+1);
+
+   switch (priv->line_style) {
+   case GTK_DATABOX_GRID_DASHED_LINES:
+     grid_spacing /= 2*round(grid_spacing/10);
+     cairo_set_dash(cr, &grid_spacing, 1, grid_spacing/2);
+     break;
+
+   case GTK_DATABOX_GRID_DOTTED_LINES:
+     grid_spacing /= round(grid_spacing/5);
+     grid_dot[1] = grid_spacing;
+     cairo_set_dash(cr, grid_dot, 2, 0.0);
+     break;
+
+   case GTK_DATABOX_GRID_SOLID_LINES:
+     break;
+   }
 
    if (priv->vline_vals == NULL)
       for (i = 0; i < priv->vlines; i++)
@@ -457,4 +541,39 @@ gtk_databox_grid_get_vline_vals (GtkDataboxGrid * grid)
    g_return_val_if_fail (GTK_DATABOX_IS_GRID (grid), NULL);
 
    return GTK_DATABOX_GRID_GET_PRIVATE(grid)->vline_vals;
+}
+
+/**
+ * gtk_databox_grid_set_line_style:
+ * @grid: a #GtkDataboxGrid graph object
+ * @line_style: GTK_DATABOX_GRID_DASHED_LINES,
+ *   GTK_DATABOX_GRID_SOLID_LINES, or GTK_DATABOX_GRID_DOTTED_LINES
+ *
+ * Sets the line style to draw the lines in the @grid.
+ **/
+void
+gtk_databox_grid_set_line_style (GtkDataboxGrid *grid, gint line_style)
+{
+     g_return_if_fail (GTK_DATABOX_IS_GRID (grid));
+
+     GTK_DATABOX_GRID_GET_PRIVATE(grid)->line_style = line_style;
+
+     g_object_notify (G_OBJECT (grid), "line-style");
+}
+
+/**
+ * gtk_databox_grid_get_line_style:
+ * @grid: a #GtkDataboxGrid graph object
+ *
+ * Retrieve the line style to draw the lines in the @grid.
+ *
+ * Return value: GTK_DATABOX_GRID_DASHED_LINES,
+ *   GTK_DATABOX_GRID_SOLID_LINES, or GTK_DATABOX_GRID_DOTTED_LINES
+ **/
+gint
+gtk_databox_grid_get_line_style (GtkDataboxGrid *grid)
+{
+  g_return_val_if_fail (GTK_DATABOX_IS_GRID (grid), -1);
+
+  return GTK_DATABOX_GRID_GET_PRIVATE(grid)->line_style;
 }
