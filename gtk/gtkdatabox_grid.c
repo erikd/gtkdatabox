@@ -284,7 +284,7 @@ gtk_databox_grid_real_draw (GtkDataboxGraph * graph,
    gint16 pixel_y;
    gfloat left, right, top, bottom;
    double pixel_right, pixel_left, pixel_top, pixel_bottom;
-   double grid_spacing;
+   double target_spacing, grid_spacing;
    double grid_dot[] = {0.0, 0.0};
    cairo_t *cr;
    GtkAllocation allocation;
@@ -314,33 +314,33 @@ gtk_databox_grid_real_draw (GtkDataboxGraph * graph,
     * coordinates, in our case, pixels, but using floating point
     * values, and we use this to our advantage!
     *
-    * For dotted lines, we target a dot every five pixels, but adjust
-    * this so that horizontal and vertical grid lines always meet at a
-    * dot.
+    * For normal size dotted lines, we target a dot every five pixels,
+    * but adjust this so that horizontal and vertical grid lines
+    * always meet at a dot.
     *
-    * For dashed lines, we target five pixel dashes with five pixel
-    * spaces between them, but adjust this so that grid crossings
-    * always occur in the middle of a dash.
+    * For normal size dashed lines, we target five pixel dashes with
+    * five pixel spaces between them, but adjust this so that grid
+    * crossings always occur in the middle of a dash.
+    *
+    * We widen the target spacing if the line size is wider.
     *
     * This doesn't work for custom hline_vals, but we'll always get
     * something close to five pixels per dot or dash.
-    *
-    * We should probably widen the target spacing if the line size is
-    * greater than one.
     */
 
    pixel_right = gtk_databox_value_to_pixel_x (box, right);
    pixel_left = gtk_databox_value_to_pixel_x (box, left);
    grid_spacing = (pixel_right - pixel_left)/(priv->vlines+1);
+   target_spacing = 4.0 + cairo_get_line_width(cr);
 
    switch (priv->line_style) {
    case GTK_DATABOX_GRID_DASHED_LINES:
-     grid_spacing /= 2*round(grid_spacing/10);
+     grid_spacing /= 2*round(grid_spacing/target_spacing/2);
      cairo_set_dash(cr, &grid_spacing, 1, grid_spacing/2);
      break;
 
    case GTK_DATABOX_GRID_DOTTED_LINES:
-     grid_spacing /= round(grid_spacing/5);
+     grid_spacing /= round(grid_spacing/target_spacing);
      grid_dot[1] = grid_spacing;
      cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND);
      cairo_set_dash(cr, grid_dot, 2, 0.0);
@@ -375,12 +375,12 @@ gtk_databox_grid_real_draw (GtkDataboxGraph * graph,
 
    switch (priv->line_style) {
    case GTK_DATABOX_GRID_DASHED_LINES:
-     grid_spacing /= 2*round(grid_spacing/10);
+     grid_spacing /= 2*round(grid_spacing/target_spacing/2);
      cairo_set_dash(cr, &grid_spacing, 1, grid_spacing/2);
      break;
 
    case GTK_DATABOX_GRID_DOTTED_LINES:
-     grid_spacing /= round(grid_spacing/5);
+     grid_spacing /= round(grid_spacing/target_spacing);
      grid_dot[1] = grid_spacing;
      cairo_set_dash(cr, grid_dot, 2, 0.0);
      break;
