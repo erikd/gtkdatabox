@@ -31,57 +31,152 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="../../../../../../home/flatmax/personal.work/gtkdatabox/examples/Gtk+IOStream.C">
+		<Unit filename="../AUTHORS" />
+		<Unit filename="../AUTHORS~" />
+		<Unit filename="../COPYING" />
+		<Unit filename="../ChangeLog" />
+		<Unit filename="../Doxyfile" />
+		<Unit filename="../INSTALL" />
+		<Unit filename="../Makefile.am" />
+		<Unit filename="../Makefile.in" />
+		<Unit filename="../NEWS" />
+		<Unit filename="../README" />
+		<Unit filename="../README~" />
+		<Unit filename="../TODO" />
+		<Unit filename="../aclocal.m4" />
+		<Unit filename="../autom4te.cache/output.0" />
+		<Unit filename="../autom4te.cache/output.1" />
+		<Unit filename="../autom4te.cache/output.2" />
+		<Unit filename="../autom4te.cache/output.3" />
+		<Unit filename="../autom4te.cache/requests" />
+		<Unit filename="../autom4te.cache/traces.0" />
+		<Unit filename="../autom4te.cache/traces.1" />
+		<Unit filename="../autom4te.cache/traces.2" />
+		<Unit filename="../autom4te.cache/traces.3" />
+		<Unit filename="../compile" />
+		<Unit filename="../config.guess" />
+		<Unit filename="../config.h.in" />
+		<Unit filename="../config.sub" />
+		<Unit filename="../configure" />
+		<Unit filename="../configure.ac" />
+		<Unit filename="../depcomp" />
+		<Unit filename="../description-pak" />
+		<Unit filename="../examples/Gtk+IOStream.C">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../../../../../../home/flatmax/personal.work/gtkdatabox/examples/addremove.c">
+		<Unit filename="../examples/Gtk+IOStream.C">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../../../../../../home/flatmax/personal.work/gtkdatabox/examples/basics.c">
+		<Unit filename="../examples/Gtk+IOStream.C~" />
+		<Unit filename="../examples/Makefile.am" />
+		<Unit filename="../examples/Makefile.in" />
+		<Unit filename="../examples/addremove.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../../../../../../home/flatmax/personal.work/gtkdatabox/examples/basics2.c">
+		<Unit filename="../examples/addremove.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../../../../../../home/flatmax/personal.work/gtkdatabox/examples/basics_libglade.c">
+		<Unit filename="../examples/basics.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../../../../../../home/flatmax/personal.work/gtkdatabox/examples/colors.c">
+		<Unit filename="../examples/basics.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../../../../../../home/flatmax/personal.work/gtkdatabox/examples/enable_disable.c">
+		<Unit filename="../examples/basics2.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../../../../../../home/flatmax/personal.work/gtkdatabox/examples/full.c">
+		<Unit filename="../examples/basics2.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../../../../../../home/flatmax/personal.work/gtkdatabox/examples/grid.c">
+		<Unit filename="../examples/basics_libglade.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../../../../../../home/flatmax/personal.work/gtkdatabox/examples/grid_array.c">
+		<Unit filename="../examples/basics_libglade.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../../../../../../home/flatmax/personal.work/gtkdatabox/examples/keycontrol.c">
+		<Unit filename="../examples/basics_libglade.glade" />
+		<Unit filename="../examples/colors.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../../../../../../home/flatmax/personal.work/gtkdatabox/examples/lissajous.c">
+		<Unit filename="../examples/colors.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../../../../../../home/flatmax/personal.work/gtkdatabox/examples/logarithmic.c">
+		<Unit filename="../examples/enable_disable.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../../../../../../home/flatmax/personal.work/gtkdatabox/examples/markers.c">
+		<Unit filename="../examples/enable_disable.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../../../../../../home/flatmax/personal.work/gtkdatabox/examples/rulers.c">
+		<Unit filename="../examples/full.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../../../../../../home/flatmax/personal.work/gtkdatabox/examples/signals.c">
+		<Unit filename="../examples/full.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="../examples/grid.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../examples/grid.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../examples/grid_array.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../examples/grid_array.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../examples/keycontrol.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../examples/keycontrol.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../examples/lissajous.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../examples/lissajous.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../examples/logarithmic.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../examples/logarithmic.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../examples/markers.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../examples/markers.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../examples/rulers.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../examples/rulers.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../examples/signals.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../examples/signals.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../glade/Makefile.am" />
+		<Unit filename="../glade/Makefile.in" />
+		<Unit filename="../glade/glade-databox.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../glade/glade-databox.c~" />
+		<Unit filename="../glade/gladeui-databox.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../glade/gtkdatabox.xml" />
+		<Unit filename="../gtk/Makefile.am" />
+		<Unit filename="../gtk/Makefile.in" />
 		<Unit filename="../gtk/gtkdatabox.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="../gtk/gtkdatabox.c~" />
 		<Unit filename="../gtk/gtkdatabox.h" />
 		<Unit filename="../gtk/gtkdatabox_bars.c">
 			<Option compilerVar="CC" />
@@ -95,6 +190,7 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../gtk/gtkdatabox_graph.h" />
+		<Unit filename="../gtk/gtkdatabox_graph.h~" />
 		<Unit filename="../gtk/gtkdatabox_grid.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -111,6 +207,7 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../gtk/gtkdatabox_marshal.h" />
+		<Unit filename="../gtk/gtkdatabox_marshal.list" />
 		<Unit filename="../gtk/gtkdatabox_offset_bars.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -118,6 +215,7 @@
 		<Unit filename="../gtk/gtkdatabox_points.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="../gtk/gtkdatabox_points.c~" />
 		<Unit filename="../gtk/gtkdatabox_points.h" />
 		<Unit filename="../gtk/gtkdatabox_regions.c">
 			<Option compilerVar="CC" />
@@ -140,9 +238,25 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../gtk/gtkdatabox_xyyc_graph.h" />
+		<Unit filename="../gtkdatabox.pc.in" />
+		<Unit filename="../gtkdatabox.spec.in" />
+		<Unit filename="../gtkdataboxvc++.rar" />
+		<Unit filename="../install-sh" />
+		<Unit filename="../ltmain.sh" />
+		<Unit filename="../missing" />
+		<Unit filename="../mkinstalldirs" />
+		<Unit filename="../old/doc-pak/docs/Makefile.in" />
+		<Unit filename="../old/doc-pak/docs/reference/Makefile.in" />
+		<Unit filename="../old/docs/Makefile.in" />
+		<Unit filename="../old/docs/reference/Makefile.in" />
+		<Unit filename="../scripts/indent.sh" />
+		<Unit filename="../scripts/myAutoreconf.sh" />
+		<Unit filename="GtkDatabox.layout" />
+		<Unit filename="gtkdatabox.layout" />
 		<Extensions>
 			<code_completion />
 			<debugger />
+			<envvars />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

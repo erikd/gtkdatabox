@@ -21,7 +21,7 @@ libgtkdatabox_la_SOURCES= \
 libgtkdatabox_la_LDFLAGS= \
 		        -version-info $(LT_CURRENT)\
 			-release $(LT_RELEASE)\
-			-no-undefined
+			-no-undefined \
 			@GTK_LIBS@
 
 
