@@ -125,6 +125,7 @@ create_grid (void)
 
    graph = gtk_databox_grid_new (15, 15, &color, 2);
    gtk_databox_graph_add (GTK_DATABOX (box), graph);
+   gtk_databox_grid_set_line_style (GTK_DATABOX_GRID(graph), GTK_DATABOX_GRID_DOTTED_LINES);
 
    gtk_databox_auto_rescale (GTK_DATABOX (box), 0.05);
 
