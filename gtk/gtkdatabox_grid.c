@@ -145,7 +145,6 @@ gtk_databox_grid_real_create_gc (GtkDataboxGraph * graph,
 				 GtkDatabox* box)
 {
    cairo_t *cr;
-   GtkDataboxGrid *grid = GTK_DATABOX_GRID (graph);
 
    g_return_val_if_fail (GTK_DATABOX_IS_GRID (graph), NULL);
 

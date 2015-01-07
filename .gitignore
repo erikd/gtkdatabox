@@ -44,3 +44,6 @@ gtkdataboxvc++/Debug
 ltmain.sh
 *~
 compile
+gtkdatabox.pc
+gtkdatabox.spec
+stamp-h1

@@ -113,8 +113,6 @@ AM_CONDITIONAL(BUILD_GLADE, test x"$ac_cv_enable_glade" = xyes)
 
 # ------------------ End of Glade 3 configuration ------------------------
 
-GTK_DOC_CHECK([1.4])
-
 AC_OUTPUT(Makefile              \
 	gtk/Makefile            \
 	glade/Makefile		\
