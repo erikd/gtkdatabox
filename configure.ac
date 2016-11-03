@@ -32,8 +32,8 @@ AC_SUBST(LT_RELEASE, [databox_major_version.databox_minor_version.databox_micro_
 AC_SUBST(LT_CURRENT, [databox_nano_version])
 AC_SUBST(DATABOX_VERSION, [databox_version])
 
-#AM_INIT_AUTOMAKE(gtkdatabox, databox_version)
 AM_INIT_AUTOMAKE([tar-ustar])
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
