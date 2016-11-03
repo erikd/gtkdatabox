@@ -4,9 +4,9 @@
 # Ralph Levien
 # at http://www.levien.com/gnome/cvs-lib-howto.html
 #
-# Additional features where taken from gtk+-1.1.1/configure.in and allied 
+# Additional features where taken from gtk+-1.1.1/configure.in and allied
 # files.
-# 
+#
 # Thank's to all the gimp-glib-gtk-gnome-etc.-people
 #
 # If you know automake and friends better then me:
@@ -46,11 +46,10 @@ m4_define([gtk_required_version], [3.4.0])
 m4_define([pango_required_version], [1.16.0])
 m4_define([cairo_required_version], [1.4.0])
 
-AM_PATH_GTK_3_0([gtk_required_version])
 PKG_CHECK_MODULES(GTK, [gtk+-3.0 >= [gtk_required_version]])
 PKG_CHECK_MODULES(GTK, [gdk-3.0 >= [gtk_required_version]])
 PKG_CHECK_MODULES(PANGO, pango >= [pango_required_version])
-PKG_CHECK_MODULES(CAIRO, cairo >= [cairo_required_version]) 
+PKG_CHECK_MODULES(CAIRO, cairo >= [cairo_required_version])
 AC_SUBST(GTK_REQUIRED, [gtk_required_version])
 AC_SUBST(PANGO_REQUIRED, [pango_required_version])
 AC_SUBST(CAIRO_REQUIRED, [cairo_required_version])

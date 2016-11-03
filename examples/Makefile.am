@@ -49,7 +49,7 @@ addremove_SOURCES       = addremove.c
 basics_libglade_SOURCES = basics_libglade.c
 EXTRA_DIST              = basics_libglade.glade
 
-INCLUDES		= \
+AM_CPPFLAGS		= \
 			-I$(top_srcdir)/gtk
 
 AM_CFLAGS			=\

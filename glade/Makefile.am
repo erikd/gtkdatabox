@@ -2,11 +2,11 @@
 
 if BUILD_LIBGLADE
 
-# Build the runtime parts for libglade. 
+# Build the runtime parts for libglade.
 
-INCLUDES = \
+AM_CPPFLAGS = \
 	-I$(top_builddir)				\
-	-I$(top_srcdir)/gtk				
+	-I$(top_srcdir)/gtk
 #	@LIBGLADE_CFLAGS@
 
 glademoduledir = @libglade_moduledir@
@@ -19,7 +19,7 @@ libdatabox_la_LIBADD = \
 	@LIBGLADE_LIBS@
 
 libdatabox_la_LDFLAGS = \
-	-export-dynamic -module -avoid-version 
+	-export-dynamic -module -avoid-version
 
 libdatabox_la_SOURCES = \
 	glade-databox.c
@@ -29,12 +29,12 @@ endif
 
 if BUILD_GLADE
 
-# These are glade-3 interface builder modules, only needed if 
+# These are glade-3 interface builder modules, only needed if
 # you are going to design with glade-3
 
-INCLUDES = \
+AM_CPPFLAGS = \
 	-I$(top_builddir)				\
-	-I$(top_srcdir)/gtk				
+	-I$(top_srcdir)/gtk
 
 gladeuimoduledir = @glade_moduledir@
 gladeuimodule_LTLIBRARIES = libgladedatabox.la
@@ -46,7 +46,7 @@ libgladedatabox_la_LIBADD = \
 	@GLADE3_LIBS@
 
 libgladedatabox_la_LDFLAGS = \
-	-export-dynamic -module -avoid-version 
+	-export-dynamic -module -avoid-version
 
 libgladedatabox_la_SOURCES = \
 	gladeui-databox.c
