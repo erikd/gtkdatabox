@@ -16,7 +16,8 @@ libgtkdatabox_la_SOURCES= \
 			gtkdatabox_markers.c\
             gtkdatabox_cross_simple.c\
             gtkdatabox_grid.c\
-			gtkdatabox_ruler.c
+			gtkdatabox_ruler.c\
+			gtkdatabox_util.c
 
 libgtkdatabox_la_LDFLAGS= \
 		        -version-info $(LT_CURRENT)\
@@ -41,7 +42,8 @@ include_HEADERS		= \
 			gtkdatabox_markers.h\
             gtkdatabox_cross_simple.h\
             gtkdatabox_grid.h\
-			gtkdatabox_ruler.h
+			gtkdatabox_ruler.h\
+			gtkdatabox_util.h
 
 EXTRA_DIST = gtkdatabox_marshal.list
 
