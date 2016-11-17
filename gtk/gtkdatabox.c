@@ -462,7 +462,7 @@ gtk_databox_new (void) {
 GList *
 gtk_databox_get_graphs (GtkDatabox * box) 
 {
-    g_return_val_if_fail (GTK_IS_DATABOX (box), -1);
+    g_return_val_if_fail (GTK_IS_DATABOX (box), NULL);
 
     return GTK_DATABOX_GET_PRIVATE(box)->graphs;
 }
