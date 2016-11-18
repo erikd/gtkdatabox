@@ -22,6 +22,7 @@
 #include <gtkdatabox.h>
 #include <gtkdatabox_points.h>
 #include <gtkdatabox_ruler.h>
+#include <gtkdatabox_util.h>
 #include <math.h>
 
 #define POINTS 100000
@@ -159,7 +160,7 @@ create_rulers (void)
     color.alpha = 1;
 
     for (i = 0; i < NO_BOXES; ++i)
-        gtk_widget_override_background_color (box[i], GTK_STATE_FLAG_NORMAL, &color);
+        pgtk_widget_override_background_color (box[i], GTK_STATE_FLAG_NORMAL, &color);
 
     /* add a sinus^2 */
     X = g_new0 (gfloat, POINTS);
@@ -266,7 +267,7 @@ create_rulers (void)
     gtk_widget_grab_focus (close_button);
 
     gtk_widget_show_all (window);
-    gdk_window_set_cursor (gtk_widget_get_window(box[0]), gdk_cursor_new (GDK_CROSS));
+    gdk_window_set_cursor (gtk_widget_get_window(box[0]), pgdk_cursor_new (GDK_CROSS));
 
 }
 

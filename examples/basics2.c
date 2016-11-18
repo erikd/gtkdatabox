@@ -27,6 +27,7 @@
 #include <gtkdatabox_regions.h>
 #include <gtkdatabox_cross_simple.h>
 #include <gtkdatabox_ruler.h>
+#include <gtkdatabox_util.h>
 #include <math.h>
 
 #define POINTS 2000
@@ -128,7 +129,7 @@ create_basics (void)
    color.blue = 0.2;
    color.alpha = 1;
 
-   gtk_widget_override_background_color (box, GTK_STATE_FLAG_NORMAL, &color);
+   pgtk_widget_override_background_color (box, GTK_STATE_FLAG_NORMAL, &color);
 
    X = g_new0 (gfloat, POINTS);
    Y = g_new0 (gfloat, POINTS);
@@ -276,7 +277,7 @@ create_basics (void)
    gtk_widget_grab_focus (close_button);
 
    gtk_widget_show_all (window);
-   gdk_window_set_cursor (gtk_widget_get_window(box), gdk_cursor_new (GDK_CROSS));
+   gdk_window_set_cursor (gtk_widget_get_window(box), pgdk_cursor_new (GDK_CROSS));
 }
 
 gint

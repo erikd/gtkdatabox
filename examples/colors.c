@@ -14,13 +14,14 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, 
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301 USA.
  */
 #include <stdio.h>
 #include <gtk/gtk.h>
 #include <gtkdatabox.h>
 #include <gtkdatabox_points.h>
+#include <gtkdatabox_util.h>
 #include <math.h>
 
 #define POINTS 2000
@@ -134,7 +135,7 @@ create_colors (void)
    color.blue = 0;
    color.alpha = 1;
 
-   gtk_widget_override_background_color (box, GTK_STATE_FLAG_NORMAL, &color);
+   pgtk_widget_override_background_color (box, GTK_STATE_FLAG_NORMAL, &color);
 
    menu = gtk_menu_new ();
    root_menu = gtk_menu_item_new_with_label ("Color Menu");

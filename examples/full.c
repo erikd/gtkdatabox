@@ -22,6 +22,7 @@
 #include <gtkdatabox.h>
 #include <gtkdatabox_points.h>
 #include <gtkdatabox_ruler.h>
+#include <gtkdatabox_util.h>
 #include <math.h>
 
 #define POINTS 2000
@@ -122,7 +123,7 @@ create_full (void)
    gtk_widget_grab_focus (close_button);
 
    gtk_widget_show_all (window);
-   gdk_window_set_cursor (gtk_widget_get_window(box), gdk_cursor_new (GDK_CROSS));
+   gdk_window_set_cursor (gtk_widget_get_window(box), pgdk_cursor_new (GDK_CROSS));
 }
 
 gint

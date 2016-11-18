@@ -6,12 +6,12 @@
  * modify it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation; either version 2.1
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
@@ -22,6 +22,7 @@
 #include <gtkdatabox.h>
 #include <gtkdatabox_points.h>
 #include <gtkdatabox_ruler.h>
+#include <gtkdatabox_util.h>
 #include <math.h>
 
 #define POINTS 100000
@@ -111,7 +112,7 @@ create_logarithmic (void)
    color.alpha = 1;
 
    for (i = 0; i < NO_BOXES; ++i)
-      gtk_widget_override_background_color (box[i], GTK_STATE_FLAG_NORMAL, &color);
+      pgtk_widget_override_background_color (box[i], GTK_STATE_FLAG_NORMAL, &color);
 
    /* add a sinus^2 */
    X = g_new0 (gfloat, POINTS);
@@ -196,10 +197,10 @@ create_logarithmic (void)
    max_y = 0.01;
 
    for (i = 0; i < NO_BOXES-1; ++i)
-      gtk_databox_set_total_limits (GTK_DATABOX (box[i]), min_x, max_x, min_y,
-				    max_y);
-      gtk_databox_set_total_limits (GTK_DATABOX (box[i]), 8, max_x, min_y,
-				    max_y);
+   {
+      gtk_databox_set_total_limits (GTK_DATABOX (box[i]), min_x, max_x, min_y, max_y);
+      gtk_databox_set_total_limits (GTK_DATABOX (box[i]), 8, max_x, min_y, max_y);
+   }
 
    gtk_databox_set_scale_type_y (GTK_DATABOX (box[1]), GTK_DATABOX_SCALE_LOG);
    gtk_databox_set_scale_type_x (GTK_DATABOX (box[2]), GTK_DATABOX_SCALE_LOG);
@@ -219,7 +220,7 @@ create_logarithmic (void)
 
    gtk_widget_show_all (window);
    for (i = 0; i < NO_BOXES; ++i)
-	   gdk_window_set_cursor (gtk_widget_get_window(box[i]), gdk_cursor_new (GDK_CROSS));
+	   gdk_window_set_cursor (gtk_widget_get_window(box[i]), pgdk_cursor_new (GDK_CROSS));
 }
 
 gint
