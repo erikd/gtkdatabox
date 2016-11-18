@@ -18,6 +18,7 @@
  */
 
 #include <gtkdatabox_xyc_graph.h>
+#include <gtkdatabox_util.h>
 
 G_DEFINE_TYPE(GtkDataboxXYCGraph, gtk_databox_xyc_graph,
 	GTK_DATABOX_TYPE_GRAPH)
@@ -66,8 +67,6 @@ struct _GtkDataboxXYCGraphPrivate
    GType xtype;
    GType ytype;
 };
-
-static gpointer parent_class = NULL;
 
 void
 gtk_databox_xyc_graph_set_X_Y_length(GtkDataboxXYCGraph * xyc_graph, gfloat * X, gfloat * Y, guint len)
@@ -526,7 +525,7 @@ gtk_databox_xyc_graph_class_init (GtkDataboxXYCGraphClass *klass)
 }
 
 static void
-gtk_databox_xyc_graph_init (GtkDataboxXYCGraph *xyc_graph)
+gtk_databox_xyc_graph_init (GtkDataboxXYCGraph * UNUSED (xyc_graph))
 {
 }
 

@@ -20,6 +20,7 @@
 #include <gtkdatabox.h>
 #include <gtkdatabox_marshal.h>
 #include <gtkdatabox_ruler.h>
+#include <gtkdatabox_util.h>
 #include <gtk/gtk.h>
 #include <math.h>
 
@@ -460,7 +461,7 @@ gtk_databox_new (void) {
  * Return value: A #GList that contains all graphs
  */
 GList *
-gtk_databox_get_graphs (GtkDatabox * box) 
+gtk_databox_get_graphs (GtkDatabox * box)
 {
     g_return_val_if_fail (GTK_IS_DATABOX (box), NULL);
 
@@ -651,7 +652,7 @@ gtk_databox_realize (GtkWidget * widget) {
 
     gtk_style_context_add_class(stylecontext, GTK_STYLE_CLASS_BACKGROUND);
 
-	gtk_style_context_set_background(stylecontext, gtk_widget_get_window(widget));
+	pgtk_style_context_set_background(stylecontext, widget);
 
     gtk_databox_create_backing_surface (box);
 }
@@ -1161,7 +1162,7 @@ gtk_databox_create_backing_surface(GtkDatabox * box) {
    priv->old_width = width;
    priv->old_height = height;
 
-    cr = gdk_cairo_create (gtk_widget_get_window (widget));
+    cr = pgdk_cairo_create (gtk_widget_get_window (widget));
 
    priv->backing_surface = cairo_surface_create_similar(
                                 cairo_get_target (cr),
@@ -1216,14 +1217,15 @@ gtk_databox_draw (GtkWidget * widget, cairo_t * cr) {
     GList *list;
     cairo_t *cr2;
     GtkStyleContext *stylecontext = gtk_widget_get_style_context(widget);
-    GdkRGBA bg_color;
+    GtkAllocation allocation;
 
     gtk_databox_create_backing_surface (box);
 
     cr2 = cairo_create(priv->backing_surface);
-    gtk_style_context_get_background_color(stylecontext, GTK_STATE_FLAG_NORMAL, &bg_color);
-    gdk_cairo_set_source_rgba (cr2, &bg_color);
-    cairo_paint(cr2);
+
+    gtk_widget_get_allocation(widget, &allocation);
+    gtk_render_background (stylecontext, cr2, 0, 0, allocation.width, allocation.height) ;
+
     cairo_destroy(cr2);
 
     list = g_list_last (priv->graphs);
@@ -1422,8 +1424,8 @@ gtk_databox_zoomed (GtkDatabox * box) {
     priv->selection_active = FALSE;
     priv->selection_finalized = FALSE;
 
-    gtk_adjustment_changed (priv->adj_x);
-    gtk_adjustment_changed (priv->adj_y);
+//  gtk_adjustment_changed (priv->adj_x);
+//  gtk_adjustment_changed (priv->adj_y);
 
     gtk_widget_queue_draw (GTK_WIDGET(box));
 
@@ -1581,7 +1583,7 @@ gtk_databox_draw_selection (GtkDatabox * box, gboolean clear) {
     GtkWidget *widget = GTK_WIDGET (box);
 	cairo_t *cr;
 
-	cr = gdk_cairo_create (gtk_widget_get_window (widget));
+	cr = pgdk_cairo_create (gtk_widget_get_window (widget));
     cairo_rectangle (cr,
                      MIN (priv->marked.x, priv->select.x) - 0.5,
                      MIN (priv->marked.y, priv->select.y) - 0.5,

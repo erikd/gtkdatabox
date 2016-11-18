@@ -28,6 +28,7 @@
 /* Modified by Roland Bock 2007, see ChangeLog */
 
 #include <gtkdatabox_ruler.h>
+#include <gtkdatabox_util.h>
 
 #include <math.h>
 #include <glib/gprintf.h>
@@ -777,7 +778,7 @@ gtk_databox_ruler_set_text_orientation (GtkDataboxRuler * ruler,
         gtkRequisition.width = (padding.left + padding.right) * 2 + RULER_SIZE;
     else
         gtkRequisition.width = ruler->priv->max_y_text_width;
-	gtk_widget_set_size_request(widget, gtkRequisition.width, gtkRequisition.height);
+    gtk_widget_set_size_request(widget, gtkRequisition.width, gtkRequisition.height);
 
     if (gtk_widget_is_drawable (widget))
 	{
@@ -1325,7 +1326,7 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler) {
     PangoLayout *layout;
     PangoRectangle logical_rect, ink_rect;
 	GtkAllocation allocation;
-	GdkRGBA fg_color, bg_color;
+	GdkRGBA fg_color;
 
     GtkBorder padding;
     gtk_style_context_get_padding (stylecontext, gtk_widget_get_state_flags (widget), &padding);
@@ -1345,7 +1346,7 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler) {
     if (!gtk_widget_is_drawable (GTK_WIDGET (ruler)))
         return;
 
-	gtk_widget_get_allocation(widget, &allocation);
+    gtk_widget_get_allocation(widget, &allocation);
 	stylecontext = gtk_widget_get_style_context(widget);
 
     layout = gtk_widget_create_pango_layout (widget, "E+-012456789");
@@ -1367,9 +1368,7 @@ gtk_databox_ruler_draw_ticks (GtkDataboxRuler * ruler) {
     height = allocation.height;
 
     cr = cairo_create(ruler->priv->backing_surface);
-    gtk_style_context_get_background_color(stylecontext, GTK_STATE_FLAG_NORMAL, &bg_color);
-    gdk_cairo_set_source_rgba (cr, &bg_color);
-    cairo_paint(cr);
+    gtk_render_background (stylecontext, cr, 0, 0, width, height) ;
 
     gtk_style_context_get_color(stylecontext, GTK_STATE_FLAG_NORMAL, &fg_color);
     gdk_cairo_set_source_rgba (cr, &fg_color);
@@ -1625,7 +1624,7 @@ gtk_databox_ruler_draw_pos (GtkDataboxRuler * ruler) {
         if (ruler->priv->invert_edge && (bs_width > 0) && (bs_height > 0))
             return; /* return if positive values and inverted */
 
-        cr = gdk_cairo_create (gtk_widget_get_window(widget));
+        cr = pgdk_cairo_create (gtk_widget_get_window(widget));
 
         /*  If a backing store exists, restore the ruler  */
         if (ruler->priv->backing_surface)
@@ -1713,7 +1712,7 @@ gtk_databox_ruler_realize (GtkWidget * widget) {
 
     gtk_style_context_add_class(stylecontext, GTK_STYLE_CLASS_BACKGROUND);
 
-    gtk_style_context_set_background(stylecontext, gtk_widget_get_window(widget));
+    pgtk_style_context_set_background(stylecontext, widget);
 
     gtk_databox_ruler_create_backing_surface (ruler);
 }
@@ -1797,7 +1796,7 @@ gtk_databox_ruler_create_backing_surface (GtkDataboxRuler * ruler) {
 	ruler->priv->old_width = width;
 	ruler->priv->old_height = height;
 
-	cr = gdk_cairo_create(gtk_widget_get_window(widget));
+	cr = pgdk_cairo_create (gtk_widget_get_window(widget));
 
     ruler->priv->backing_surface = cairo_surface_create_similar(
 		cairo_get_target(cr),

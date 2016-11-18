@@ -86,7 +86,7 @@ G_BEGIN_DECLS
       cairo_t* (*create_gc) (GtkDataboxGraph * graph, GtkDatabox * box);
    };
 
-//   GType gtk_databox_graph_get_type (void);
+   GType gtk_databox_graph_get_type (void);
 
    void gtk_databox_graph_set_hide (GtkDataboxGraph * graph, gboolean hide);
    gboolean gtk_databox_graph_get_hide (GtkDataboxGraph * graph);

@@ -18,6 +18,7 @@
  */
 
 #include <gtkdatabox_graph.h>
+#include <gtkdatabox_util.h>
 #include <gtk/gtk.h>
 
 G_DEFINE_TYPE(GtkDataboxGraph, gtk_databox_graph,
@@ -191,7 +192,7 @@ gtk_databox_graph_class_init (GtkDataboxGraphClass *klass)
 }
 
 static void
-gtk_databox_graph_init (GtkDataboxGraph *graph)
+gtk_databox_graph_init (GtkDataboxGraph * UNUSED (graph))
 {
 }
 

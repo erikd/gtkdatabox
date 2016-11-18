@@ -18,6 +18,8 @@
  */
 
 #include <gtkdatabox_grid.h>
+#include <gtkdatabox_util.h>
+#include <gtkdatabox_graph.h>
 #include <math.h>
 
 G_DEFINE_TYPE(GtkDataboxGrid, gtk_databox_grid,
@@ -156,8 +158,6 @@ gtk_databox_grid_real_create_gc (GtkDataboxGraph * graph,
 static void
 grid_finalize (GObject * object)
 {
-  GtkDataboxGraph *graph = GTK_DATABOX_GRAPH (object);
-
   /* Chain up to the parent class */
   G_OBJECT_CLASS (gtk_databox_grid_parent_class)->finalize (object);
 }
@@ -211,7 +211,7 @@ gtk_databox_grid_class_init (GtkDataboxGridClass *klass)
 }
 
 static void
-gtk_databox_grid_init (GtkDataboxGrid *grid)
+gtk_databox_grid_init (GtkDataboxGrid * UNUSED (grid))
 {
 }
 

@@ -19,6 +19,8 @@
  */
 
 #include <gtkdatabox_xyyc_graph.h>
+#include <gtkdatabox_graph.h>
+#include <gtkdatabox_util.h>
 
 G_DEFINE_TYPE(GtkDataboxXYYCGraph, gtk_databox_xyyc_graph,
 	GTK_DATABOX_TYPE_GRAPH)
@@ -649,7 +651,7 @@ gtk_databox_xyyc_graph_class_init (GtkDataboxXYYCGraphClass *klass)
 }
 
 static void
-gtk_databox_xyyc_graph_init (GtkDataboxXYYCGraph * xyyc_graph)
+gtk_databox_xyyc_graph_init (GtkDataboxXYYCGraph * UNUSED (xyyc_graph))
 {
 }
 
