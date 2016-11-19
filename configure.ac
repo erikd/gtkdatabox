@@ -54,6 +54,13 @@ AC_SUBST(GTK_REQUIRED, [gtk_required_version])
 AC_SUBST(PANGO_REQUIRED, [pango_required_version])
 AC_SUBST(CAIRO_REQUIRED, [cairo_required_version])
 
+AC_ARG_ENABLE(werror,
+	AC_HELP_STRING([--enable-werror], [enable -Werror in all Makefiles]))
+
+if test x$enable_werror = "xyes" ; then
+	MN_ADD_CFLAGS([-Werror])
+	fi
+
 # ------------------ Libglade configuration ------------------------
 AC_ARG_ENABLE(libglade,
 	[  --enable-libglade       enable libglade support],
