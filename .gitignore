@@ -47,3 +47,6 @@ compile
 gtkdatabox.pc
 gtkdatabox.spec
 stamp-h1
+depcomp
+install-sh
+missing
